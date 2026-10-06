@@ -1,6 +1,6 @@
 # rca-lab configuration. Run `python -m rcalab init` to be prompted for the
 # required (REQUIRED) fields; `python -m rcalab check` lists what is missing.
-# Telemetry is pulled from tool APIs only (no SSH).
+# Telemetry is pulled from tool APIs only (no SSH, no shell commands: this app is read-only).
 
 system:
   name: REQUIRED            # label for this target, e.g. sock-shop
@@ -34,18 +34,6 @@ detector:
 cascade:
   max_lag_windows: 4        # how far apart (in windows) a cause and effect may be
   max_hops: 3
-
-fault_injection:
-  # Commands run on THIS machine. {service} is substituted. Labels are written to
-  # runs/<run_id>/label.json and used ONLY for scoring, never for training.
-  faults:
-    stop:   { inject: "docker stop {service}",  recover: "docker start {service}" }
-    pause:  { inject: "docker pause {service}", recover: "docker unpause {service}" }
-    cpu_throttle:
-      inject:  "docker update --cpus 0.1 {service}"
-      recover: "docker update --cpus 0 {service}"
-  duration_seconds: 120
-  settle_seconds: 60
 
 experiment:
   runs: 10

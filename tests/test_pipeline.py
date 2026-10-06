@@ -59,3 +59,13 @@ def test_explanation_names_root_cause_and_roundtrip(tmp_path):
 def test_missing_config_values_detected():
     gaps = config.missing(CFG)
     assert "sources.prometheus.url" in gaps and "system.name" in gaps
+
+
+def test_app_is_read_only_no_ssh_or_shell():
+    """The app may only read via observability HTTP APIs: no SSH, no command execution."""
+    import pathlib, re
+    banned = re.compile(r"\b(subprocess|paramiko|asyncssh|fabric|pexpect|os\.system|os\.popen|Popen)\b"
+                        r"|import\s+ssh|\bssh2?\b", re.I)
+    for f in pathlib.Path("rcalab").rglob("*.py"):
+        hit = banned.search(f.read_text(encoding="utf-8"))
+        assert not hit, f"{f}: forbidden capability '{hit.group(0)}'"

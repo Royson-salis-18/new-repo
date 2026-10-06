@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import random
 import time
 from pathlib import Path
 
@@ -21,8 +20,11 @@ def main():
     sub.add_parser("check", help="list config values still missing")
     p = sub.add_parser("diagnose", help="analyse the last N minutes of live telemetry")
     p.add_argument("--minutes", type=int, default=20)
-    p = sub.add_parser("experiment", help="inject faults on the live system and save runs")
-    p.add_argument("--runs", type=int)
+    p = sub.add_parser("record", help="collect a labelled run for a fault you injected elsewhere")
+    p.add_argument("--service", required=True, help="service the fault was injected into")
+    p.add_argument("--fault", required=True, help="free-text fault name, e.g. flagd:cartFailure")
+    p.add_argument("--start", required=True, help="injection start (ISO time or unix seconds)")
+    p.add_argument("--end", required=True, help="injection end (ISO time or unix seconds)")
     p.add_argument("--out", default="runs")
     p = sub.add_parser("evaluate", help="score saved runs (or --synthetic) against labels")
     p.add_argument("--runs-dir", default="runs")
@@ -56,17 +58,12 @@ def main():
         window = (base, len(tel.times))
         res = rank(tel, det, window, cfg["cascade"]["max_lag_windows"], cfg["cascade"]["max_hops"])
         print(explain(tel, det, res, window))
-    elif a.cmd == "experiment":
-        from .inject import pick, run_once
-        rng = random.Random(0)
-        names = cfg["system"]["services"]
-        if not names:
-            raise SystemExit("set system.services in config.yaml so faults can target them")
-        for i in range(a.runs or cfg["experiment"]["runs"]):
-            svc, fault = pick(cfg, names, rng)
-            print(f"run {i}: {fault} on {svc}")
-            run_once(cfg, svc, fault, Path(a.out) / f"run_{i:02d}_{svc}_{fault}")
-    elif a.cmd == "evaluate":
+    elif a.cmd == "record":
+        from .record import record
+        n = len([d for d in Path(a.out).glob("run_*")]) if Path(a.out).exists() else 0
+        d = record(cfg, a.service, a.fault, a.start, a.end, Path(a.out) / f"run_{n:02d}_{a.service}")
+        print(f"saved {d}")
+
         print(json.dumps(evaluate.run_dir(cfg, Path(a.runs_dir)), indent=2))
 
 
