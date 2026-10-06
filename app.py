@@ -9,6 +9,7 @@ import pandas as pd
 import streamlit as st
 
 from rcalab import config, evaluate, synthetic
+from rcalab.cascade import cascade_risk, edge_probabilities, path_probabilities
 from rcalab.detector import detect
 from rcalab.explain import explain
 from rcalab.rca import rank
@@ -20,6 +21,7 @@ st.title("rca-lab: root cause + cascade risk")
 mode = st.sidebar.radio("Telemetry source", ["Synthetic demo", "Live (config.yaml)"])
 cfg = config.load("config.yaml" if Path("config.yaml").exists() else "config.example.yaml")
 z_thr = st.sidebar.slider("Anomaly threshold (z)", 2.0, 8.0, float(cfg["detector"]["z_threshold"]), 0.5)
+play = st.sidebar.toggle("Play (animate graph)", value=False)
 method = st.sidebar.selectbox("RCA method", ["full", "anomaly_only", "earliest", "random"])
 
 if mode == "Synthetic demo":
@@ -48,6 +50,36 @@ else:
 det = detect(tel, baseline, z_thr, kind=cfg["detector"]["kind"])
 res = rank(tel, det, window, cfg["cascade"]["max_lag_windows"], cfg["cascade"]["max_hops"], method)
 
+def live_graph(tel, det):
+    """Weighted call graph at one moment. Edge weight = learned cascade probability
+    p(callee failure -> caller failure); node colour = deviation now; thick border = cascade risk."""
+    T = len(tel.times)
+    if "t" not in st.session_state or st.session_state.t >= T:
+        st.session_state.t = T - 1
+    if play:  # advance one window per tick, wrap around
+        st.session_state.t = (st.session_state.t + 1) % T
+    t = st.slider("Time (window)", 0, T - 1, key="t")
+    probs = edge_probabilities(tel, det.flags[: t + 1], cfg["cascade"]["max_lag_windows"])
+    P = path_probabilities(tel.services, probs, cfg["cascade"]["max_hops"])
+    risk = cascade_risk(det.a[t], P)
+    lines = ['digraph { rankdir=LR; node [style=filled, shape=ellipse, fontname=Helvetica];']
+    for i, name in enumerate(tel.services):
+        z = det.z[t, i]
+        k = min(z / 10.0, 1.0)                       # white -> red with deviation
+        fill = "#%02x%02x%02x" % (255, int(255 * (1 - k)), int(255 * (1 - k)))
+        lines.append(f'"{name}" [fillcolor="{fill}", penwidth={1 + 5 * risk[i]:.1f}, '
+                     f'label="{name}\\nz={z:.1f}  risk={risk[i]:.0%}"];')
+    for (callee, caller), p in probs.items():
+        hot = det.flags[t, tel.index(callee)]
+        color = "#e5484d" if hot else "#9a9a9a"
+        lines.append(f'"{callee}" -> "{caller}" [penwidth={0.5 + 7 * p:.1f}, color="{color}", '
+                     f'label="{p:.2f}", fontsize=10];')
+    st.graphviz_chart(" ".join(lines) + "}")
+    st.caption(f"t = {pd.to_datetime(tel.times[t], unit='s'):%H:%M:%S}  |  arrows show failure spreading "
+               "callee -> caller; thickness/label = learned probability; red arrow = callee anomalous now; "
+               "node colour = deviation; thick border = cascade risk.")
+
+
 tab_rca, tab_signals, tab_eval = st.tabs(["Diagnosis", "Signals", "Evaluation"])
 
 # ---------- Diagnosis ----------
@@ -67,16 +99,9 @@ with tab_rca:
         st.subheader("Explanation")
         st.text(explain(tel, det, res, window))
 
-    st.subheader("Call graph")
-    failing = set(res.strength)
+    st.subheader("Live weighted graph")
     top = res.ranking[0][0] if res.ranking else None
-    lines = ["digraph { rankdir=LR; node [style=filled, fontname=Helvetica];"]
-    for s in tel.services:
-        color = "#e5484d" if s == top else "#f5a524" if s in failing else "#d9d9d9"
-        lines.append(f'"{s}" [fillcolor="{color}"];')
-    lines += [f'"{a}" -> "{b}";' for a, b in tel.edges]
-    st.graphviz_chart("\n".join(lines) + "}")
-    st.caption("red = top suspect, orange = also deviating, grey = normal. Arrows point caller -> callee.")
+    st.fragment(run_every=1.0 if play else None)(lambda: live_graph(tel, det))()
 
 # ---------- Signals ----------
 with tab_signals:
@@ -107,3 +132,9 @@ with tab_eval:
         st.dataframe(pd.DataFrame(out["metrics"]).T)
         st.write("Significance of `full` over each baseline (lower p = stronger evidence):")
         st.dataframe(pd.DataFrame(out["full_vs_baselines"]).T)
+
+if mode != "Synthetic demo":
+    every = st.sidebar.number_input("Auto-refresh live data every (s, 0 = off)", 0, 600, 0)
+    if every:
+        time.sleep(every)
+        st.rerun()
