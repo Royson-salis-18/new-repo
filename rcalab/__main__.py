@@ -12,6 +12,16 @@ from .explain import explain
 from .rca import rank
 
 
+def _emit(report: dict, name: str):
+    out = evaluate.save(report, Path("results"), name)
+    print(f"{'method':15}{'A@1':>6}{'A@3':>6}{'MRR':>6}  p_holm (proposed vs method)")
+    for m, v in report["metrics"].items():
+        p = report["proposed_vs_others"].get(m, {}).get("p_holm")
+        print(f"{m:15}{v['A@1']['mean']:6.2f}{v['A@3']['mean']:6.2f}{v['MRR']['mean']:6.2f}  "
+              f"{'' if p is None else f'{p:.3f}'}")
+    print(f"saved {out} (summary.json, per_run.csv, table.tex)")
+
+
 def main():
     ap = argparse.ArgumentParser(prog="rcalab")
     ap.add_argument("--config", default="config.yaml")
@@ -38,7 +48,7 @@ def main():
         return
     if a.cmd == "evaluate" and a.synthetic:
         cfg = config.load(a.config if Path(a.config).exists() else "config.example.yaml")
-        print(json.dumps(evaluate.run_synthetic(cfg, hard=a.hard), indent=2))
+        _emit(evaluate.run_synthetic(cfg, hard=a.hard), "synthetic_sanity" + ("_hard" if a.hard else ""))
         return
 
     cfg = config.load(a.config)
@@ -64,7 +74,7 @@ def main():
         d = record(cfg, a.service, a.fault, a.start, a.end, Path(a.out) / f"run_{n:02d}_{a.service}")
         print(f"saved {d}")
     elif a.cmd == "evaluate":
-        print(json.dumps(evaluate.run_dir(cfg, Path(a.runs_dir)), indent=2))
+        _emit(evaluate.run_dir(cfg, Path(a.runs_dir)), "live_" + time.strftime("%Y%m%d_%H%M%S"))
 
 
 if __name__ == "__main__":
