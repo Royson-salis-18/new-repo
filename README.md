@@ -46,3 +46,19 @@ comparing to a human debugging time still needs a separate measurement.
 ## Not built yet
 
 GPU detector (PyTorch autoencoder, CUDA 12.8+ build needed for the RTX 5050), real-system runs, LLM-written explanations.
+
+## Dashboard
+
+```
+.venv\Scripts\python server.py      # then open http://127.0.0.1:8000
+```
+
+One HTML file (`static/index.html`, no build step, works offline) + a small FastAPI backend (`server.py`).
+Layered call graph with learned cascade probabilities as edge weights, animated failure flow, a scrubbable timeline
+(playback re-computes everything using only data up to that moment), live root-cause ranking and explanation.
+The **Evaluate** button runs the method comparison. It is read-only like the rest of the app.
+
+## Research
+
+See [RESEARCH.md](RESEARCH.md) for hypotheses, protocol, baselines, statistics and threats to validity.
+`python -m rcalab evaluate` writes `results/<run>/{summary.json,per_run.csv,table.tex}`.
