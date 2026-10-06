@@ -63,7 +63,7 @@ def main():
         n = len([d for d in Path(a.out).glob("run_*")]) if Path(a.out).exists() else 0
         d = record(cfg, a.service, a.fault, a.start, a.end, Path(a.out) / f"run_{n:02d}_{a.service}")
         print(f"saved {d}")
-
+    elif a.cmd == "evaluate":
         print(json.dumps(evaluate.run_dir(cfg, Path(a.runs_dir)), indent=2))
 
 
