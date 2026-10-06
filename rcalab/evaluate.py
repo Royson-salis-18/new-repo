@@ -9,7 +9,6 @@ from __future__ import annotations
 import csv
 import json
 import platform
-import subprocess
 import sys
 import time
 from pathlib import Path
@@ -135,9 +134,16 @@ def run_synthetic(cfg: dict, runs: int = 10, seed: int = 0, hard: bool = False) 
 
 
 def _git_commit() -> str:
+    """Current commit hash read straight from .git (no process execution)."""
     try:
-        return subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True,
-                              cwd=Path(__file__).parent).stdout.strip() or "unknown"
+        git = Path(__file__).resolve().parent.parent / ".git"
+        head = (git / "HEAD").read_text().strip()
+        if head.startswith("ref:"):
+            ref = head.split(" ", 1)[1]
+            f = git / ref
+            head = f.read_text().strip() if f.exists() else next(
+                l.split()[0] for l in (git / "packed-refs").read_text().splitlines() if l.endswith(ref))
+        return head[:8]
     except Exception:
         return "unknown"
 
