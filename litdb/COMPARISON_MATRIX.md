@@ -4,6 +4,8 @@
 |---|---|---|---|---|---|---|---|---|---|---|
 | barata2026anomaly | n/a (survey) | n/a | logs, traces, monitori | n/a (surveys graph-based | no (no | no | Table 9 lists datasets ( (n/a) | 117 studies per abstract (143 per Sec. 4.1.4); 86% | partial  | low |
 | li2026service | supervised (cr | claimed  | service logs, API-call | GNN (GAT + GRU/Transform | yes (h | no | proprietary, anonymized; (no (p) | P 0.94, R 0.92, accuracy 0.93, detection time 3.2  | high (ta | medium ( |
+| theysayitsre | n/a | n/a | logs, traces, metrics, | none (cites dependency-g | no | mentions | none (n/a () | none of its own; relays MicroRCA 89% precision and | low (LLM | low |
+| bridgingtheg | mixed: causal  | claimed  | metrics (Prometheus),  | causal discovery (hierar | no (li | yes (Lan | about 500 failure scenar (no) | Sock-Shop top-5 recall 94.3% vs RUN 91.0%, RCD 89. | low (LLM | low |
 | erakovic2025hybrid | rule-based wit | no (offl | trace logs only (laten | call-graph and architect | no | no | rca_2020_04_22.csv (desi (yes () | claims correct localization of the injected fault  | partial  | low |
 | fu2025intelligent | n/a (survey) | n/a | metrics, logs, traces  | n/a (surveys causal and  | no (no | no (futu | Table 7 lists five publi (n/a) | survey of work published 2013 to 2024; classifies  | partial  | low |
 | graphneurala | unclear (score | no | traces (OpenTracing/Ja | GNN (GCN) + GRU | no | no | DeathStarBench (Social N (not s) | AUC 0.951, ACC 0.904, Recall 0.889, F1 0.896 vs GA | low | low |
