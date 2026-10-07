@@ -15,7 +15,7 @@ peer_reviewed: ""                      # yes / no / preprint
 cited_by_crossref: ""
 n_references: ""
 license: ""
-batch: "2"
+batch: "queue"
 read_status: extracted                 # extracted -> read-in-full -> reviewed
 pages: 5
 text_chars: 26031

@@ -26,6 +26,12 @@ this lengthens debugging time for operators.
 | A14 | A competition LLM-agent RCA system reached a score of 50.71, with the metric modality contributing most (42.78 alone), but no baselines and an undefined score | pantang...microrca (MicroRCA-Agent), Table 1 p.16 | measured, uncomparable | very weak |
 | A15 | LLM reasoning chains can hallucinate trace evidence that was never provided | MicroRCA-Agent, p.16 (bad case) | anecdotal (single case) | weak but relevant to faithfulness checks |
 | A16 | A supervised multimodal GNN (CHASE) reaches A@1 0.6135 on a 10-instance, log-injected dataset | zimingzhao...chase, Table II p.8 | measured, tiny and easy dataset | very weak |
+| A17 | Supervised RCA methods need engineer-prepared labels, which are costly; labeled data are scarce and imbalanced | fu2025intelligent, pp.22-23 | assumed/analytical (survey remark, based on inspecting the AIOps 2022 dataset attributes) | medium-weak |
+| A18 | Benchmark fault types (CPU/memory exhaustion, packet loss, delay) do not capture production faults; most fault injection targets microservice level only | fu2025intelligent, pp.10, 13, 27 | analytical (survey remark) | medium-weak |
+| A19 | About 74.38% of failures in investigated applications are recurring (cited from DejaVu) | tingtingwang...comprehensive, p.3 | cited measurement, second-hand; implies historical labels are valuable (con for pure label-free) | medium-weak |
+| A20 | 14 public outage events 2021-2024 with durations from 87 minutes to months (Table 1) | tingtingwang...comprehensive, p.2 | anecdotal, rows unverified (some look wrong) | very weak |
+| A21 | Cross-paper comparison is unreliable because datasets and metrics differ; the survey's own averaged performance cannot be trusted | barata2026anomaly, pp.28, 31 | authors' admission | medium (supports need for common benchmarks) |
+| A22 | Unsupervised learning is the most used anomaly detection class and graph-based methods dominate root-cause identification in 143 reviewed studies | barata2026anomaly, pp.23-26 | measured by survey counting, with flawed search terms | weak-medium |
 
 ## B. Evidence our specific gap is already addressed (con)
 | # | What exists | Source (key, page) | How close to our contribution | Consequence for us |

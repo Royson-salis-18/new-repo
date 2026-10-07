@@ -2,9 +2,12 @@
 
 | Key | Supervision | Online | Telemetry | Propagation | Forecasts failures | LLM | Datasets (open?) | Result | Overlap | Threat |
 |---|---|---|---|---|---|---|---|---|---|---|
+| barata2026anomaly | n/a (survey) | n/a | logs, traces, monitori | n/a (surveys graph-based | no (no | no | Table 9 lists datasets ( (n/a) | 117 studies per abstract (143 per Sec. 4.1.4); 86% | partial  | low |
 | li2026service | supervised (cr | claimed  | service logs, API-call | GNN (GAT + GRU/Transform | yes (h | no | proprietary, anonymized; (no (p) | P 0.94, R 0.92, accuracy 0.93, detection time 3.2  | high (ta | medium ( |
+| fu2025intelligent | n/a (survey) | n/a | metrics, logs, traces  | n/a (surveys causal and  | no (no | no (futu | Table 7 lists five publi (n/a) | survey of work published 2013 to 2024; classifies  | partial  | low |
 | pantangshixiangtanghua | label-free pre | no (offl | logs, traces, metrics  | none explicit (LLM reaso | no | yes (sum | challenge phase-one (tra (partl) | final score 50.71 for log+trace+metric; 51.27 for  | partial  | low (for |
 | sun2025interpretable | label-free at  | partly:  | traces, logs (Drain te | GNN (GraphSAGE-style GAE | no | no | D1 (210 failures, 3,714  (partl) | 30% labels: D1 A@1 0.803, A@5 0.966, Avg@5 0.898;  | high (la | high for |
 | pham2024root | mixed: causal- | no (offl | metrics only (Promethe | causal discovery (PC, FC | no | no | synthetic (CIRCA, RCD, C (yes () | no method best everywhere (abstract p.1); PC/FCI/G | partial  | low (it  |
+| tingtingwangguilinqi20 | n/a (survey) | n/a | metrics, traces, logs, | n/a (surveys dependency, | no (no | no (surv | benchmarks named: TrainT (n/a) | classifies RCA into metric-, trace-, log-, multimo | partial  | low |
 | yao2024chain | supervised (tr | no (inci | events derived from me | learned weighted event-c | no | no (BERT | Service dataset (170 inc (no) | Service: top-1 79.3%, top-3 98.8%; Business: top-1 | partial  | low (for |
 | zimingzhaozhenweiwangt | supervised (cr | no (offl | traces (topology), log | GNN (HGT) + hypergraph c | no | no (LLM  | GAIA: 1099 static traces (yes () | GAIA A@1 0.6135, A@3 0.8823, Avg@5 0.8276 vs best  | partial | low |
