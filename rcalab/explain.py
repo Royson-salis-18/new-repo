@@ -33,3 +33,20 @@ def explain(tel: Telemetry, det: Detection, res: RCAResult, window: tuple[int, i
         lines.append("Not yet failing but at cascade risk: "
                      + ", ".join(f"{s} ({r:.0%})" for s, r in at_risk[:5]) + ".")
     return "\n".join(lines)
+
+
+def suspects(tel: Telemetry, det: Detection, res: RCAResult, window: tuple[int, int],
+             top_n: int = 4) -> list[dict]:
+    """Structured version of `explain` for UIs: the same facts, as data."""
+    s0, s1 = window
+    out = []
+    top_score = res.ranking[0][1] if res.ranking else 1.0
+    for svc, score in res.ranking[:top_n]:
+        i = tel.index(svc)
+        fz = det.feature_z[s0:s1, i].max(axis=0)
+        feats = [{"name": tel.features[f], "z": float(fz[f])} for f in np.argsort(-fz)[:3] if fz[f] > 0]
+        impacted = sorted(({"service": v, "p": float(res.P[i, tel.index(v)])} for v in res.strength
+                           if v != svc and res.P[i, tel.index(v)] > 0.2), key=lambda x: -x["p"])
+        out.append({"service": svc, "score": float(score), "rel": float(score / (top_score or 1.0)),
+                    "onset_window": int(res.onset[svc]), "features": feats, "impacted": impacted})
+    return out

@@ -14,7 +14,7 @@ from fastapi.staticfiles import StaticFiles
 from rcalab import config, evaluate, synthetic
 from rcalab.cascade import cascade_risk, edge_probabilities, path_probabilities
 from rcalab.detector import detect
-from rcalab.explain import explain
+from rcalab.explain import explain, suspects
 from rcalab.rca import rank
 
 ROOT = Path(__file__).parent
@@ -52,7 +52,7 @@ def _live_data(minutes: int, z: float):
 
 @app.get("/")
 def index():
-    return FileResponse(ROOT / "static" / "index.html")
+    return FileResponse(ROOT / "static" / "index.html", headers={"Cache-Control": "no-store"})
 
 
 @app.get("/api/meta")
@@ -78,11 +78,12 @@ def state(source: str = "demo", root: str = "cart-db", hard: bool = True, z: flo
     P = path_probabilities(tel.services, probs, hops)
     risk = cascade_risk(det.a[t], P)
 
-    ranking, text = [], "Baseline period: collecting normal behaviour."
+    ranking, text, sus = [], "Baseline period: collecting normal behaviour.", []
     if t > base:
         res = rank(tel, det, (base, t + 1), lag, hops, method)
         ranking = [{"service": s, "score": float(v)} for s, v in res.ranking]
         text = explain(tel, det, res, (base, t + 1))
+        sus = suspects(tel, det, res, (base, t + 1))
     score = {r["service"]: r["score"] for r in ranking}
 
     return {
@@ -91,7 +92,9 @@ def state(source: str = "demo", root: str = "cart-db", hard: bool = True, z: flo
                    "score": score.get(s, 0.0)} for i, s in enumerate(tel.services)],
         "edges": [{"source": callee, "target": caller, "p": float(p),
                    "hot": bool(det.flags[t, tel.index(callee)])} for (callee, caller), p in probs.items()],
-        "ranking": ranking, "explanation": text,
+        "ranking": ranking, "explanation": text, "suspects": sus, "services": tel.services,
+        "heat": [[round(float(v), 2) for v in row] for row in np.minimum(det.z, 20).T],
+        "step_s": float(tel.times[1] - tel.times[0]),
         "series": [float(x) for x in np.minimum(det.z.max(axis=1), 20)],
         "z_threshold": z,
     }
