@@ -35,3 +35,10 @@ Notes: a Scopus-indexed venue is not a quality guarantee; the "not found" journa
 | realtimecont | IEEE Access | 2169-3536 | indexed (CiteScore 2025 9.3, 91st percentile, rank 31/351 General Engineering, SJR 0.884) |
 | podduturi2025microservice | Int. J. Emerging Trends in Computer Science and IT (Eureka Vision), ICCSAIML'25 | 3050-9246 | not found (0 results) |
 | shuaiyuxie...root | arXiv | n/a | not indexed, preprint |
+
+## Additions (batch 6)
+| Paper key | Venue | ISSN searched | Scopus result |
+|---|---|---|---|
+| realtimeobse | IEEE Access | 2169-3536 | indexed (see batch 5 row) |
+| costsensitiv | Transactions on Computational and Scientific Methods (Pinnacle Science Press) | 2998-8780 | not found (0 results) |
+| sheriffadepoju2023cascading | Int. J. Sci. Res. Civil Eng. | 2456-6667 | not found (as before) |
