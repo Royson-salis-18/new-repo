@@ -11,3 +11,8 @@ samples/
 config.yaml
 
 projects/
+
+litdb/pdfs/
+litdb/texts/
+litdb/reference/*.xlsx
+litdb/reference/*.csv
