@@ -1,6 +1,6 @@
 # Wiki timeline
 
-Generated 2026-10-07 16:05. Dates come from git history (created = first commit of the file, updated = latest commit).
+Generated 2026-10-07 16:09. Dates come from git history (created = first commit of the file, updated = latest commit).
 
 
 ## 1. When each page was created (oldest first)
@@ -62,13 +62,13 @@ Generated 2026-10-07 16:05. Dates come from git history (created = first commit 
 - 15:12 [Experiments behind docs/REVIEW_REPORT.md](pages/lab/experiments/README.md) (lab) · Experiments
 - 15:17 [Comparison with our work (reviewed papers only)](pages/lab/litdb/COMPARISON_MATRIX.md) (lab) · Literature
 - 15:17 [Is the problem real? Evidence ledger](pages/lab/litdb/PROBLEM_EVIDENCE.md) (lab) · Literature
-- 15:17 [Reading queue (3 not yet reviewed, 18 reviewed)](pages/lab/litdb/QUEUE.md) (lab) · Literature
+- 15:17 [Reading queue (1 not yet reviewed, 20 reviewed)](pages/lab/litdb/QUEUE.md) (lab) · Literature
 - 15:17 [litdb: the reading database](pages/lab/litdb/README.md) (lab) · Literature
 - 15:17 [Literature survey table (21 papers)](pages/lab/litdb/SURVEY_TABLE.md) (lab) · Literature
 - 15:17 [{{TITLE}}](pages/lab/litdb/tools/note_template.md) (lab) · Literature
 - 15:17 [Batch NN: <date>](pages/lab/litdb/batches/_batch_template.md) (lab) · Literature
 - 15:17 [Anomaly detection and root-cause identification in microservices: a survey](pages/lab/litdb/papers/barata2026anomaly.md) (lab) · Literature
-- 15:17 [> Reading notes written from the **full text** (`litdb/texts/bridgingtheg.txt`).](pages/lab/litdb/papers/bridgingtheg.md) (lab) · Literature
+- 15:17 [Bridging the Gap: A Systematic Framework for Agentic AI Root Cause Analysis in H](pages/lab/litdb/papers/bridgingtheg.md) (lab) · Literature
 - 15:17 [> Reading notes written from the **full text** (`litdb/texts/causalrca.txt`). Pa](pages/lab/litdb/papers/causalrca.md) (lab) · Literature
 - 15:17 [Cost-Sensitive Mamba Sequence Modeling for Fault Detection in Cloud-Native Micro](pages/lab/litdb/papers/costsensitiv.md) (lab) · Literature
 - 15:17 [Hybrid Root Cause Analysis for Partially Observable Microservices Based on Archi](pages/lab/litdb/papers/erakovic2025hybrid.md) (lab) · Literature
@@ -113,17 +113,21 @@ Generated 2026-10-07 16:05. Dates come from git history (created = first commit 
 - 16:02 [Report: Liu et al. (2024), Cost-Sensitive Mamba Sequence Modeling for Fault Dete](pages/lab/litdb/reports/costsensitiv.md) (lab) · Literature
 - 16:02 [Report: Faseeha et al. (2025), Observability in Microservices (IEEE Access)](pages/lab/litdb/reports/realtimeobse.md) (lab) · Literature
 - 16:02 [Report: Adepoju (2023), Cascading Failure Modes in Model-as-a-Service Architectu](pages/lab/litdb/reports/sheriffadepoju2023cascading.md) (lab) · Literature
-- 16:03 [Report: Vangapelli (2026), AI-Driven Root Cause Analysis In Real-Time Distribute](pages/lab/litdb/reports/theysayitsre.md) (lab) · Literature
-- 16:03 [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) (lab) · Reports and findings
+- 16:05 [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) (lab) · Reports and findings
+- 16:05 [Report: Vangapelli (2026), AI-Driven Root Cause Analysis In Real-Time Distribute](pages/lab/litdb/reports/theysayitsre.md) (lab) · Literature
+- 16:08 [Report: Maheshkar (2025), Bridging the Gap: Agentic AI Root Cause Analysis in Hy](pages/lab/litdb/reports/bridgingtheg.md) (lab) · Literature
 
 ## 2. Most recently updated (newest first, top 25)
 
-- 2026-10-07 16:03 [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) (lab)
-- 2026-10-07 16:03 [Report: Vangapelli (2026), AI-Driven Root Cause Analysis In Real-Time Distribute](pages/lab/litdb/reports/theysayitsre.md) (lab)
-- 2026-10-07 16:02 [Comparison with our work (reviewed papers only)](pages/lab/litdb/COMPARISON_MATRIX.md) (lab)
+- 2026-10-07 16:08 [Comparison with our work (reviewed papers only)](pages/lab/litdb/COMPARISON_MATRIX.md) (lab)
+- 2026-10-07 16:08 [Reading queue (1 not yet reviewed, 20 reviewed)](pages/lab/litdb/QUEUE.md) (lab)
+- 2026-10-07 16:08 [Literature survey table (21 papers)](pages/lab/litdb/SURVEY_TABLE.md) (lab)
+- 2026-10-07 16:08 [Report: Maheshkar (2025), Bridging the Gap: Agentic AI Root Cause Analysis in Hy](pages/lab/litdb/reports/bridgingtheg.md) (lab)
+- 2026-10-07 16:08 [Bridging the Gap: A Systematic Framework for Agentic AI Root Cause Analysis in H](pages/lab/litdb/papers/bridgingtheg.md) (lab)
+- 2026-10-07 16:05 [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) (lab)
+- 2026-10-07 16:05 [Report: Vangapelli (2026), AI-Driven Root Cause Analysis In Real-Time Distribute](pages/lab/litdb/reports/theysayitsre.md) (lab)
+- 2026-10-07 16:05 [AI-Driven Root Cause Analysis In Real-Time Distributed Systems](pages/lab/litdb/papers/theysayitsre.md) (lab)
 - 2026-10-07 16:02 [Is the problem real? Evidence ledger](pages/lab/litdb/PROBLEM_EVIDENCE.md) (lab)
-- 2026-10-07 16:02 [Reading queue (3 not yet reviewed, 18 reviewed)](pages/lab/litdb/QUEUE.md) (lab)
-- 2026-10-07 16:02 [Literature survey table (21 papers)](pages/lab/litdb/SURVEY_TABLE.md) (lab)
 - 2026-10-07 16:02 [Batch 06: 2026-10-07](pages/lab/litdb/batches/batch-06.md) (lab)
 - 2026-10-07 16:02 [Report: Liu et al. (2024), Cost-Sensitive Mamba Sequence Modeling for Fault Dete](pages/lab/litdb/reports/costsensitiv.md) (lab)
 - 2026-10-07 16:02 [Report: Faseeha et al. (2025), Observability in Microservices (IEEE Access)](pages/lab/litdb/reports/realtimeobse.md) (lab)
@@ -140,15 +144,13 @@ Generated 2026-10-07 16:05. Dates come from git history (created = first commit 
 - 2026-10-07 15:57 [Real-Time Context-Aware Microservice Architecture for Predictive Analytics and S](pages/lab/litdb/papers/realtimecont.md) (lab)
 - 2026-10-07 15:57 [Root Cause Analysis for Microservice Systems via Cascaded Conditional Learning w](pages/lab/litdb/papers/shuaiyuxiehanbinhejianwangbingli2025root.md) (lab)
 - 2026-10-07 15:52 [Batch 04: 2026-10-07](pages/lab/litdb/batches/batch-04.md) (lab)
-- 2026-10-07 15:52 [Report: Erakovic and Pahl (2025), Hybrid Root Cause Analysis for Partially Obser](pages/lab/litdb/reports/erakovic2025hybrid.md) (lab)
-- 2026-10-07 15:52 [Report: Zhang et al. (2025), Graph Neural AI with Temporal Dynamics for Anomaly ](pages/lab/litdb/reports/graphneurala.md) (lab)
-- 2026-10-07 15:52 [Report: Wang et al. (2024), Few-Shot Cross-System Anomaly Trace Classification (](pages/lab/litdb/reports/yuqingwangmikavmntylsergedemeyermutlubeyazitjoannakisaakyejessenyyssl2024cross.md) (lab)
 
 ## 3. Work history (commits of both repositories, newest first)
 
 
 ### mapper
 
+- 2026-10-07 16:07 `8971b9b` auto-commit: 1 file(s) 2026-10-07 16:07
 - 2026-10-07 15:37 `81eb2ca` auto-commit: 10 file(s) 2026-10-07 15:37
 - 2026-09-29 22:11 `b051d03` latest update with all the docs
 - 2026-09-24 19:27 `bc05864` docs: one document for the whole system, plain language then detail
@@ -197,6 +199,8 @@ Generated 2026-10-07 16:05. Dates come from git history (created = first commit 
 
 ### lab
 
+- 2026-10-07 16:08 `157db89` litdb batch 7 (partial): full reads of Vangapelli and Maheshkar (AURORA); notes and reports
+- 2026-10-07 16:05 `f14c021` Calibrated detector, self-time feature, cross-incident edge learner, replay/topology tests, wiki hub, fixes re
 - 2026-10-07 16:02 `987a2ac` litdb batch 6: full reads of Faseeha observability survey, cost-sensitive Mamba, MaaS cascading failures; repo
 - 2026-10-07 15:57 `152d27d` litdb batch 5: full reads of CCLH hypergraph RCA, Ortiz et al., Podduturi; reports, batch doc, evidence rows
 - 2026-10-07 15:52 `01af9ab` litdb batch 4: full reads of few-shot trace classification, Graph Neural AI, Hybrid RCA (Erakovic and Pahl); r

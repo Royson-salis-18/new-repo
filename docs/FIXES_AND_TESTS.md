@@ -114,3 +114,18 @@ Per diagnosis run (T=300 windows, 9 features): 50 services detect 0.13 s / rank 
 - Confidence intervals for sections 5-6; more incidents per cell.
 - Public benchmarks (RCAEval) and strong baselines (BARO, CIRCA, RCD): pending your download approval.
 - microservice-mapper (the product) has not been re-tested on larger apps yet; see the follow-up note.
+
+## 11. microservice-mapper on a larger app (Death Star social network, 27 containers, EC2 c7i-flex.large)
+Test: updated the `death-star` target IP through the mapper's own API, waited ~45 s, then ran the mapper's built-in traffic generator (10 users, 90 s, moderate profile, read endpoints) and re-read the graph.
+
+| | idle | after 90 s of load |
+|---|---|---|
+| nodes discovered | 27 of 27 | 27 |
+| live metrics | 27 of 27 | 27 |
+| edges | 24 | **37** |
+| declared in compose only | 14 | 14 |
+| declared and observed | 5 | 5 |
+| observed only (undeclared dependency) | 5 | **18** |
+| status | all healthy | all healthy (top CPU 0.7%, nginx-thrift) |
+
+Reading: discovery works on a 27-container app, and the observed-edge count grew from 10 to 23 under load, so **an idle app understates the topology**. 18 runtime dependencies are not in the compose file. Not measured: whether those observed edges are correct (no ground-truth call graph was compared), how the hand-weighted RCA score behaves (no fault was injected, since stopping a container on your host needs your approval), and behaviour on the small t3.micro Sock Shop host, where a single `docker ps` took 30 s.

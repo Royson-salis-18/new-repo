@@ -1,5 +1,3 @@
-# Reading queue (3 not yet reviewed, 18 reviewed)
+# Reading queue (1 not yet reviewed, 20 reviewed)
 
-- [extracted] bridgingtheg (None): -
 - [extracted] causalrca (None): -
-- [extracted] theysayitsre (None): -

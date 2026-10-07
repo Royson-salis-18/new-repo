@@ -1,6 +1,6 @@
 # Wiki index by topic
 
-86 pages from 2 repositories, generated 2026-10-07 16:05. Use `TIMELINE.md` for time order and `TAGS.md` for what the pages talk about.
+87 pages from 2 repositories, generated 2026-10-07 16:09. Use `TIMELINE.md` for time order and `TAGS.md` for what the pages talk about.
 
 **Start here:** [`pages/lab/docs/REVIEW_REPORT.md`](pages/lab/docs/REVIEW_REPORT.md) (honest review) · [`pages/lab/docs/FIXES_AND_TESTS.md`](pages/lab/docs/FIXES_AND_TESTS.md) (latest tests) · [`pages/lab/RESEARCH.md`](pages/lab/RESEARCH.md) (protocol) · [`pages/mapper/WIKI.md`](pages/mapper/WIKI.md) (the product's own wiki)
 
@@ -58,7 +58,7 @@
 
 | Page | What it says | Created | Updated | Words | Tags |
 |---|---|---|---|---|---|
-| [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) | Scope: the problems found in REVIEWREPORT.md, what we fixed, what we tested on larger applications, and what is still not solved. | 2026-10-07 | 2026-10-07 | 1723 | cascading failure / propagation, traces / Jaeger / OpenTelemetry, evaluation / statistics |
+| [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) | Scope: the problems found in REVIEWREPORT.md, what we fixed, what we tested on larger applications, and what is still not solved. | 2026-10-07 | 2026-10-07 | 1917 | cascading failure / propagation, traces / Jaeger / OpenTelemetry, evaluation / statistics |
 | [Honest review of the project: RCA + cascading-failure risk for microse](pages/lab/docs/REVIEW_REPORT.md) | Prepared 2026-10-07 for Royson Salis and team (Bharath, Dhanush, Anish). | 2026-10-07 | 2026-10-07 | 5975 | cascading failure / propagation, benchmark / dataset, literature / papers |
 
 ## Experiments
@@ -71,11 +71,11 @@
 
 | Page | What it says | Created | Updated | Words | Tags |
 |---|---|---|---|---|---|
-| [Comparison with our work (reviewed papers only)](pages/lab/litdb/COMPARISON_MATRIX.md) |  | 2026-10-07 | 2026-10-07 | 605 | traces / Jaeger / OpenTelemetry, logs, metrics / Prometheus |
+| [Comparison with our work (reviewed papers only)](pages/lab/litdb/COMPARISON_MATRIX.md) |  | 2026-10-07 | 2026-10-07 | 668 | traces / Jaeger / OpenTelemetry, logs, metrics / Prometheus |
 | [Is the problem real? Evidence ledger](pages/lab/litdb/PROBLEM_EVIDENCE.md) | Purpose: keep an honest record of what the literature actually shows about the problem we claim to solve, so the paper's motivatio | 2026-10-07 | 2026-10-07 | 1632 | cascading failure / propagation, root cause analysis (RCA), benchmark / dataset |
-| [Reading queue (3 not yet reviewed, 18 reviewed)](pages/lab/litdb/QUEUE.md) |  | 2026-10-07 | 2026-10-07 | 17 |  |
+| [Reading queue (1 not yet reviewed, 20 reviewed)](pages/lab/litdb/QUEUE.md) |  | 2026-10-07 | 2026-10-07 | 11 |  |
 | [litdb: the reading database](pages/lab/litdb/README.md) | One note per paper, read from the full text, with a structured header that builds the survey table, the comparison matrix and the  | 2026-10-07 | 2026-10-07 | 590 | literature / papers, root cause analysis (RCA), limitations / threats |
-| [Literature survey table (21 papers)](pages/lab/litdb/SURVEY_TABLE.md) | Generated from litdb/papers/.md. readstatus: extracted < read-in-full < reviewed. Scopus status is only as good as the list in lit | 2026-10-07 | 2026-10-07 | 813 | literature / papers, root cause analysis (RCA), cascading failure / propagation |
+| [Literature survey table (21 papers)](pages/lab/litdb/SURVEY_TABLE.md) | Generated from litdb/papers/.md. readstatus: extracted < read-in-full < reviewed. Scopus status is only as good as the list in lit | 2026-10-07 | 2026-10-07 | 882 | literature / papers, root cause analysis (RCA), cascading failure / propagation |
 | [{{TITLE}}](pages/lab/litdb/tools/note_template.md) | - Why they say it matters (evidence offered? incident data? industrial numbers?): | 2026-10-07 | 2026-10-07 | 394 | literature / papers |
 
 ## Literature: batch comparisons
@@ -95,6 +95,7 @@
 | Page | What it says | Created | Updated | Words | Tags |
 |---|---|---|---|---|---|
 | [Report: Barata et al. (2026), Anomaly detection and root-cause identif](pages/lab/litdb/reports/barata2026anomaly.md) | Key barata2026anomaly. Note: litdb/papers/barata2026anomaly.md. Page numbers are PDF pages (42 pages). | 2026-10-07 | 2026-10-07 | 871 | benchmark / dataset, literature / papers, anomaly detection |
+| [Report: Maheshkar (2025), Bridging the Gap: Agentic AI Root Cause Anal](pages/lab/litdb/reports/bridgingtheg.md) | Key bridgingtheg. Note: litdb/papers/bridgingtheg.md. Page numbers are PDF pages (18 pages; printed pp.228-245). | 2026-10-07 | 2026-10-07 | 980 | LLM / agents, root cause analysis (RCA), literature / papers |
 | [Report: Liu et al. (2024), Cost-Sensitive Mamba Sequence Modeling for ](pages/lab/litdb/reports/costsensitiv.md) | Key costsensitiv. Note: litdb/papers/costsensitiv.md. Page numbers are PDF pages. | 2026-10-07 | 2026-10-07 | 601 | anomaly detection, benchmark / dataset, literature / papers |
 | [Report: Erakovic and Pahl (2025), Hybrid Root Cause Analysis for Parti](pages/lab/litdb/reports/erakovic2025hybrid.md) | Key erakovic2025hybrid. Note: litdb/papers/erakovic2025hybrid.md. Page numbers are PDF pages (CLOSER pp.255-263). | 2026-10-07 | 2026-10-07 | 811 | traces / Jaeger / OpenTelemetry, architecture / data flow, literature / papers |
 | [Report: Fu et al. (2025), Intelligent Root Cause Localization in Micro](pages/lab/litdb/reports/fu2025intelligent.md) | Key fu2025intelligent. Note: litdb/papers/fu2025intelligent.md. Page numbers are PDF pages. | 2026-10-07 | 2026-10-07 | 782 | benchmark / dataset, literature / papers, root cause analysis (RCA) |
@@ -119,7 +120,7 @@
 | Page | What it says | Created | Updated | Words | Tags |
 |---|---|---|---|---|---|
 | [Anomaly detection and root-cause identification in microservices: a su](pages/lab/litdb/papers/barata2026anomaly.md) | A PRISMA-style survey of anomaly detection and root-cause identification in microservice systems. It describes data collection (lo | 2026-10-07 | 2026-10-07 | 1533 | benchmark / dataset, literature / papers, metrics / Prometheus |
-| [> Reading notes written from the **full text** (`litdb/texts/bridgingt](pages/lab/litdb/papers/bridgingtheg.md) | - Why they say it matters (evidence offered? incident data? industrial numbers?): | 2026-10-07 | 2026-10-07 | 393 | literature / papers |
+| [Bridging the Gap: A Systematic Framework for Agentic AI Root Cause Ana](pages/lab/litdb/papers/bridgingtheg.md) | A paper by a bank vice president presents AURORA, a multi-agent framework in which a LangChain ReAct "supervisor" calls specialist | 2026-10-07 | 2026-10-07 | 1850 | LLM / agents, literature / papers, root cause analysis (RCA) |
 | [> Reading notes written from the **full text** (`litdb/texts/causalrca](pages/lab/litdb/papers/causalrca.md) | - Why they say it matters (evidence offered? incident data? industrial numbers?): | 2026-10-07 | 2026-10-07 | 393 | literature / papers |
 | [Cost-Sensitive Mamba Sequence Modeling for Fault Detection in Cloud-Na](pages/lab/litdb/papers/costsensitiv.md) | A short paper proposes a Mamba (state-space) sequence model that classifies sliding windows of multivariate metrics as anomalous o | 2026-10-07 | 2026-10-07 | 1124 | anomaly detection, metrics / Prometheus, literature / papers |
 | [Hybrid Root Cause Analysis for Partially Observable Microservices Base](pages/lab/litdb/papers/erakovic2025hybrid.md) | A short conference paper proposes a rule-based RCA for trace-only (partially observable) microservice systems. It mines the archit | 2026-10-07 | 2026-10-07 | 1274 | traces / Jaeger / OpenTelemetry, architecture / data flow, benchmark / dataset |
@@ -162,5 +163,5 @@
 | `docs/literature/literature_matrix.csv` | 14 KB | 2026-10-07 | literature tables |
 | `docs/literature/team_sheet.csv` | 2 KB | 2026-10-07 | literature tables |
 | `docs/literature/references.bib` | 24 KB | 2026-10-07 | bibliography (metadata verified via Crossref/OpenAlex) |
-| `litdb/papers.csv` | 29 KB | 2026-10-07 | survey table as CSV |
+| `litdb/papers.csv` | 32 KB | 2026-10-07 | survey table as CSV |
 | `results/synthetic_sanity_hard/summary.json` | 5 KB | 2026-10-07 | method-comparison runs |

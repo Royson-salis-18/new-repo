@@ -3,7 +3,7 @@
 Tags are derived from what is written inside each page (keyword counts), not from file names. A page appears under a tag when the topic is mentioned at least 4 times or in its title.
 
 
-## root cause analysis (RCA) (41)
+## root cause analysis (RCA) (43)
 
 - [Batch 01: 2026-10-07](pages/lab/litdb/batches/batch-01.md) · Literature · 2026-10-07
 - [Batch 02: 2026-10-07](pages/lab/litdb/batches/batch-02.md) · Literature · 2026-10-07
@@ -15,6 +15,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [litdb: the reading database](pages/lab/litdb/README.md) · Literature · 2026-10-07
 - [Literature survey table (21 papers)](pages/lab/litdb/SURVEY_TABLE.md) · Literature · 2026-10-07
 - [Report: Barata et al. (2026), Anomaly detection and root-cause identification in](pages/lab/litdb/reports/barata2026anomaly.md) · Literature · 2026-10-07
+- [Report: Maheshkar (2025), Bridging the Gap: Agentic AI Root Cause Analysis in Hy](pages/lab/litdb/reports/bridgingtheg.md) · Literature · 2026-10-07
 - [Report: Erakovic and Pahl (2025), Hybrid Root Cause Analysis for Partially Obser](pages/lab/litdb/reports/erakovic2025hybrid.md) · Literature · 2026-10-07
 - [Report: Fu et al. (2025), Intelligent Root Cause Localization in MicroService Sy](pages/lab/litdb/reports/fu2025intelligent.md) · Literature · 2026-10-07
 - [Report: Zhang et al. (2025), Graph Neural AI with Temporal Dynamics for Anomaly ](pages/lab/litdb/reports/graphneurala.md) · Literature · 2026-10-07
@@ -26,6 +27,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Report: Wang and Qi (2024), A Comprehensive Survey on Root Cause Analysis in (Mi](pages/lab/litdb/reports/tingtingwangguilinqi2024comprehensive.md) · Literature · 2026-10-07
 - [Report: Yao et al. (2024), Chain-of-Event (CoE)](pages/lab/litdb/reports/yao2024chain.md) · Literature · 2026-10-07
 - [Anomaly detection and root-cause identification in microservices: a survey](pages/lab/litdb/papers/barata2026anomaly.md) · Literature · 2026-10-07
+- [Bridging the Gap: A Systematic Framework for Agentic AI Root Cause Analysis in H](pages/lab/litdb/papers/bridgingtheg.md) · Literature · 2026-10-07
 - [Hybrid Root Cause Analysis for Partially Observable Microservices Based on Archi](pages/lab/litdb/papers/erakovic2025hybrid.md) · Literature · 2026-10-07
 - [Intelligent Root Cause Localization in MicroService Systems: A Survey and New Pe](pages/lab/litdb/papers/fu2025intelligent.md) · Literature · 2026-10-07
 - [Graph Neural AI with Temporal Dynamics for Comprehensive Anomaly Detection in Mi](pages/lab/litdb/papers/graphneurala.md) · Literature · 2026-10-07
@@ -47,7 +49,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) · Reports and findings · 2026-10-07
 - [Honest review of the project: RCA + cascading-failure risk for microservices](pages/lab/docs/REVIEW_REPORT.md) · Reports and findings · 2026-10-07
 
-## cascading failure / propagation (28)
+## cascading failure / propagation (29)
 
 - [Batch 01: 2026-10-07](pages/lab/litdb/batches/batch-01.md) · Literature · 2026-10-07
 - [Batch 03: 2026-10-07](pages/lab/litdb/batches/batch-03.md) · Literature · 2026-10-07
@@ -62,6 +64,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Report: Sun et al. (2025), DeepHunt: interpretable failure localization with a g](pages/lab/litdb/reports/sun2025interpretable.md) · Literature · 2026-10-07
 - [Report: Wang and Qi (2024), A Comprehensive Survey on Root Cause Analysis in (Mi](pages/lab/litdb/reports/tingtingwangguilinqi2024comprehensive.md) · Literature · 2026-10-07
 - [Anomaly detection and root-cause identification in microservices: a survey](pages/lab/litdb/papers/barata2026anomaly.md) · Literature · 2026-10-07
+- [Bridging the Gap: A Systematic Framework for Agentic AI Root Cause Analysis in H](pages/lab/litdb/papers/bridgingtheg.md) · Literature · 2026-10-07
 - [Cost-Sensitive Mamba Sequence Modeling for Fault Detection in Cloud-Native Micro](pages/lab/litdb/papers/costsensitiv.md) · Literature · 2026-10-07
 - [Intelligent Root Cause Localization in MicroService Systems: A Survey and New Pe](pages/lab/litdb/papers/fu2025intelligent.md) · Literature · 2026-10-07
 - [Service dependency modeling and failure propagation prediction in distributed sy](pages/lab/litdb/papers/li2026service.md) · Literature · 2026-10-07
@@ -180,11 +183,13 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [rca-lab](pages/lab/README.md) · rca-lab · 2026-10-07
 - [Research protocol](pages/lab/RESEARCH.md) · rca-lab · 2026-10-06
 
-## logs (20)
+## logs (22)
 
 - [Comparison with our work (reviewed papers only)](pages/lab/litdb/COMPARISON_MATRIX.md) · Literature · 2026-10-07
+- [Report: Maheshkar (2025), Bridging the Gap: Agentic AI Root Cause Analysis in Hy](pages/lab/litdb/reports/bridgingtheg.md) · Literature · 2026-10-07
 - [Report: Tang et al. (2025), MicroRCA-Agent](pages/lab/litdb/reports/pantangshixiangtanghuanqipuzhiqingmiaozhixingwang2025microrca.md) · Literature · 2026-10-07
 - [Report: Zhao, Wang et al. (2024/2025), CHASE](pages/lab/litdb/reports/zimingzhaozhenweiwangtiehuazhangzhishushenhaidongzhenleixingjunmagaoweixuzhijundingyunyang2024chase.md) · Literature · 2026-10-07
+- [Bridging the Gap: A Systematic Framework for Agentic AI Root Cause Analysis in H](pages/lab/litdb/papers/bridgingtheg.md) · Literature · 2026-10-07
 - [MicroRCA-Agent: Microservice Root Cause Analysis Method Based on Large Language ](pages/lab/litdb/papers/pantangshixiangtanghuanqipuzhiqingmiaozhixingwang2025microrca.md) · Literature · 2026-10-07
 - [Observability in Microservices: An In-Depth Exploration of Frameworks, Challenge](pages/lab/litdb/papers/realtimeobse.md) · Literature · 2026-10-07
 - [Root Cause Analysis for Microservice Systems via Cascaded Conditional Learning w](pages/lab/litdb/papers/shuaiyuxiehanbinhejianwangbingli2025root.md) · Literature · 2026-10-07
@@ -203,7 +208,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Microservice Mapper — Wiki](pages/mapper/wiki/README.md) · Microservice Mapper · 2026-09-24
 - [rca-lab](pages/lab/README.md) · rca-lab · 2026-10-07
 
-## SSH / EC2 / Docker (22)
+## SSH / EC2 / Docker (23)
 
 - [Batch 05: 2026-10-07](pages/lab/litdb/batches/batch-05.md) · Literature · 2026-10-07
 - [Microservice Mapper | Comprehensive Technical Specification](pages/mapper/PROJECT_REFERENCE.html) · Microservice Mapper · 2026-09-17
@@ -226,6 +231,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Change Log and Rationale](pages/mapper/wiki/16-change-log-and-rationale.md) · Microservice Mapper · 2026-09-18
 - [18 — Telemetry tiers: the plan](pages/mapper/wiki/18-telemetry-tiers-plan.md) · Microservice Mapper · 2026-09-19
 - [19 — How it all works](pages/mapper/wiki/19-how-it-all-works.md) · Microservice Mapper · 2026-09-24
+- [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) · Reports and findings · 2026-10-07
 - [rca-lab](pages/lab/README.md) · rca-lab · 2026-10-07
 
 ## dashboard / UI (11)
@@ -242,10 +248,9 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [19 — How it all works](pages/mapper/wiki/19-how-it-all-works.md) · Microservice Mapper · 2026-09-24
 - [Microservice Mapper — Wiki](pages/mapper/wiki/README.md) · Microservice Mapper · 2026-09-24
 
-## machine learning / GNN (18)
+## machine learning / GNN (17)
 
 - [Batch 04: 2026-10-07](pages/lab/litdb/batches/batch-04.md) · Literature · 2026-10-07
-- [Comparison with our work (reviewed papers only)](pages/lab/litdb/COMPARISON_MATRIX.md) · Literature · 2026-10-07
 - [Report: Zhang et al. (2025), Graph Neural AI with Temporal Dynamics for Anomaly ](pages/lab/litdb/reports/graphneurala.md) · Literature · 2026-10-07
 - [Report: Li (2026), GNN service dependency modeling and failure propagation predi](pages/lab/litdb/reports/li2026service.md) · Literature · 2026-10-07
 - [Service dependency modeling and failure propagation prediction in distributed sy](pages/lab/litdb/papers/li2026service.md) · Literature · 2026-10-07
@@ -263,15 +268,18 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [19 — How it all works](pages/mapper/wiki/19-how-it-all-works.md) · Microservice Mapper · 2026-09-24
 - [Microservice Mapper — Wiki](pages/mapper/wiki/README.md) · Microservice Mapper · 2026-09-24
 
-## LLM / agents (5)
+## LLM / agents (8)
 
 - [Batch 02: 2026-10-07](pages/lab/litdb/batches/batch-02.md) · Literature · 2026-10-07
+- [Comparison with our work (reviewed papers only)](pages/lab/litdb/COMPARISON_MATRIX.md) · Literature · 2026-10-07
+- [Report: Maheshkar (2025), Bridging the Gap: Agentic AI Root Cause Analysis in Hy](pages/lab/litdb/reports/bridgingtheg.md) · Literature · 2026-10-07
 - [Report: Tang et al. (2025), MicroRCA-Agent](pages/lab/litdb/reports/pantangshixiangtanghuanqipuzhiqingmiaozhixingwang2025microrca.md) · Literature · 2026-10-07
 - [Report: Wang and Qi (2024), A Comprehensive Survey on Root Cause Analysis in (Mi](pages/lab/litdb/reports/tingtingwangguilinqi2024comprehensive.md) · Literature · 2026-10-07
+- [Bridging the Gap: A Systematic Framework for Agentic AI Root Cause Analysis in H](pages/lab/litdb/papers/bridgingtheg.md) · Literature · 2026-10-07
 - [MicroRCA-Agent: Microservice Root Cause Analysis Method Based on Large Language ](pages/lab/litdb/papers/pantangshixiangtanghuanqipuzhiqingmiaozhixingwang2025microrca.md) · Literature · 2026-10-07
 - [A Comprehensive Survey on Root Cause Analysis in (Micro) Services: Methodologies](pages/lab/litdb/papers/tingtingwangguilinqi2024comprehensive.md) · Literature · 2026-10-07
 
-## benchmark / dataset (32)
+## benchmark / dataset (33)
 
 - [Batch 01: 2026-10-07](pages/lab/litdb/batches/batch-01.md) · Literature · 2026-10-07
 - [Batch 02: 2026-10-07](pages/lab/litdb/batches/batch-02.md) · Literature · 2026-10-07
@@ -282,6 +290,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Comparison with our work (reviewed papers only)](pages/lab/litdb/COMPARISON_MATRIX.md) · Literature · 2026-10-07
 - [Is the problem real? Evidence ledger](pages/lab/litdb/PROBLEM_EVIDENCE.md) · Literature · 2026-10-07
 - [Report: Barata et al. (2026), Anomaly detection and root-cause identification in](pages/lab/litdb/reports/barata2026anomaly.md) · Literature · 2026-10-07
+- [Report: Maheshkar (2025), Bridging the Gap: Agentic AI Root Cause Analysis in Hy](pages/lab/litdb/reports/bridgingtheg.md) · Literature · 2026-10-07
 - [Report: Liu et al. (2024), Cost-Sensitive Mamba Sequence Modeling for Fault Dete](pages/lab/litdb/reports/costsensitiv.md) · Literature · 2026-10-07
 - [Report: Erakovic and Pahl (2025), Hybrid Root Cause Analysis for Partially Obser](pages/lab/litdb/reports/erakovic2025hybrid.md) · Literature · 2026-10-07
 - [Report: Fu et al. (2025), Intelligent Root Cause Localization in MicroService Sy](pages/lab/litdb/reports/fu2025intelligent.md) · Literature · 2026-10-07
@@ -320,7 +329,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Honest review of the project: RCA + cascading-failure risk for microservices](pages/lab/docs/REVIEW_REPORT.md) · Reports and findings · 2026-10-07
 - [Research protocol](pages/lab/RESEARCH.md) · rca-lab · 2026-10-06
 
-## literature / papers (46)
+## literature / papers (47)
 
 - [Batch NN: <date>](pages/lab/litdb/batches/_batch_template.md) · Literature · 2026-10-07
 - [Batch 01: 2026-10-07](pages/lab/litdb/batches/batch-01.md) · Literature · 2026-10-07
@@ -335,6 +344,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Literature survey table (21 papers)](pages/lab/litdb/SURVEY_TABLE.md) · Literature · 2026-10-07
 - [{{TITLE}}](pages/lab/litdb/tools/note_template.md) · Literature · 2026-10-07
 - [Report: Barata et al. (2026), Anomaly detection and root-cause identification in](pages/lab/litdb/reports/barata2026anomaly.md) · Literature · 2026-10-07
+- [Report: Maheshkar (2025), Bridging the Gap: Agentic AI Root Cause Analysis in Hy](pages/lab/litdb/reports/bridgingtheg.md) · Literature · 2026-10-07
 - [Report: Liu et al. (2024), Cost-Sensitive Mamba Sequence Modeling for Fault Dete](pages/lab/litdb/reports/costsensitiv.md) · Literature · 2026-10-07
 - [Report: Erakovic and Pahl (2025), Hybrid Root Cause Analysis for Partially Obser](pages/lab/litdb/reports/erakovic2025hybrid.md) · Literature · 2026-10-07
 - [Report: Fu et al. (2025), Intelligent Root Cause Localization in MicroService Sy](pages/lab/litdb/reports/fu2025intelligent.md) · Literature · 2026-10-07
@@ -349,7 +359,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Report: Yao et al. (2024), Chain-of-Event (CoE)](pages/lab/litdb/reports/yao2024chain.md) · Literature · 2026-10-07
 - [Report: Wang et al. (2024), Few-Shot Cross-System Anomaly Trace Classification (](pages/lab/litdb/reports/yuqingwangmikavmntylsergedemeyermutlubeyazitjoannakisaakyejessenyyssl2024cross.md) · Literature · 2026-10-07
 - [Anomaly detection and root-cause identification in microservices: a survey](pages/lab/litdb/papers/barata2026anomaly.md) · Literature · 2026-10-07
-- [> Reading notes written from the **full text** (`litdb/texts/bridgingtheg.txt`).](pages/lab/litdb/papers/bridgingtheg.md) · Literature · 2026-10-07
+- [Bridging the Gap: A Systematic Framework for Agentic AI Root Cause Analysis in H](pages/lab/litdb/papers/bridgingtheg.md) · Literature · 2026-10-07
 - [> Reading notes written from the **full text** (`litdb/texts/causalrca.txt`). Pa](pages/lab/litdb/papers/causalrca.md) · Literature · 2026-10-07
 - [Cost-Sensitive Mamba Sequence Modeling for Fault Detection in Cloud-Native Micro](pages/lab/litdb/papers/costsensitiv.md) · Literature · 2026-10-07
 - [Hybrid Root Cause Analysis for Partially Observable Microservices Based on Archi](pages/lab/litdb/papers/erakovic2025hybrid.md) · Literature · 2026-10-07
@@ -369,13 +379,14 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Scopus venue checks (manual, via the public Scopus "Sources" preview, https://ww](pages/lab/litdb/reference/scopus_checks.md) · Literature · 2026-10-07
 - [Honest review of the project: RCA + cascading-failure risk for microservices](pages/lab/docs/REVIEW_REPORT.md) · Reports and findings · 2026-10-07
 
-## limitations / threats (5)
+## limitations / threats (6)
 
 - [Batch 02: 2026-10-07](pages/lab/litdb/batches/batch-02.md) · Literature · 2026-10-07
 - [litdb: the reading database](pages/lab/litdb/README.md) · Literature · 2026-10-07
+- [Literature survey table (21 papers)](pages/lab/litdb/SURVEY_TABLE.md) · Literature · 2026-10-07
+- [Report: Maheshkar (2025), Bridging the Gap: Agentic AI Root Cause Analysis in Hy](pages/lab/litdb/reports/bridgingtheg.md) · Literature · 2026-10-07
 - [Report: Pham, Ha, Zhang (2024), RCA for microservices based on causal inference:](pages/lab/litdb/reports/pham2024root.md) · Literature · 2026-10-07
 - [Scopus venue checks (manual, via the public Scopus "Sources" preview, https://ww](pages/lab/litdb/reference/scopus_checks.md) · Literature · 2026-10-07
-- [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) · Reports and findings · 2026-10-07
 
 ## architecture / data flow (19)
 
@@ -423,10 +434,11 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Microservice Mapper — Wiki](pages/mapper/wiki/README.md) · Microservice Mapper · 2026-09-24
 - [rca-lab](pages/lab/README.md) · rca-lab · 2026-10-07
 
-## troubleshooting (12)
+## troubleshooting (13)
 
 - [Report: Li (2026), GNN service dependency modeling and failure propagation predi](pages/lab/litdb/reports/li2026service.md) · Literature · 2026-10-07
 - [Report: Sun et al. (2025), DeepHunt: interpretable failure localization with a g](pages/lab/litdb/reports/sun2025interpretable.md) · Literature · 2026-10-07
+- [Bridging the Gap: A Systematic Framework for Agentic AI Root Cause Analysis in H](pages/lab/litdb/papers/bridgingtheg.md) · Literature · 2026-10-07
 - [Hybrid Root Cause Analysis for Partially Observable Microservices Based on Archi](pages/lab/litdb/papers/erakovic2025hybrid.md) · Literature · 2026-10-07
 - [Service dependency modeling and failure propagation prediction in distributed sy](pages/lab/litdb/papers/li2026service.md) · Literature · 2026-10-07
 - [Interpretable Failure Localization for Microservice Systems Based on Graph Autoe](pages/lab/litdb/papers/sun2025interpretable.md) · Literature · 2026-10-07
