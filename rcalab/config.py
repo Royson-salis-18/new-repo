@@ -14,13 +14,23 @@ def load(path: str | Path = "config.yaml") -> dict:
         return yaml.safe_load(f)
 
 
-def missing(cfg: dict, prefix: str = "") -> list[str]:
-    """Dotted paths of every value still set to REQUIRED."""
+def missing(cfg: dict) -> list[str]:
+    """Dotted paths of every REQUIRED value that the chosen source.mode actually needs."""
+    mode = (cfg.get("source") or {}).get("mode", "tools")
+    keys = _missing(cfg)
+    if mode == "tools":
+        keys = [k for k in keys if not k.startswith("ssh.")]
+    elif mode == "ssh":
+        keys = [k for k in keys if not k.startswith("sources.")]
+    return keys
+
+
+def _missing(cfg: dict, prefix: str = "") -> list[str]:
     out = []
     for k, v in cfg.items():
         p = f"{prefix}{k}"
         if isinstance(v, dict):
-            out += missing(v, p + ".")
+            out += _missing(v, p + ".")
         elif v == REQUIRED:
             out.append(p)
     return out

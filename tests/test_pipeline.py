@@ -58,14 +58,25 @@ def test_explanation_names_root_cause_and_roundtrip(tmp_path):
 
 def test_missing_config_values_detected():
     gaps = config.missing(CFG)
-    assert "sources.prometheus.url" in gaps and "system.name" in gaps
+    assert "sources.jaeger.url" in gaps and "system.name" in gaps
 
 
-def test_app_is_read_only_no_ssh_or_shell():
-    """The app may only read via observability HTTP APIs: no SSH, no command execution."""
+def test_no_process_execution_and_ssh_is_confined_and_allowlisted():
+    """No local shell/process execution anywhere. Remote access exists only in sources/ssh.py, through a
+    single execution point that is only ever called with allowlisted, read-only commands."""
     import pathlib, re
-    banned = re.compile(r"\b(subprocess|paramiko|asyncssh|fabric|pexpect|os\.system|os\.popen|Popen)\b"
-                        r"|import\s+ssh|\bssh2?\b", re.I)
+    proc = re.compile(r"\b(subprocess|os\.system|os\.popen|Popen|pexpect)\b|shell\s*=\s*True")
+    # third-party SSH libraries only (our own `from .sources import ssh` is the allowed module itself)
+    ssh_libs = re.compile(r"\b(paramiko|asyncssh|fabric)\b|^\s*import\s+ssh2?\b", re.M)
     for f in pathlib.Path("rcalab").rglob("*.py"):
-        hit = banned.search(f.read_text(encoding="utf-8"))
-        assert not hit, f"{f}: forbidden capability '{hit.group(0)}'"
+        text = f.read_text(encoding="utf-8")
+        assert not proc.search(text), f"{f}: process execution is forbidden"
+        if f.as_posix() != "rcalab/sources/ssh.py":
+            assert not ssh_libs.search(text), f"{f}: SSH is only allowed in rcalab/sources/ssh.py"
+
+    src = pathlib.Path("rcalab/sources/ssh.py").read_text(encoding="utf-8")
+    assert src.count(".exec_command(") == 1, "exactly one remote execution point"
+    calls = re.findall(r"self\._run\(([^)]*)\)", src)
+    ok = ('ALLOWED["stats"]', "_LOG_ERRORS % int(since_s", 'f"cat {path}"')
+    assert calls and all(any(c.strip().startswith(a) for a in ok) for c in calls), calls
+    assert "_PATH_RE.match(path)" in src                      # file reads are path-validated

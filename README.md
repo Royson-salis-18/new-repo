@@ -1,7 +1,7 @@
 # rca-lab
 
 Lean research harness for: *unlabeled, live-telemetry root cause analysis with probabilistic cascade-risk prediction.*
-Python only, no UI. **Read-only: no SSH and no shell execution** (enforced by a test). Telemetry comes from tool APIs: Prometheus (metrics), Jaeger (traces + call graph), Loki (logs, optional).
+Python only. **Read-only and architecture-agnostic.** You choose how telemetry is obtained (`source.mode`: `tools`, `ssh` or `both`). Telemetry comes from tool APIs: Prometheus (metrics), Jaeger (traces + call graph), Loki (logs, optional).
 
 ## Pipeline
 
@@ -62,3 +62,21 @@ The **Evaluate** button runs the method comparison. It is read-only like the res
 
 See [RESEARCH.md](RESEARCH.md) for hypotheses, protocol, baselines, statistics and threats to validity.
 `python -m rcalab evaluate` writes `results/<run>/{summary.json,per_run.csv,table.tex}`.
+
+## Data methods (any project, any architecture)
+
+Set in the dashboard (**Connect data source**) or `config.yaml` (`source.mode`). Services and the call graph are
+discovered, never hard-coded.
+
+| mode | gets | needs |
+|---|---|---|
+| `tools` | traces (latency, errors, request rate, call graph) + optional Prometheus metrics / Loki logs | a Jaeger URL |
+| `ssh` | per-container CPU, memory, network, error-log counts from the docker host | host, user, key file; optionally a compose file path for dependencies |
+| `both` | traces from the tools, host metrics from SSH, matched to services by container name | both of the above |
+
+SSH safety: one module (`rcalab/sources/ssh.py`) with a single execution point that only accepts a fixed allowlist
+(`docker ps`, `docker stats --no-stream`, a parallel `docker logs ... | grep -c` scan, and `cat <validated path>`).
+Host keys are pinned on first use in `.known_hosts`; a changed key is refused. A test enforces that no process/shell
+execution exists anywhere and SSH stays confined to that module. SSH gives point-in-time readings, so a background
+sampler appends them to `samples/<system>.jsonl` (about 40 s per cycle on a 24-container host); use
+`step_seconds: 30` in ssh mode.

@@ -7,13 +7,15 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+import warnings
+
 import numpy as np
 
 from .telemetry import Telemetry
 
 # Absolute scale floors so a flat-zero baseline (e.g. error counts) does not give infinite z.
 _ABS_FLOOR = {"cpu": 0.01, "memory": 1e6, "net_rx": 1e3, "net_tx": 1e3,
-              "log_errors": 1.0, "latency_p95": 1.0, "trace_errors": 0.05}
+              "log_errors": 1.0, "latency_p95": 1.0, "trace_errors": 0.05, "span_rate": 2.0}
 
 
 @dataclass
@@ -25,11 +27,14 @@ class Detection:
 
 
 def _calibrate(base: np.ndarray, features: list[str]):
-    med = np.nanmedian(base, axis=0)                       # (S, F)
-    mad = np.nanmedian(np.abs(base - med), axis=0) * 1.4826
+    with warnings.catch_warnings():                        # features with no data at all stay NaN -> no evidence
+        warnings.simplefilter("ignore", RuntimeWarning)
+        med = np.nanmedian(base, axis=0)                   # (S, F)
+        mad = np.nanmedian(np.abs(base - med), axis=0) * 1.4826
     floor = np.array([_ABS_FLOOR[f] for f in features])
+    med, mad = np.nan_to_num(med), np.nan_to_num(mad)      # no baseline data -> neutral, floor decides
     scale = np.maximum.reduce([mad, 0.1 * np.abs(med), np.broadcast_to(floor, med.shape)])
-    return np.nan_to_num(med), scale
+    return med, scale
 
 
 def detect(tel: Telemetry, baseline_windows: int, z_threshold: float = 3.5,

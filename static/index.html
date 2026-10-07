@@ -89,6 +89,17 @@
   tr.prop td { color: var(--accent); font-weight: 600; }
 
   @media (max-width: 1100px) { main { grid-template-columns: 1fr; } #kpis { grid-template-columns: 1fr 1fr; } }
+
+  .field { display: grid; gap: 4px; margin-bottom: 10px; } .field label { font-size: 12px; color: var(--muted); }
+  .field input { background: #0a1020; color: var(--text); border: 1px solid var(--line-2); border-radius: 9px; padding: 8px 10px; font: inherit; }
+  .field input:focus { outline: 1px solid var(--accent); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+  .group { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin: 10px 0; background: #0b1120; }
+  .group h4 { margin: 0 0 10px; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+  .res { display: flex; gap: 10px; align-items: baseline; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; } .ok-dot { background: var(--ok); } .bad-dot { background: var(--bad); }
+  #conn { position: fixed; inset: 0; background: #000b; display: none; place-items: center; z-index: 11; }
+  #conn > div { background: var(--card); border: 1px solid var(--line-2); border-radius: 16px; padding: 22px 26px; width: min(720px, 94vw); max-height: 90vh; overflow: auto; }
 </style>
 </head>
 <body>
@@ -104,6 +115,7 @@
   <div class="spacer"></div>
   <span id="phase" class="chip base">Learning baseline</span>
   <span id="clock" class="muted num" style="font-size:12px"></span>
+  <button class="btn" id="connbtn">Connect data source</button>
   <button class="btn" id="evalbtn">Evaluate methods</button>
   <button class="btn primary" id="play">▶ Play</button>
 </header>
@@ -135,6 +147,24 @@
 <section class="card" id="tlcard"><canvas id="tl"></canvas></section>
 <div id="tip"></div>
 <div id="modal"><div id="modalbody"></div></div>
+<div id="conn"><div>
+  <h3 style="margin:0 0 4px">Connect a data source</h3>
+  <div class="muted" style="margin-bottom:14px">Works with any project. Choose how telemetry is obtained. SSH is limited to read-only <code>docker ps / stats / logs</code> and reading your compose file.</div>
+  <div class="seg" id="modeseg" style="margin-bottom:12px"><button data-v="tools">Tools (Jaeger / Prometheus / Loki)</button><button data-v="ssh">SSH (docker host)</button><button data-v="both">Both</button></div>
+  <div class="field"><label>System name (labels your runs)</label><input id="c_name" placeholder="e.g. sock-shop"></div>
+  <div class="group" id="g_tools"><h4>Tools</h4>
+    <div class="field"><label>Jaeger URL (required) — e.g. http://host:16686 or http://host:8080/jaeger/ui</label><input id="c_jaeger"></div>
+    <div class="grid2"><div class="field"><label>Entry services (optional, comma separated)</label><input id="c_entry" placeholder="frontend"></div>
+    <div class="field"><label>Prometheus URL (optional)</label><input id="c_prom"></div></div>
+    <div class="field"><label>Loki URL (optional)</label><input id="c_loki"></div></div>
+  <div class="group" id="g_ssh"><h4>SSH</h4>
+    <div class="grid2"><div class="field"><label>Host (IP or DNS)</label><input id="c_host"></div><div class="field"><label>User</label><input id="c_user" value="ubuntu"></div>
+    <div class="field"><label>Port</label><input id="c_port" value="22"></div><div class="field"><label>Private key file on this PC (.pem)</label><input id="c_key" placeholder="C:\Users\you\Downloads\key.pem"></div></div>
+    <div class="field"><label>docker-compose file on the host (optional, gives declared dependencies)</label><input id="c_compose" placeholder="/home/ubuntu/app/docker-compose.yml"></div></div>
+  <div id="c_res"></div>
+  <div style="display:flex; gap:10px; margin-top:14px"><button class="btn primary" id="c_save">Save &amp; test</button><button class="btn" id="c_close">Close</button><span id="c_msg" class="muted" style="align-self:center"></span></div>
+</div></div>
+
 
 <script>
 const $ = id => document.getElementById(id);
@@ -147,7 +177,7 @@ const rgb = (c, a = 1) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
 
 /* ================= data ================= */
 function params() { return new URLSearchParams({ source: S.source, root: $("root").value, method: $("method").value,
-                                                 z: $("z").value, hard: true, t: S.t, minutes: 30 }); }
+                                                 z: $("z").value, hard: true, t: S.t, minutes: 20 }); }
 async function load() {
   if (S.busy) return; S.busy = true;
   try {
@@ -156,7 +186,7 @@ async function load() {
     $("err").style.display = "none"; S.data = d; S.T = d.T; S.t = d.t; apply(d);
   } catch (e) { showError(String(e)); } finally { S.busy = false; }
 }
-function showError(msg) { const e = $("err"); e.innerHTML = `<div><div style="font-size:18px;margin-bottom:8px">Live telemetry not connected</div><div class="muted" style="max-width:520px">${msg}</div></div>`;
+function showError(msg) { const e = $("err"); e.innerHTML = `<div><div style="font-size:18px;margin-bottom:8px">Live telemetry not connected</div><div class="muted" style="max-width:520px">${msg}</div><div style="margin-top:14px"><button class="btn primary" onclick="openConn()">Connect data source</button></div></div>`;
   e.style.display = "grid"; setPlaying(false); }
 
 function apply(d) {
@@ -216,6 +246,7 @@ function computeDepth(edges) {
 function layout() {
   const maxD = Math.max(1, ...Object.values(depth)), by = {};
   S.nodes.forEach(n => (by[depth[n.id] ?? 0] ||= []).push(n));
+  RS = Math.min(1, Math.max(.5, ((H - 190) / Math.max(...Object.values(by).map(a => a.length))) / 66));
   Object.entries(by).forEach(([dep, ns]) => { ns.sort((a, b) => a.id.localeCompare(b.id));
     ns.forEach((n, i) => { n.tx = 120 + (W - 240) * (+dep / maxD); n.ty = 90 + (H - 190) * (i + .5) / ns.length; }); });
 }
@@ -224,7 +255,8 @@ function initGraph(d) {
   d.nodes.forEach(n => S.nodes.set(n.id, { id: n.id, x: W / 2, y: H / 2, tx: 0, ty: 0, z: 0, tz: 0, risk: 0, trisk: 0, score: 0, flag: false }));
   layout(); S.nodes.forEach(n => { n.x = n.tx; n.y = n.ty; }); S.ready = true;
 }
-const R = n => 22 + n.risk * 9;
+let RS = 1;                                       // node scale: shrink when a column is crowded
+const R = n => (22 + n.risk * 9) * RS;
 function fit(c) { const r = c.getBoundingClientRect(), dpr = devicePixelRatio || 1; c.width = r.width * dpr; c.height = r.height * dpr; return [r.width, r.height, dpr]; }
 function resize() { const [w, h] = fit(gc); W = w; H = h; fit($("tl")); if (S.ready) layout(); }
 new ResizeObserver(resize).observe($("graphcard")); new ResizeObserver(resize).observe($("tlcard"));
@@ -349,6 +381,35 @@ $("evalbtn").onclick = async () => {
     <p class="muted" style="font-size:12px">CLI: <code>python -m rcalab evaluate</code> → results/&lt;run&gt;/ (summary.json, per_run.csv, table.tex)</p>
     <button class="btn" onclick="document.getElementById('modal').style.display='none'">Close</button>`; };
 $("modal").onclick = e => { if (e.target.id === "modal") $("modal").style.display = "none"; };
+
+
+/* ================= connect dialog ================= */
+let connMode = "tools";
+function setConnMode(m) { connMode = m; document.querySelectorAll("#modeseg button").forEach(b => b.classList.toggle("on", b.dataset.v === m));
+  $("g_tools").style.display = m === "ssh" ? "none" : ""; $("g_ssh").style.display = m === "tools" ? "none" : ""; }
+document.querySelectorAll("#modeseg button").forEach(b => b.onclick = () => setConnMode(b.dataset.v));
+async function openConn() {
+  $("conn").style.display = "grid"; $("c_res").innerHTML = ""; $("c_msg").textContent = "";
+  const c = await (await fetch("/api/config")).json();
+  setConnMode(c.mode); $("c_name").value = c.system_name; $("c_jaeger").value = c.jaeger_url; $("c_entry").value = c.jaeger_entry;
+  $("c_prom").value = c.prometheus_url; $("c_loki").value = c.loki_url; $("c_host").value = c.ssh_host; $("c_user").value = c.ssh_user;
+  $("c_port").value = c.ssh_port; $("c_key").value = c.ssh_key_path; $("c_compose").value = c.ssh_compose_file;
+  if (c.missing.length) $("c_msg").textContent = "Still needed: " + c.missing.join(", ");
+}
+$("connbtn").onclick = openConn; $("c_close").onclick = () => $("conn").style.display = "none";
+$("c_save").onclick = async () => {
+  $("c_msg").textContent = "Saving…";
+  const body = { mode: connMode, system_name: $("c_name").value, jaeger_url: $("c_jaeger").value, jaeger_entry: $("c_entry").value,
+    prometheus_url: $("c_prom").value, loki_url: $("c_loki").value, ssh_host: $("c_host").value, ssh_user: $("c_user").value,
+    ssh_port: +$("c_port").value || 22, ssh_key_path: $("c_key").value, ssh_compose_file: $("c_compose").value };
+  const r = await (await fetch("/api/config", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })).json();
+  if (r.error) { $("c_msg").textContent = r.error; return; }
+  $("c_msg").textContent = r.missing.length ? "Saved. Still needed: " + r.missing.join(", ") : "Saved. Testing…";
+  const t = await (await fetch("/api/test", { method: "POST" })).json();
+  $("c_res").innerHTML = t.results.length ? t.results.map(x => `<div class="res"><span class="dot ${x.ok ? "ok-dot" : "bad-dot"}"></span><b>${x.source}</b><span class="muted">${x.detail}</span><span class="muted" style="margin-left:auto">${x.ms} ms</span></div>`).join("")
+    : '<div class="muted">Nothing to test yet.</div>';
+  if (t.results.length && t.results.every(x => x.ok)) { $("c_msg").textContent = "All sources reachable."; if (S.source === "live") { S.t = -1; S.nodes.clear(); S.ready = false; S.links = []; load(); } }
+};
 
 (async () => {
   const m = await (await fetch("/api/meta")).json();

@@ -1,15 +1,29 @@
 # rca-lab configuration. Run `python -m rcalab init` to be prompted for the
 # required (REQUIRED) fields; `python -m rcalab check` lists what is missing.
-# Telemetry is pulled from tool APIs only (no SSH, no shell commands: this app is read-only).
+# You choose HOW telemetry is obtained with `source.mode` (works for any architecture):
+#   tools = Jaeger (+ optional Prometheus/Loki)   ssh = docker host over SSH   both = traces + host metrics
+# SSH is limited to a fixed allowlist of read-only commands (docker ps/stats/logs, cat <compose file>).
 
 system:
   name: REQUIRED            # label for this target, e.g. sock-shop
   # Service names to analyse. Leave empty to auto-discover from traces.
   services: []
 
+source:
+  mode: tools               # tools | ssh | both
+
+ssh:                        # used when mode is ssh or both
+  host: REQUIRED            # public IP / DNS of the docker host
+  user: ubuntu
+  port: 22
+  key_path: REQUIRED        # path to your private key file (.pem)
+  compose_file: ""          # remote path of docker-compose.yml, gives declared dependencies (optional)
+  extra_edges: []           # [[caller, callee], ...] if you have no compose file
+  name_map: {}              # { service: container } when names do not match by substring (mode both)
+
 sources:
   prometheus:
-    url: REQUIRED           # e.g. http://<host>:9090
+    url: ""                 # OPTIONAL. e.g. http://<host>:9090 or Grafana's proxy path. Empty = traces only
     # PromQL per metric; {service} is substituted. Defaults suit cAdvisor labels.
     queries:
       cpu: 'sum(rate(container_cpu_usage_seconds_total{name=~".*{service}.*"}[1m]))'
@@ -17,7 +31,10 @@ sources:
       net_rx: 'sum(rate(container_network_receive_bytes_total{name=~".*{service}.*"}[1m]))'
       net_tx: 'sum(rate(container_network_transmit_bytes_total{name=~".*{service}.*"}[1m]))'
   jaeger:
-    url: REQUIRED           # e.g. http://<host>:16686   (traces + call graph)
+    url: REQUIRED           # e.g. http://<host>:16686, or http://<host>:8080/jaeger/ui for the OTel demo
+    entry_services: []      # services whose traces to pull (empty = all); [frontend] means far fewer requests
+    slice_seconds: 120      # fetch in slices so long windows are not cut to the newest `limit` traces
+    limit: 300              # max traces per slice per service
   loki:
     url: ""                 # optional, e.g. http://<host>:3100 (logs)
     # LogQL; {service} is substituted. Counts error lines per window.

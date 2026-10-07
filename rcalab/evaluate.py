@@ -109,9 +109,9 @@ def run_dir(cfg: dict, runs_dir: Path) -> dict:
         tel = store.load(d / "telemetry.npz")
         inject_idx = int(np.searchsorted(tel.times, label["t_inject"]))
         meta.append({"run": d.name, "service": label["service"], "fault": label["fault"]})
+        base = min(label["baseline_windows"], inject_idx)   # collect() may have trimmed leading empty windows
         for m in METHODS:
-            results[m].append(score_one(tel, label["service"], inject_idx,
-                                        label["baseline_windows"], cfg, m))
+            results[m].append(score_one(tel, label["service"], inject_idx, base, cfg, m))
     return _report(results, cfg, meta)
 
 
