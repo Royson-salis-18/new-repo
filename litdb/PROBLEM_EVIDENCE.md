@@ -32,6 +32,11 @@ this lengthens debugging time for operators.
 | A20 | 14 public outage events 2021-2024 with durations from 87 minutes to months (Table 1) | tingtingwang...comprehensive, p.2 | anecdotal, rows unverified (some look wrong) | very weak |
 | A21 | Cross-paper comparison is unreliable because datasets and metrics differ; the survey's own averaged performance cannot be trusted | barata2026anomaly, pp.28, 31 | authors' admission | medium (supports need for common benchmarks) |
 | A22 | Unsupervised learning is the most used anomaly detection class and graph-based methods dominate root-cause identification in 143 reviewed studies | barata2026anomaly, pp.23-26 | measured by survey counting, with flawed search terms | weak-medium |
+| A23 | Abnormal-trace classes are imbalanced and systems heterogeneous, motivating few-shot and cross-system methods | yuqingwang...cross (arXiv v2), pp.1-2 | assumed | weak |
+| A24 | Accuracy 93.26% / 85.2% within system and 92.19% / 84.77% cross-system on benchmark fault categories (10-shot, best of 5 runs per task) | yuqingwang...cross, Tables II-III p.9; best-of-5 p.8 | measured, inflated protocol, labels noisy | weak |
+| A25 | Partial observability (no CPU, network or storage metrics) is a realistic constraint in some cloud environments | erakovic2025hybrid, p.1 | assumed | weak |
+| A26 | A rule system on trace latency localized one injected container network fault per day in two worked cases (no metrics) | erakovic2025hybrid, pp.5-8 | illustrative only | very weak |
+| A27 | A GCN+GRU scores AUC 0.951 on DeathStarBench trace data with undescribed anomalies | graphneurala, Table 1 p.3 | measured but undocumented | very weak |
 
 ## B. Evidence our specific gap is already addressed (con)
 | # | What exists | Source (key, page) | How close to our contribution | Consequence for us |

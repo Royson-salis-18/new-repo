@@ -20,3 +20,11 @@ Quartile is not stated here because the preview shows CiteScore percentile, not 
 
 Remaining items (blank registrations: bridgingtheg, causalrca, costsensitiv, graphneurala, realtimecont, realtimeobse, theysayitsre) have no verified metadata yet; their venues get checked when each paper is read.
 Notes: a Scopus-indexed venue is not a quality guarantee; the "not found" journal (IJSRCSE) looks like a low-visibility venue.
+
+## Additions (batches 2 to 4)
+| Paper key | Venue | ISSN searched | Scopus result |
+|---|---|---|---|
+| erakovic2025hybrid | CLOSER proceedings (SCITEPRESS) | 2184-5042 | matches Scopus source "International Conference on Cloud Computing and Services Science, CLOSER - Proceedings" (CiteScore 2025 2.2, 37th percentile, SJR 0.22, 130 documents 2022-25); 2025 volume coverage unverified |
+| yuqingwang...cross (published version) | Proceedings of the ACM on Software Engineering (PACMSE) | 2994-970X | not found in the preview (0 results); status unverified |
+| fu2025intelligent | ACM Computing Surveys | 0360-0300 | indexed (already listed above) |
+| barata2026anomaly | Cluster Computing | 1386-7857 | indexed (already listed above) |
