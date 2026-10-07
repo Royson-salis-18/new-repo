@@ -28,3 +28,10 @@ Notes: a Scopus-indexed venue is not a quality guarantee; the "not found" journa
 | yuqingwang...cross (published version) | Proceedings of the ACM on Software Engineering (PACMSE) | 2994-970X | not found in the preview (0 results); status unverified |
 | fu2025intelligent | ACM Computing Surveys | 0360-0300 | indexed (already listed above) |
 | barata2026anomaly | Cluster Computing | 1386-7857 | indexed (already listed above) |
+
+## Additions (batch 5)
+| Paper key | Venue | ISSN searched | Scopus result |
+|---|---|---|---|
+| realtimecont | IEEE Access | 2169-3536 | indexed (CiteScore 2025 9.3, 91st percentile, rank 31/351 General Engineering, SJR 0.884) |
+| podduturi2025microservice | Int. J. Emerging Trends in Computer Science and IT (Eureka Vision), ICCSAIML'25 | 3050-9246 | not found (0 results) |
+| shuaiyuxie...root | arXiv | n/a | not indexed, preprint |

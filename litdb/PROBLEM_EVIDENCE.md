@@ -37,6 +37,9 @@ this lengthens debugging time for operators.
 | A25 | Partial observability (no CPU, network or storage metrics) is a realistic constraint in some cloud environments | erakovic2025hybrid, p.1 | assumed | weak |
 | A26 | A rule system on trace latency localized one injected container network fault per day in two worked cases (no metrics) | erakovic2025hybrid, pp.5-8 | illustrative only | very weak |
 | A27 | A GCN+GRU scores AUC 0.951 on DeathStarBench trace data with undescribed anomalies | graphneurala, Table 1 p.3 | measured but undocumented | very weak |
+| A28 | GitHub took about one and a half hours to resolve a codespace failure affecting millions of developers | shuaiyuxie...root, p.1 (cites GitHub availability report Oct 2021) | cited incident report (second-hand) | weak-medium |
+| A29 | Failures in microservices propagate through group relations (co-location on a host, load-balancing siblings), not only call edges | shuaiyuxie...root, Fig 1 p.3 and Sec. III | single-run demonstrations on Online Boutique | weak-medium (con for call-edge-only propagation) |
+| A30 | Removing the hypergraph (group relations) lowers Avg@3 by 0.08 to 0.14 and F1 by 0.08 to 0.32 across three datasets | shuaiyuxie...root, Table II p.8 | measured, single run, possible leakage | weak-medium |
 
 ## B. Evidence our specific gap is already addressed (con)
 | # | What exists | Source (key, page) | How close to our contribution | Consequence for us |
