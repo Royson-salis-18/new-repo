@@ -80,3 +80,34 @@ def test_no_process_execution_and_ssh_is_confined_and_allowlisted():
     ok = ('ALLOWED["stats"]', 'ALLOWED["containers"]', "_LOG_ERRORS % int(since_s", 'f"cat {path}"')
     assert calls and all(any(c.strip().startswith(a) for a in ok) for c in calls), calls
     assert "_PATH_RE.match(path)" in src                      # file reads are path-validated
+
+
+def test_calibrated_detector_ignores_drops_and_unjudgeable_windows():
+    """Healthy synthetic data with a service that only appears late and one-sided dips must not raise alarms."""
+    import numpy as np
+    from rcalab.detector import detect
+    tel, truth = synthetic.make("cart-db", seed=3)
+    X = tel.X.copy()
+    j = tel.index("payment")
+    X[:, j, tel.features.index("latency_p95")] *= np.where(np.arange(len(tel.times)) % 7 == 0, 0.3, 1.0)   # dips are not faults
+    X[:60, tel.index("shipping"), :] = np.nan                                                             # no baseline yet
+    tel2 = type(tel)(tel.times, tel.services, X, tel.features, tel.edges)
+    det = detect(tel2, 40, 8.0, persistence=3, kind="calibrated")
+    assert not det.flags[:truth["onset"]].any()
+    assert det.flags[truth["onset"] + 3:, tel2.index(truth["service"])].any()          # the real fault is still caught
+
+
+def test_edge_learner_learns_shielded_edges_across_incidents():
+    import numpy as np
+    from rcalab.cascade import EdgeLearner
+    from rcalab.telemetry import Telemetry
+    services = ["a", "b", "c"]
+    tel = Telemetry(np.arange(60.0), services, np.zeros((60, 3, 9)), edges=[("a", "c"), ("b", "c")])   # a and b both call c
+    learner = EdgeLearner(max_lag=1)
+    for k in range(10):
+        flags = np.zeros((60, 3), bool)
+        flags[10 + k, 2] = True            # c fails
+        flags[10 + k + 1, 0] = True        # a (caller) always follows
+        learner.update(tel, flags)         # b never does
+    p = learner.probs(tel.edges)
+    assert p[("c", "a")] > 0.7 > 0.3 > p[("c", "b")]

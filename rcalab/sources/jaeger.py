@@ -25,6 +25,20 @@ def _is_error(span: dict) -> bool:
     return False
 
 
+def _self_time(span: dict, children: list[tuple[int, int]]) -> float:
+    """Exclusive time (microseconds): the span's duration minus the time covered by its child spans.
+    A slow dependency inflates its callers' duration but not their self time, so self time points at the
+    service that is itself slow. Overlapping children are merged so parallel calls are not double counted."""
+    s0, s1 = span["startTime"], span["startTime"] + span["duration"]
+    covered, last_end = 0, s0
+    for a, b in sorted(children):
+        a, b = max(a, s0, last_end), min(b, s1)
+        if b > a:
+            covered += b - a
+            last_end = b
+    return max(span["duration"] - covered, 0)
+
+
 def _get_traces(url: str, svc: str, t0: float, t1: float, limit: int, retries: int = 2) -> list[dict]:
     for attempt in range(retries + 1):
         try:
@@ -52,7 +66,7 @@ def _pull(url: str, svc: str, t0: float, t1: float, limit: int) -> list[dict]:
 
 def fetch(url: str, service_names: list[str], start: float, end: float, step: int,
           entry_services: list[str] | None = None, slice_s: int = 120, limit: int = 300):
-    """Return (latency_p95, error_rate, span_count, edges); arrays are (n_windows, n_services).
+    """Return (latency_p95, error_rate, span_count, self_latency_p95, edges); arrays are (n_windows, n_services).
 
     Traces are pulled per time slice from `entry_services` (default: all services), de-duplicated by
     trace id, and every span is then attributed to its own service. One request path is therefore not
@@ -61,6 +75,7 @@ def fetch(url: str, service_names: list[str], start: float, end: float, step: in
     n = int((end - start) // step) + 1
     idx = {s: i for i, s in enumerate(service_names)}
     lat = [[[] for _ in service_names] for _ in range(n)]
+    slf = [[[] for _ in service_names] for _ in range(n)]
     err = np.zeros((n, len(service_names)))
     tot = np.zeros((n, len(service_names)))
     edges: set[tuple[str, str]] = set()
@@ -75,6 +90,10 @@ def fetch(url: str, service_names: list[str], start: float, end: float, step: in
                 seen.add(trace["traceID"])
                 procs = {pid: p["serviceName"] for pid, p in trace["processes"].items()}
                 by_id = {s["spanID"]: s for s in trace["spans"]}
+                kids: dict[str, list] = {}
+                for s in trace["spans"]:
+                    for ref in s.get("references", []):
+                        kids.setdefault(ref["spanID"], []).append((s["startTime"], s["startTime"] + s["duration"]))
                 for s in trace["spans"]:
                     name = procs[s["processID"]]
                     if name not in idx:
@@ -84,6 +103,7 @@ def fetch(url: str, service_names: list[str], start: float, end: float, step: in
                         continue
                     j = idx[name]
                     lat[w][j].append(s["duration"] / 1000.0)  # ms
+                    slf[w][j].append(_self_time(s, kids.get(s["spanID"], [])) / 1000.0)
                     tot[w, j] += 1
                     err[w, j] += _is_error(s)
                     for ref in s.get("references", []):
@@ -93,10 +113,12 @@ def fetch(url: str, service_names: list[str], start: float, end: float, step: in
         t += slice_s
 
     p95 = np.full((n, len(service_names)), np.nan)
+    sp95 = np.full((n, len(service_names)), np.nan)
     for w in range(n):
         for j in range(len(service_names)):
             if lat[w][j]:
                 p95[w, j] = np.percentile(lat[w][j], 95)
+                sp95[w, j] = np.percentile(slf[w][j], 95)
     with np.errstate(invalid="ignore", divide="ignore"):
         rate = np.where(tot > 0, err / tot, np.nan)
-    return p95, rate, tot, sorted(edges)
+    return p95, rate, tot, sp95, sorted(edges)

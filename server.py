@@ -15,7 +15,7 @@ from pydantic import BaseModel
 from rcalab import collect as collector
 from rcalab import config, evaluate, projects, synthetic
 from rcalab.cascade import cascade_risk, edge_probabilities, path_probabilities
-from rcalab.detector import detect
+from rcalab.detector import calibrate_threshold, detect
 from rcalab.explain import explain, suspects
 from rcalab.rca import rank
 from rcalab.sources import ssh as sshsrc
@@ -87,7 +87,13 @@ def _live_data(minutes: int, z: float, refresh: bool):
         st.update(tel=collector.merge(st["tel"], new, keep=minutes * 60 // step), at=now)
     tel = st["tel"]
     base = min(c["collection"]["baseline_minutes"] * 60 // step, max(len(tel.times) // 2, 1))
-    return tel, detect(tel, base, z, kind=c["detector"]["kind"]), base, None
+    d = c["detector"]
+    if d.get("kind") == "calibrated":
+        cal = int(max(min(d.get("calibration_windows", 100), len(tel.times) - base - 10), 10))
+        tau = calibrate_threshold(tel, base, cal, float(d.get("alarm_budget_per_hour", 5)), persistence=int(d.get("persistence", 3)))
+        st["tau"] = tau
+        return tel, detect(tel, base, tau, persistence=int(d.get("persistence", 3)), kind="calibrated"), base, None
+    return tel, detect(tel, base, z, kind=d["kind"]), base, None
 
 
 @app.get("/")
@@ -119,11 +125,17 @@ def state(source: str = "demo", root: str = "cart-db", hard: bool = True, z: flo
     risk = cascade_risk(det.a[t], P)
 
     ranking, text, sus = [], "Baseline period: collecting normal behaviour.", []
-    if t > base:
-        res = rank(tel, det, (base, t + 1), lag, hops, method)
+    two_stage = source != "demo" and c["detector"].get("kind") == "calibrated"
+    if two_stage and t > base and not det.flags[base:t + 1].any():
+        text = "No alarm in this window: nothing exceeds the calibrated alarm threshold, so no root-cause ranking is run."
+    elif t > base:
+        det_rca = det
+        if source != "demo" and c["detector"].get("kind") == "calibrated":   # two-stage: strict alarm, lower threshold for candidates
+            det_rca = detect(tel, base, float(c["detector"].get("candidate_threshold", 3.5)), persistence=2, kind="calibrated")
+        res = rank(tel, det_rca, (base, t + 1), lag, hops, method)
         ranking = [{"service": s, "score": float(v)} for s, v in res.ranking]
-        text = explain(tel, det, res, (base, t + 1))
-        sus = suspects(tel, det, res, (base, t + 1))
+        text = explain(tel, det_rca, res, (base, t + 1))
+        sus = suspects(tel, det_rca, res, (base, t + 1))
     score = {r["service"]: r["score"] for r in ranking}
 
     return {
@@ -136,7 +148,7 @@ def state(source: str = "demo", root: str = "cart-db", hard: bool = True, z: flo
         "heat": [[round(float(v), 2) for v in row] for row in np.nan_to_num(np.minimum(det.z, 20)).T],
         "step_s": float(tel.times[1] - tel.times[0]),
         "series": [float(x) for x in np.nan_to_num(np.minimum(det.z.max(axis=1), 20))],
-        "z_threshold": z,
+        "z_threshold": (_live.get(projects.active() or "", {}).get("tau", z) if source != "demo" else z),
     }
 
 

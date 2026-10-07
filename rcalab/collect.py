@@ -115,11 +115,12 @@ def collect(cfg: dict, start: float, end: float, trim_leading: bool = True,
                 col = _safe(loki.query_range, src["loki"]["url"], q, start, end, step)
                 if col is not None:
                     X[:, j, FEATURES.index("log_errors")] = col
-        p95, rate, count, edges = jaeger.fetch(jg["url"], names, start, end, step, jg.get("entry_services") or None,
+        p95, rate, count, selfp95, edges = jaeger.fetch(jg["url"], names, start, end, step, jg.get("entry_services") or None,
                                                jg.get("slice_seconds", 120), jg.get("limit", 300))
         X[:, :, FEATURES.index("latency_p95")] = p95
         X[:, :, FEATURES.index("trace_errors")] = rate
         X[:, :, FEATURES.index("span_rate")] = count
+        X[:, :, FEATURES.index("self_latency")] = selfp95
         signal = [FEATURES.index("span_rate")]
 
         if m == "both":                       # overlay host readings, matched to services by container name

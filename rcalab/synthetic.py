@@ -25,7 +25,7 @@ def make(root: str, n: int = 120, baseline: int = 40, onset: int = 60, seed: int
     services = sorted({s for c, es in CALLS.items() for s in [c, *es]})
     edges = [(c, e) for c, es in CALLS.items() for e in es]
     S, F = len(services), len(FEATURES)
-    level = np.array([100.0, 5e8, 2e4, 2e4, 0.5, 40.0, 0.01, 60.0])  # typical magnitudes
+    level = np.array([100.0, 5e8, 2e4, 2e4, 0.5, 40.0, 0.01, 60.0, 15.0])  # typical magnitudes
     X = level * (1 + 0.04 * noise * rng.standard_normal((n, S, F)))
     X[:, :, FEATURES.index("log_errors")] = rng.poisson(0.4 * noise, (n, S))
     X[:, :, FEATURES.index("trace_errors")] = np.abs(rng.normal(0.01, 0.005 * noise, (n, S)))
@@ -40,6 +40,7 @@ def make(root: str, n: int = 120, baseline: int = 40, onset: int = 60, seed: int
         X[t0:, i, FEATURES.index("span_rate")] *= 0.5     # failing services serve less traffic
 
     hit(root, onset, root_mag)
+    X[onset:, idx[root], FEATURES.index("self_latency")] *= root_mag     # exclusive time rises only at the true source
     frontier, seen = [(root, onset)], {root}
     while frontier:
         svc, t0 = frontier.pop()

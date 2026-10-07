@@ -45,8 +45,12 @@ collection:
   baseline_minutes: 10      # normal-behaviour period used to calibrate (unlabeled)
 
 detector:
-  kind: robust_z            # robust_z | isolation_forest
-  z_threshold: 3.5
+  kind: calibrated          # calibrated (recommended) | robust_z | isolation_forest
+  z_threshold: 3.5          # used by robust_z only
+  alarm_budget_per_hour: 5  # calibrated: target false alarms per hour for the whole system (measured on a healthy slice)
+  persistence: 3            # consecutive judged windows above threshold before a service is flagged
+  calibration_windows: 100  # windows after the baseline used to pick the alarm threshold; keep them fault-free
+  candidate_threshold: 3.5  # after an alarm, services above this are ranked as root-cause candidates
 
 cascade:
   max_lag_windows: 4        # how far apart (in windows) a cause and effect may be

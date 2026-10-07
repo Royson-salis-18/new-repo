@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-FEATURES = ["cpu", "memory", "net_rx", "net_tx", "log_errors", "latency_p95", "trace_errors", "span_rate"]
+FEATURES = ["cpu", "memory", "net_rx", "net_tx", "log_errors", "latency_p95", "trace_errors", "span_rate", "self_latency"]
 
 
 @dataclass

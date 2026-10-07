@@ -21,7 +21,7 @@ class RCAResult:
 
 
 def rank(tel: Telemetry, det: Detection, window: tuple[int, int], max_lag: int = 4,
-         max_hops: int = 3, method: str = "full") -> RCAResult:
+         max_hops: int = 3, method: str = "full", edge_probs: dict | None = None) -> RCAResult:
     """Rank candidate root causes inside window = (start, stop) of window indices.
 
     method: full | ablations (no_precedence, no_cascade, no_explained) |
@@ -33,7 +33,7 @@ def rank(tel: Telemetry, det: Detection, window: tuple[int, int], max_lag: int =
     strength = {i: float(det.a[s0:s1, i].max()) for i in cand}
     onset = {i: int(np.argmax(flags[:, i])) + s0 for i in cand}
 
-    probs = edge_probabilities(tel, det.flags[:s1], max_lag)   # only data available at time s1 (no look-ahead)
+    probs = edge_probs if edge_probs is not None else edge_probabilities(tel, det.flags[:s1], max_lag)   # only data available at time s1 (no look-ahead)
     P = path_probabilities(tel.services, probs, max_hops)
 
     scores = {}
@@ -44,6 +44,10 @@ def rank(tel: Telemetry, det: Detection, window: tuple[int, int], max_lag: int =
         scores = dict(strength)
     elif method == "earliest":
         scores = {i: -onset[i] + 1e-3 * strength[i] for i in cand}
+    elif method == "selftime":
+        # Rank by how abnormal each service's OWN (exclusive) time is: waiting on a slow callee does not raise it.
+        k = tel.features.index("self_latency")
+        scores = {i: float(det.feature_z[s0:s1, i, k].max()) + 1e-3 * strength[i] for i in cand}
     elif method == "pagerank":
         scores = _pagerank_baseline(tel, cand, strength)
     else:
