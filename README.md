@@ -80,3 +80,13 @@ Host keys are pinned on first use in `.known_hosts`; a changed key is refused. A
 execution exists anywhere and SSH stays confined to that module. SSH gives point-in-time readings, so a background
 sampler appends them to `samples/<system>.jsonl` (about 40 s per cycle on a 24-container host); use
 `step_seconds: 30` in ssh mode.
+
+## Projects
+
+Each target system is a saved *project* (`projects/<name>.yaml`): its method (tools / ssh / both) and connection
+details. The header's **Project** menu switches between them, **New** / **Edit** open one short form, and
+`python -m rcalab projects` lists them. CLI commands use the active project, or `--project NAME`.
+
+Note for the paper: SSH sampling (`docker stats`, log scans) adds load to the host being measured. On a 2 vCPU
+host running 24 containers it was visible (load average > 24). Prefer `tools` mode for measurements and treat SSH as
+a fallback, or lengthen the sampling interval.

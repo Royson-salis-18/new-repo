@@ -9,3 +9,5 @@ results/
 samples/
 .known_hosts
 config.yaml
+
+projects/

@@ -115,7 +115,8 @@
   <div class="spacer"></div>
   <span id="phase" class="chip base">Learning baseline</span>
   <span id="clock" class="muted num" style="font-size:12px"></span>
-  <button class="btn" id="connbtn">Connect data source</button>
+  <span class="ctl">Project <select id="proj"></select></span>
+  <button class="btn" id="newbtn">New</button><button class="btn" id="editbtn">Edit</button>
   <button class="btn" id="evalbtn">Evaluate methods</button>
   <button class="btn primary" id="play">▶ Play</button>
 </header>
@@ -148,23 +149,32 @@
 <div id="tip"></div>
 <div id="modal"><div id="modalbody"></div></div>
 <div id="conn"><div>
-  <h3 style="margin:0 0 4px">Connect a data source</h3>
-  <div class="muted" style="margin-bottom:14px">Works with any project. Choose how telemetry is obtained. SSH is limited to read-only <code>docker ps / stats / logs</code> and reading your compose file.</div>
-  <div class="seg" id="modeseg" style="margin-bottom:12px"><button data-v="tools">Tools (Jaeger / Prometheus / Loki)</button><button data-v="ssh">SSH (docker host)</button><button data-v="both">Both</button></div>
-  <div class="field"><label>System name (labels your runs)</label><input id="c_name" placeholder="e.g. sock-shop"></div>
-  <div class="group" id="g_tools"><h4>Tools</h4>
-    <div class="field"><label>Jaeger URL (required) — e.g. http://host:16686 or http://host:8080/jaeger/ui</label><input id="c_jaeger"></div>
-    <div class="grid2"><div class="field"><label>Entry services (optional, comma separated)</label><input id="c_entry" placeholder="frontend"></div>
-    <div class="field"><label>Prometheus URL (optional)</label><input id="c_prom"></div></div>
-    <div class="field"><label>Loki URL (optional)</label><input id="c_loki"></div></div>
-  <div class="group" id="g_ssh"><h4>SSH</h4>
-    <div class="grid2"><div class="field"><label>Host (IP or DNS)</label><input id="c_host"></div><div class="field"><label>User</label><input id="c_user" value="ubuntu"></div>
-    <div class="field"><label>Port</label><input id="c_port" value="22"></div><div class="field"><label>Private key file on this PC (.pem)</label><input id="c_key" placeholder="C:\Users\you\Downloads\key.pem"></div></div>
-    <div class="field"><label>docker-compose file on the host (optional, gives declared dependencies)</label><input id="c_compose" placeholder="/home/ubuntu/app/docker-compose.yml"></div></div>
+  <h3 style="margin:0 0 12px" id="c_title">Project</h3>
+  <div class="field"><label>Name</label><input id="c_name" placeholder="e.g. sock-shop"></div>
+  <div class="seg" id="modeseg" style="margin-bottom:12px"><button data-v="tools">Tools</button><button data-v="ssh">SSH</button><button data-v="both">Both</button></div>
+  <div id="g_tools">
+    <div class="field"><label>Jaeger URL</label><input id="c_jaeger" placeholder="http://host:16686"></div>
+    <div class="field"><label>Prometheus URL <span class="muted">(optional)</span></label><input id="c_prom"></div>
+  </div>
+  <div id="g_ssh">
+    <div class="grid2"><div class="field"><label>Host</label><input id="c_host" placeholder="IP or DNS"></div>
+    <div class="field"><label>User</label><input id="c_user" value="ubuntu"></div></div>
+    <div class="field"><label>Key file (.pem) on this PC</label><input id="c_key" placeholder="C:\Users\you\Downloads\key.pem"></div>
+  </div>
+  <details style="margin:4px 0 8px"><summary class="muted" style="cursor:pointer">More options</summary>
+    <div class="grid2" style="margin-top:10px">
+      <div class="field"><label>Entry services (tools)</label><input id="c_entry" placeholder="frontend"></div>
+      <div class="field"><label>Loki URL (tools)</label><input id="c_loki"></div>
+      <div class="field"><label>SSH port</label><input id="c_port" value="22"></div>
+      <div class="field"><label>Compose file on host (ssh)</label><input id="c_compose" placeholder="/home/ubuntu/docker-compose.yml"></div>
+      <div class="field"><label>Services (empty = auto-discover)</label><input id="c_services"></div>
+      <div class="field"><label>Window seconds / baseline minutes</label><div class="grid2"><input id="c_step" value="15"><input id="c_base" value="10"></div></div>
+    </div></details>
   <div id="c_res"></div>
-  <div style="display:flex; gap:10px; margin-top:14px"><button class="btn primary" id="c_save">Save &amp; test</button><button class="btn" id="c_close">Close</button><span id="c_msg" class="muted" style="align-self:center"></span></div>
+  <div style="display:flex; gap:10px; margin-top:14px; align-items:center"><button class="btn primary" id="c_save">Save &amp; test</button><button class="btn" id="c_close">Close</button>
+    <button class="btn" id="c_del" style="margin-left:auto; color:var(--bad)">Delete</button></div>
+  <div id="c_msg" class="muted" style="margin-top:8px; min-height:18px"></div>
 </div></div>
-
 
 <script>
 const $ = id => document.getElementById(id);
@@ -186,7 +196,7 @@ async function load() {
     $("err").style.display = "none"; S.data = d; S.T = d.T; S.t = d.t; apply(d);
   } catch (e) { showError(String(e)); } finally { S.busy = false; }
 }
-function showError(msg) { const e = $("err"); e.innerHTML = `<div><div style="font-size:18px;margin-bottom:8px">Live telemetry not connected</div><div class="muted" style="max-width:520px">${msg}</div><div style="margin-top:14px"><button class="btn primary" onclick="openConn()">Connect data source</button></div></div>`;
+function showError(msg) { const e = $("err"); e.innerHTML = `<div><div style="font-size:18px;margin-bottom:8px">Live telemetry not connected</div><div class="muted" style="max-width:520px">${msg}</div><div style="margin-top:14px"><button class="btn primary" onclick="openConn()">New project</button></div></div>`;
   e.style.display = "grid"; setPlaying(false); }
 
 function apply(d) {
@@ -383,38 +393,56 @@ $("evalbtn").onclick = async () => {
 $("modal").onclick = e => { if (e.target.id === "modal") $("modal").style.display = "none"; };
 
 
-/* ================= connect dialog ================= */
-let connMode = "tools";
+/* ================= projects ================= */
+let connMode = "tools", editing = "", projState = { active: null, projects: [] };
+const F = ["name", "jaeger", "prom", "host", "user", "key", "entry", "loki", "port", "compose", "services", "step", "base"];
 function setConnMode(m) { connMode = m; document.querySelectorAll("#modeseg button").forEach(b => b.classList.toggle("on", b.dataset.v === m));
   $("g_tools").style.display = m === "ssh" ? "none" : ""; $("g_ssh").style.display = m === "tools" ? "none" : ""; }
 document.querySelectorAll("#modeseg button").forEach(b => b.onclick = () => setConnMode(b.dataset.v));
-async function openConn() {
-  $("conn").style.display = "grid"; $("c_res").innerHTML = ""; $("c_msg").textContent = "";
-  const c = await (await fetch("/api/config")).json();
-  setConnMode(c.mode); $("c_name").value = c.system_name; $("c_jaeger").value = c.jaeger_url; $("c_entry").value = c.jaeger_entry;
-  $("c_prom").value = c.prometheus_url; $("c_loki").value = c.loki_url; $("c_host").value = c.ssh_host; $("c_user").value = c.ssh_user;
-  $("c_port").value = c.ssh_port; $("c_key").value = c.ssh_key_path; $("c_compose").value = c.ssh_compose_file;
-  if (c.missing.length) $("c_msg").textContent = "Still needed: " + c.missing.join(", ");
+
+async function refreshProjects(select) {
+  projState = await (await fetch("/api/projects")).json();
+  $("proj").innerHTML = projState.projects.length ? projState.projects.map(p => `<option value="${p.name}" ${p.name === projState.active ? "selected" : ""}>${p.name} (${p.mode})</option>`).join("")
+                                                  : "<option value=''>none yet</option>";
+  $("editbtn").disabled = !projState.projects.length;
 }
-$("connbtn").onclick = openConn; $("c_close").onclick = () => $("conn").style.display = "none";
+async function openConn(name) {                       // name = existing project to edit, falsy = new project
+  editing = name || ""; $("conn").style.display = "grid"; $("c_res").innerHTML = ""; $("c_msg").textContent = "";
+  $("c_title").textContent = name ? "Edit project" : "New project"; $("c_del").style.display = name ? "" : "none";
+  const f = name ? await (await fetch("/api/projects/" + encodeURIComponent(name))).json()
+                 : { mode: "tools", system_name: "", jaeger_url: "", prometheus_url: "", ssh_host: "", ssh_user: "ubuntu", ssh_key_path: "",
+                     jaeger_entry: "", loki_url: "", ssh_port: 22, ssh_compose_file: "", services: "", step_seconds: 15, baseline_minutes: 10, missing: [] };
+  setConnMode(f.mode); $("c_name").value = f.system_name; $("c_jaeger").value = f.jaeger_url; $("c_prom").value = f.prometheus_url;
+  $("c_host").value = f.ssh_host; $("c_user").value = f.ssh_user; $("c_key").value = f.ssh_key_path; $("c_entry").value = f.jaeger_entry;
+  $("c_loki").value = f.loki_url; $("c_port").value = f.ssh_port; $("c_compose").value = f.ssh_compose_file; $("c_services").value = f.services;
+  $("c_step").value = f.step_seconds; $("c_base").value = f.baseline_minutes;
+  if (f.missing && f.missing.length) $("c_msg").textContent = "Still needed: " + f.missing.join(", ");
+}
+function resetLive() { S.t = -1; S.nodes.clear(); S.ready = false; S.links = []; S.data = null; }
+$("newbtn").onclick = () => openConn(); $("editbtn").onclick = () => openConn(projState.active); $("c_close").onclick = () => $("conn").style.display = "none";
+$("proj").onchange = async () => { await fetch("/api/projects/" + encodeURIComponent($("proj").value) + "/select", { method: "POST" });
+  if (S.source !== "live") document.querySelector('#srcseg button[data-v="live"]').click(); else { resetLive(); load(); } };
 $("c_save").onclick = async () => {
   $("c_msg").textContent = "Saving…";
-  const body = { mode: connMode, system_name: $("c_name").value, jaeger_url: $("c_jaeger").value, jaeger_entry: $("c_entry").value,
-    prometheus_url: $("c_prom").value, loki_url: $("c_loki").value, ssh_host: $("c_host").value, ssh_user: $("c_user").value,
-    ssh_port: +$("c_port").value || 22, ssh_key_path: $("c_key").value, ssh_compose_file: $("c_compose").value };
-  const r = await (await fetch("/api/config", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })).json();
+  const body = { original_name: editing, mode: connMode, system_name: $("c_name").value, jaeger_url: $("c_jaeger").value, jaeger_entry: $("c_entry").value,
+    prometheus_url: $("c_prom").value, loki_url: $("c_loki").value, ssh_host: $("c_host").value, ssh_user: $("c_user").value, ssh_port: +$("c_port").value || 22,
+    ssh_key_path: $("c_key").value, ssh_compose_file: $("c_compose").value, services: $("c_services").value,
+    step_seconds: +$("c_step").value || 15, baseline_minutes: +$("c_base").value || 10 };
+  const r = await (await fetch("/api/projects", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })).json();
   if (r.error) { $("c_msg").textContent = r.error; return; }
+  editing = r.name; await refreshProjects();
   $("c_msg").textContent = r.missing.length ? "Saved. Still needed: " + r.missing.join(", ") : "Saved. Testing…";
-  const t = await (await fetch("/api/test", { method: "POST" })).json();
-  $("c_res").innerHTML = t.results.length ? t.results.map(x => `<div class="res"><span class="dot ${x.ok ? "ok-dot" : "bad-dot"}"></span><b>${x.source}</b><span class="muted">${x.detail}</span><span class="muted" style="margin-left:auto">${x.ms} ms</span></div>`).join("")
-    : '<div class="muted">Nothing to test yet.</div>';
-  if (t.results.length && t.results.every(x => x.ok)) { $("c_msg").textContent = "All sources reachable."; if (S.source === "live") { S.t = -1; S.nodes.clear(); S.ready = false; S.links = []; load(); } }
+  const t = await (await fetch("/api/projects/" + encodeURIComponent(r.name) + "/test", { method: "POST" })).json();
+  $("c_res").innerHTML = (t.results || []).map(x => `<div class="res"><span class="dot ${x.ok ? "ok-dot" : "bad-dot"}"></span><b>${x.source}</b><span class="muted">${x.detail}</span><span class="muted" style="margin-left:auto">${x.ms} ms</span></div>`).join("");
+  if (t.results && t.results.length && t.results.every(x => x.ok)) { $("c_msg").textContent = "Connected."; document.querySelector('#srcseg button[data-v="live"]').click(); }
 };
+$("c_del").onclick = async () => { if (!confirm("Delete project '" + editing + "'?")) return;
+  await fetch("/api/projects/" + encodeURIComponent(editing), { method: "DELETE" }); $("conn").style.display = "none"; await refreshProjects(); resetLive(); if (S.source === "live") load(); };
 
 (async () => {
   const m = await (await fetch("/api/meta")).json();
   $("root").innerHTML = m.demo_services.map(s => `<option ${s === "cart-db" ? "selected" : ""}>${s}</option>`).join("");
-  $("z").value = m.z; $("zv").textContent = m.z; resize(); requestAnimationFrame(draw); requestAnimationFrame(drawTimeline); load();
+  $("z").value = m.z; $("zv").textContent = m.z; await refreshProjects(); resize(); requestAnimationFrame(draw); requestAnimationFrame(drawTimeline); load();
 })();
 </script>
 </body>

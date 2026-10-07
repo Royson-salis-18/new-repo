@@ -6,7 +6,7 @@ import json
 import time
 from pathlib import Path
 
-from . import config, evaluate, store
+from . import config, evaluate, projects, store
 from .detector import detect
 from .explain import explain
 from .rca import rank
@@ -24,9 +24,11 @@ def _emit(report: dict, name: str):
 
 def main():
     ap = argparse.ArgumentParser(prog="rcalab")
-    ap.add_argument("--config", default="config.yaml")
+    ap.add_argument("--config", help="path to a config file (default: the active project)")
+    ap.add_argument("--project", help="saved project name (see `projects`)")
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("init", help="create config.yaml, prompting for required values")
+    sub.add_parser("projects", help="list saved projects")
     sub.add_parser("check", help="list config values still missing")
     p = sub.add_parser("diagnose", help="analyse the last N minutes of live telemetry")
     p.add_argument("--minutes", type=int, default=20)
@@ -42,16 +44,27 @@ def main():
     p.add_argument("--hard", action="store_true", help="synthetic: victims louder than the root")
     a = ap.parse_args()
 
+    if a.cmd == "projects":
+        act = projects.active()
+        for p in projects.listing():
+            print(f"{'*' if p['name'] == act else ' '} {p['name']:20} {p['mode']:6} {p['summary']}"
+                  + (f"  (missing: {', '.join(p['missing'])})" if p["missing"] else ""))
+        return
     if a.cmd == "init":
-        cfg = config.init(out=a.config)
-        print(f"wrote {a.config}; still missing: {config.missing(cfg) or 'nothing'}")
+        cfg = config.init(out=a.config or "config.yaml")
+        print(f"wrote {a.config or 'config.yaml'}; still missing: {config.missing(cfg) or 'nothing'}")
         return
     if a.cmd == "evaluate" and a.synthetic:
-        cfg = config.load(a.config if Path(a.config).exists() else "config.example.yaml")
+        cfg = config.load(a.config) if a.config and Path(a.config).exists() else config.load("config.example.yaml")
         _emit(evaluate.run_synthetic(cfg, hard=a.hard), "synthetic_sanity" + ("_hard" if a.hard else ""))
         return
 
-    cfg = config.load(a.config)
+    if a.config:
+        cfg = config.load(a.config)
+    elif a.project or projects.active():
+        cfg = projects.load(a.project or projects.active())
+    else:
+        cfg = config.load("config.yaml")
     if a.cmd == "check":
         gaps = config.missing(cfg)
         print("config complete" if not gaps else "missing:\n  " + "\n  ".join(gaps))

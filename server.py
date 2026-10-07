@@ -1,5 +1,5 @@
 """Dashboard backend.  Run:  python server.py   then open http://localhost:8000
-Read-only: serves results computed from telemetry (synthetic demo or the live observability APIs).
+Serves results computed from telemetry (synthetic demo, or a saved project's live data via tools and/or SSH).
 """
 import time
 from functools import lru_cache
@@ -7,26 +7,57 @@ from pathlib import Path
 
 import numpy as np
 import uvicorn
-import yaml
 from fastapi import FastAPI
-from pydantic import BaseModel
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 
 from rcalab import collect as collector
-from rcalab import config, evaluate, synthetic
-from rcalab.sources import ssh as sshsrc
+from rcalab import config, evaluate, projects, synthetic
 from rcalab.cascade import cascade_risk, edge_probabilities, path_probabilities
 from rcalab.detector import detect
 from rcalab.explain import explain, suspects
 from rcalab.rca import rank
+from rcalab.sources import ssh as sshsrc
 
 ROOT = Path(__file__).parent
 app = FastAPI()
+projects.migrate_legacy()
+
+_live: dict[str, dict] = {}          # per project: {"tel", "at", "minutes"}
+_samplers: dict[str, dict] = {}      # per project: {"obj", "key"}
 
 
 def cfg() -> dict:
-    return config.load(ROOT / ("config.yaml" if (ROOT / "config.yaml").exists() else "config.example.yaml"))
+    """Config of the active project (or the template when there are no projects yet)."""
+    a = projects.active()
+    return projects.load(a) if a else config.load(projects.TEMPLATE)
+
+
+def _stop_sampler(name: str):
+    s = _samplers.pop(name, None)
+    if s and s["obj"]:
+        s["obj"].stop()
+
+
+def _ensure_sampler(name: str, c: dict):
+    """ssh/both projects keep a background sampler polling their host; restart it if the target changes."""
+    if collector.mode(c) == "tools" or config.missing(c):
+        return _stop_sampler(name)
+    key = (c["ssh"]["host"], c["ssh"]["key_path"], c["ssh"].get("user"), c["collection"]["step_seconds"])
+    if _samplers.get(name, {}).get("key") != key:
+        _stop_sampler(name)
+        s = sshsrc.Sampler(collector.ssh_source(c), collector.sample_path(c), c["collection"]["step_seconds"])
+        s.start()
+        _samplers[name] = {"obj": s, "key": key}
+
+
+def _ensure_all_samplers():
+    for n in projects.names():
+        try:
+            _ensure_sampler(n, projects.load(n))
+        except Exception as e:
+            print(f"[sampler] {n}: {e}")
 
 
 @lru_cache(maxsize=32)
@@ -36,43 +67,25 @@ def _demo(root: str, hard: bool, z: float):
     return tel, detect(tel, truth["baseline"], z), truth["baseline"], truth["onset"]
 
 
-_live = {"at": 0.0, "tel": None, "minutes": None}
-
-
-_sampler = {"obj": None, "key": None}
-
-
-def _ensure_sampler(c: dict):
-    """In ssh/both mode keep one background sampler polling the host; restart it if the target changes."""
-    if collector.mode(c) == "tools" or config.missing(c):
-        if _sampler["obj"]:
-            _sampler["obj"].stop(); _sampler.update(obj=None, key=None)
-        return
-    key = (c["ssh"]["host"], c["ssh"]["key_path"], c["system"]["name"], c["collection"]["step_seconds"])
-    if _sampler["key"] != key:
-        if _sampler["obj"]:
-            _sampler["obj"].stop()
-        s = sshsrc.Sampler(collector.ssh_source(c), collector.sample_path(c), c["collection"]["step_seconds"])
-        s.start(); _sampler.update(obj=s, key=key)
-
-
 def _live_data(minutes: int, z: float, refresh: bool):
-    """Live telemetry. First call pulls the whole window; refreshes (only when following the latest
-    window) re-read just the new windows (tools) or the sample file (ssh). Scrubbing reuses the cache."""
-    c = cfg()
+    """Live telemetry of the active project. First call pulls the whole window; refreshes (only when
+    following the latest window) re-read just the new windows (tools) or the sample file (ssh)."""
+    name, c = projects.active(), cfg()
+    if name is None:
+        raise ValueError("No project yet. Click the project menu, then New project.")
     if config.missing(c):
-        raise ValueError("Not connected yet. Missing: " + ", ".join(config.missing(c)) + ". Use the Connect button.")
-    _ensure_sampler(c)
+        raise ValueError(f"Project '{name}' is incomplete. Missing: " + ", ".join(config.missing(c)))
+    _ensure_sampler(name, c)
+    st = _live.setdefault(name, {"tel": None, "at": 0.0, "minutes": None})
     step = c["collection"]["step_seconds"]
     now = time.time()
     incremental = collector.mode(c) != "ssh"
-    if _live["tel"] is None or _live["minutes"] != minutes or (refresh and not incremental and now - _live["at"] > 10):
-        _live.update(tel=collector.collect(c, now - minutes * 60, now), at=now, minutes=minutes)
-    elif refresh and now - _live["at"] > 10:
-        new = collector.collect(c, _live["tel"].times[-1] - 2 * step, now, trim_leading=False,
-                                services=_live["tel"].services)
-        _live.update(tel=collector.merge(_live["tel"], new, keep=minutes * 60 // step), at=now)
-    tel = _live["tel"]
+    if st["tel"] is None or st["minutes"] != minutes or (refresh and not incremental and now - st["at"] > 10):
+        st.update(tel=collector.collect(c, now - minutes * 60, now), at=now, minutes=minutes)
+    elif refresh and now - st["at"] > 10:
+        new = collector.collect(c, st["tel"].times[-1] - 2 * step, now, trim_leading=False, services=st["tel"].services)
+        st.update(tel=collector.merge(st["tel"], new, keep=minutes * 60 // step), at=now)
+    tel = st["tel"]
     base = min(c["collection"]["baseline_minutes"] * 60 // step, max(len(tel.times) // 2, 1))
     return tel, detect(tel, base, z, kind=c["detector"]["kind"]), base, None
 
@@ -86,12 +99,12 @@ def index():
 def meta():
     c = cfg()
     return {"demo_services": sorted({e for es in synthetic.CALLS.values() for e in es}),
-            "live_missing": config.missing(c), "z": c["detector"]["z_threshold"], "mode": collector.mode(c)}
+            "z": c["detector"]["z_threshold"], "mode": collector.mode(c), "active": projects.active()}
 
 
 @app.get("/api/state")
 def state(source: str = "demo", root: str = "cart-db", hard: bool = True, z: float = 3.5,
-          method: str = "full", t: int = -1, minutes: int = 30):
+          method: str = "full", t: int = -1, minutes: int = 20):
     try:
         tel, det, base, onset = _demo(root, hard, z) if source == "demo" else _live_data(minutes, z, refresh=(t < 0))
     except Exception as e:  # surfaced in the UI
@@ -130,15 +143,17 @@ def state(source: str = "demo", root: str = "cart-db", hard: bool = True, z: flo
 @app.get("/api/eval")
 def run_eval(source: str = "demo"):
     c = cfg()
-    out = evaluate.run_synthetic(c, runs=10, hard=True) if source == "demo" else evaluate.run_dir(c, ROOT / "runs")
-    return out
+    return evaluate.run_synthetic(c, runs=10, hard=True) if source == "demo" else evaluate.run_dir(c, ROOT / "runs")
 
 
-class ConfigIn(BaseModel):
+# ---------------- projects ----------------
+class ProjectIn(BaseModel):
+    original_name: str = ""            # set when editing/renaming an existing project
     mode: str = "tools"
     system_name: str = ""
+    services: str = ""
     jaeger_url: str = ""
-    jaeger_entry: str = ""            # comma separated entry services, optional
+    jaeger_entry: str = ""
     prometheus_url: str = ""
     loki_url: str = ""
     ssh_host: str = ""
@@ -146,68 +161,102 @@ class ConfigIn(BaseModel):
     ssh_port: int = 22
     ssh_key_path: str = ""
     ssh_compose_file: str = ""
+    step_seconds: int = 15
+    baseline_minutes: int = 10
 
 
-@app.get("/api/config")
-def get_config():
-    c = cfg()
-    j, ss = c["sources"]["jaeger"], c.get("ssh", {})
-    return {"mode": collector.mode(c), "system_name": c["system"]["name"] if c["system"]["name"] != "REQUIRED" else "",
-            "jaeger_url": "" if j["url"] == "REQUIRED" else j["url"], "jaeger_entry": ",".join(j.get("entry_services") or []),
-            "prometheus_url": c["sources"]["prometheus"].get("url", ""), "loki_url": c["sources"].get("loki", {}).get("url", ""),
-            "ssh_host": "" if ss.get("host") in (None, "REQUIRED") else ss["host"], "ssh_user": ss.get("user", "ubuntu"),
-            "ssh_port": ss.get("port", 22), "ssh_key_path": "" if ss.get("key_path") in (None, "REQUIRED") else ss["key_path"],
-            "ssh_compose_file": ss.get("compose_file", ""), "missing": config.missing(c),
-            "sampler_error": _sampler["obj"].last_error if _sampler["obj"] else None}
+@app.get("/api/projects")
+def list_projects():
+    rows = projects.listing()
+    for r in rows:
+        r["sampler_error"] = (_samplers.get(r["name"], {}).get("obj").last_error if r["name"] in _samplers else None)
+    return {"active": projects.active(), "projects": rows}
 
 
-@app.post("/api/config")
-def set_config(b: ConfigIn):
-    if b.mode not in ("tools", "ssh", "both"):
-        return {"error": "mode must be tools, ssh or both"}
-    c = config.load(ROOT / "config.yaml") if (ROOT / "config.yaml").exists() else config.load(ROOT / "config.example.yaml")
-    c.setdefault("source", {})["mode"] = b.mode
-    c["system"]["name"] = b.system_name.strip() or "REQUIRED"
-    c["sources"]["jaeger"]["url"] = b.jaeger_url.strip() or "REQUIRED"
-    c["sources"]["jaeger"]["entry_services"] = [x.strip() for x in b.jaeger_entry.split(",") if x.strip()]
-    c["sources"]["prometheus"]["url"] = b.prometheus_url.strip()
-    c["sources"].setdefault("loki", {})["url"] = b.loki_url.strip()
-    ss = c.setdefault("ssh", {})
-    ss.update(host=b.ssh_host.strip() or "REQUIRED", user=b.ssh_user.strip() or "ubuntu", port=b.ssh_port,
-              key_path=b.ssh_key_path.strip() or "REQUIRED", compose_file=b.ssh_compose_file.strip())
-    (ROOT / "config.yaml").write_text(yaml.safe_dump(c, sort_keys=False), encoding="utf-8")
-    _live.update(tel=None, at=0.0, minutes=None)
-    return {"ok": True, "missing": config.missing(c)}
+@app.get("/api/projects/{name}")
+def get_project(name: str):
+    try:
+        c = projects.load(name)
+    except Exception:
+        return {"error": f"no project named {name}"}
+    return {**projects.to_form(c), "missing": config.missing(c)}
 
 
-@app.post("/api/test")
-def test_connection():
-    """Check each configured source separately so you can see which one is not reachable."""
-    c, out = cfg(), []
-    m = collector.mode(c)
-    def check(name, fn):
+@app.post("/api/projects")
+def save_project(b: ProjectIn):
+    if not b.system_name.strip():
+        return {"error": "Give the project a name."}
+    try:
+        base = projects.load(b.original_name) if b.original_name else None
+        c = projects.from_form(b.model_dump(), base)
+        new = projects.slug(b.system_name)
+        if new != projects.slug(b.original_name) and new in projects.names():
+            return {"error": f"A project named '{new}' already exists."}
+        name = projects.save(c)
+        if b.original_name and projects.slug(b.original_name) != name:
+            _stop_sampler(projects.slug(b.original_name)); _live.pop(projects.slug(b.original_name), None)
+            projects.delete(b.original_name)
+        projects.set_active(name)
+        _live.pop(name, None)
+        _ensure_sampler(name, c)
+    except Exception as e:
+        return {"error": str(e)}
+    return {"ok": True, "name": name, "missing": config.missing(c)}
+
+
+@app.post("/api/projects/{name}/select")
+def select_project(name: str):
+    try:
+        projects.set_active(name)
+    except KeyError:
+        return {"error": f"no project named {name}"}
+    return {"ok": True, "active": projects.active()}
+
+
+@app.delete("/api/projects/{name}")
+def delete_project(name: str):
+    _stop_sampler(projects.slug(name)); _live.pop(projects.slug(name), None)
+    projects.delete(name)
+    return {"ok": True, "active": projects.active()}
+
+
+@app.post("/api/projects/{name}/test")
+def test_project(name: str):
+    """Check each source of a project separately so you can see which one is not reachable."""
+    try:
+        c = projects.load(name)
+    except Exception:
+        return {"error": f"no project named {name}"}
+    out, m = [], collector.mode(c)
+
+    def check(source, fn):
         t = time.time()
         try:
-            out.append({"source": name, "ok": True, "detail": fn(), "ms": int((time.time() - t) * 1000)})
+            out.append({"source": source, "ok": True, "detail": fn(), "ms": int((time.time() - t) * 1000)})
         except Exception as e:
-            out.append({"source": name, "ok": False, "detail": str(e)[:200], "ms": int((time.time() - t) * 1000)})
+            out.append({"source": source, "ok": False, "detail": (str(e) or type(e).__name__)[:200], "ms": int((time.time() - t) * 1000)})
+
     if m in ("tools", "both"):
         from rcalab.sources import jaeger, loki, prometheus
-        if c["sources"]["jaeger"]["url"] not in ("", "REQUIRED"):
-            check("jaeger", lambda: f"{len(jaeger.services(c['sources']['jaeger']['url']))} services")
-        if c["sources"]["prometheus"].get("url"):
-            check("prometheus", lambda: f"{len(prometheus.query_range(c['sources']['prometheus']['url'], 'vector(1)', time.time() - 60, time.time(), 15))} points")
-        if c["sources"].get("loki", {}).get("url"):
-            check("loki", lambda: f"{loki.query_range(c['sources']['loki']['url'], 'vector(1)', time.time() - 60, time.time(), 15).size} points")
-    if m in ("ssh", "both"):
-        if config.missing(c) and any(k.startswith("ssh.") for k in config.missing(c)):
-            out.append({"source": "ssh", "ok": False, "detail": "host / key_path not set", "ms": 0})
+        s = c["sources"]
+        if s["jaeger"]["url"] not in ("", "REQUIRED"):
+            check("jaeger", lambda: f"{len(jaeger.services(s['jaeger']['url']))} services")
         else:
-            check("ssh", lambda: f"{len(collector.ssh_source(c).stats())} running containers (read-only docker stats)")
+            out.append({"source": "jaeger", "ok": False, "detail": "URL not set", "ms": 0})
+        if s["prometheus"].get("url"):
+            check("prometheus", lambda: f"{len(prometheus.query_range(s['prometheus']['url'], 'vector(1)', time.time() - 60, time.time(), 15))} points")
+        if s.get("loki", {}).get("url"):
+            check("loki", lambda: f"{loki.query_range(s['loki']['url'], 'vector(1)', time.time() - 60, time.time(), 15).size} points")
+    if m in ("ssh", "both"):
+        if any(k.startswith("ssh.") for k in config.missing(c)):
+            out.append({"source": "ssh", "ok": False, "detail": "host / key file not set", "ms": 0})
+        else:
+            check("ssh", lambda: f"{len(collector.ssh_source(c).containers())} running containers (read-only docker ps)")
     return {"mode": m, "results": out}
 
 
 app.mount("/static", StaticFiles(directory=ROOT / "static"), name="static")
 
 if __name__ == "__main__":
+    _ensure_all_samplers()
     uvicorn.run(app, host="127.0.0.1", port=8000)

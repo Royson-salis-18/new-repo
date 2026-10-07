@@ -61,9 +61,12 @@ class SSHSource:
         return out.read().decode("utf-8", "replace")
 
     # ---- allowlisted reads ----
+    def containers(self) -> list[str]:
+        return [n for n in self._run(ALLOWED["containers"], timeout=30).split() if n]
+
     def stats(self) -> list[dict]:
         rows = []
-        for line in self._run(ALLOWED["stats"]).splitlines():
+        for line in self._run(ALLOWED["stats"], timeout=120).splitlines():
             try:
                 d = json.loads(line)
                 rx, tx = (_bytes(x) for x in d["NetIO"].split("/"))

@@ -77,6 +77,6 @@ def test_no_process_execution_and_ssh_is_confined_and_allowlisted():
     src = pathlib.Path("rcalab/sources/ssh.py").read_text(encoding="utf-8")
     assert src.count(".exec_command(") == 1, "exactly one remote execution point"
     calls = re.findall(r"self\._run\(([^)]*)\)", src)
-    ok = ('ALLOWED["stats"]', "_LOG_ERRORS % int(since_s", 'f"cat {path}"')
+    ok = ('ALLOWED["stats"]', 'ALLOWED["containers"]', "_LOG_ERRORS % int(since_s", 'f"cat {path}"')
     assert calls and all(any(c.strip().startswith(a) for a in ok) for c in calls), calls
     assert "_PATH_RE.match(path)" in src                      # file reads are path-validated
