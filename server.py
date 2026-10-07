@@ -1,4 +1,4 @@
-"""Dashboard backend.  Run:  .venv\Scripts\python server.py   then open http://localhost:8000
+"""Dashboard backend.  Run:  python server.py   then open http://localhost:8000
 Read-only: serves results computed from telemetry (synthetic demo or the live observability APIs).
 """
 import time
