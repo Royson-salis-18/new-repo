@@ -15,7 +15,7 @@ peer_reviewed: ""                      # yes / no / preprint
 cited_by_crossref: "0"
 n_references: "23"
 license: "https://creativecommons.org/licenses/by/4.0"
-batch: "queue"
+batch: "2"
 read_status: extracted                 # extracted -> read-in-full -> reviewed
 pages: 12
 text_chars: 37434

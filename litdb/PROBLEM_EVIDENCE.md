@@ -20,6 +20,12 @@ this lengthens debugging time for operators.
 | A8 | AWS December 2021 outage took more than 4 hours to pinpoint the root cause | sun2025interpretable, p.2 (ref [4]) | anecdotal (vendor post-incident summary) | weak |
 | A9 | Reconstruction error alone puts the true root cause first in about 70% of 63 failure cases and in the top five in most; propagation-aware scoring is therefore needed | sun2025interpretable, p.7 | measured, small, authors' own | weak-medium |
 | A10 | Without labels the localizer reaches A@5 of 0.959 (D1) and 0.903 (D2) but A@1 of only 0.445 on D2; labels lift D2 A@1 to 0.783 at 25% | sun2025interpretable, Table 3 p.17 | measured, small datasets, no stats | medium (labels matter for top-1 on the harder system) |
+| A11 | Without automated tools, engineers may need at least several hours to find a failure's root cause; one hour of downtime could cost Amazon.com up to 100 million USD | pham2024root, p.1 (citing [28,57] and [19,22]) | cited, second-hand | weak |
+| A12 | Existing causal-graph RCA methods are mostly no better than random on 4 benchmark datasets; simple methods work better | pham2024root, p.6 | measured (open data, 10 repeats, no stats) | medium-strong for "RCA is not solved" |
+| A13 | Methods are sensitive to the failure-time estimate: NSigma on Train Ticket Avg@5 about 0.81 at exact time vs about 0.03-0.12 when 60 s late (inferred table mapping) | pham2024root, Table 5 p.7 | measured | medium |
+| A14 | A competition LLM-agent RCA system reached a score of 50.71, with the metric modality contributing most (42.78 alone), but no baselines and an undefined score | pantang...microrca (MicroRCA-Agent), Table 1 p.16 | measured, uncomparable | very weak |
+| A15 | LLM reasoning chains can hallucinate trace evidence that was never provided | MicroRCA-Agent, p.16 (bad case) | anecdotal (single case) | weak but relevant to faithfulness checks |
+| A16 | A supervised multimodal GNN (CHASE) reaches A@1 0.6135 on a 10-instance, log-injected dataset | zimingzhao...chase, Table II p.8 | measured, tiny and easy dataset | very weak |
 
 ## B. Evidence our specific gap is already addressed (con)
 | # | What exists | Source (key, page) | How close to our contribution | Consequence for us |
