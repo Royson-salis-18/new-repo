@@ -1,0 +1,42 @@
+{
+ "current (all features, robust-z 3.5, persist 2)": {
+  "flag_rate": 0.43469101123595505,
+  "windows_with_any": 0.8876404494382022,
+  "avg_flagged": 6.955056179775281
+ },
+ "no span_rate": {
+  "flag_rate": 0.20435393258426968,
+  "windows_with_any": 0.797752808988764,
+  "avg_flagged": 3.269662921348315
+ },
+ "load-normalised span_rate": {
+  "flag_rate": 0.28370786516853935,
+  "windows_with_any": 0.8876404494382022,
+  "avg_flagged": 4.53932584269663
+ },
+ "quantile on log features, no span_rate": {
+  "flag_rate": 0.20084269662921347,
+  "windows_with_any": 0.6629213483146067,
+  "avg_flagged": 3.2134831460674156
+ },
+ "quantile on log features, normalised span": {
+  "flag_rate": 0.2345505617977528,
+  "windows_with_any": 0.6629213483146067,
+  "avg_flagged": 3.752808988764045
+ },
+ "latency only (log) z=3.5 pers=2": {
+  "flag_rate": 0.1502808988764045,
+  "windows_with_any": 0.7640449438202247,
+  "avg_flagged": 2.404494382022472
+ },
+ "latency only (log) z=5 pers=3": {
+  "flag_rate": 0.06882022471910113,
+  "windows_with_any": 0.651685393258427,
+  "avg_flagged": 1.101123595505618
+ },
+ "latency only (log) z=8 pers=3": {
+  "flag_rate": 0.004213483146067416,
+  "windows_with_any": 0.06741573033707865,
+  "avg_flagged": 0.06741573033707865
+ }
+}

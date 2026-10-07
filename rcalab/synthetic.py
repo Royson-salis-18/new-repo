@@ -20,15 +20,15 @@ CALLS = {
 
 def make(root: str, n: int = 120, baseline: int = 40, onset: int = 60, seed: int = 0,
          lag_range: tuple[int, int] = (1, 2), p_propagate: float = 0.85,
-         root_mag: float = 6.0, victim_mag: float = 4.0):
+         root_mag: float = 6.0, victim_mag: float = 4.0, noise: float = 1.0):
     rng = np.random.default_rng(seed)
     services = sorted({s for c, es in CALLS.items() for s in [c, *es]})
     edges = [(c, e) for c, es in CALLS.items() for e in es]
     S, F = len(services), len(FEATURES)
     level = np.array([100.0, 5e8, 2e4, 2e4, 0.5, 40.0, 0.01, 60.0])  # typical magnitudes
-    X = level * (1 + 0.04 * rng.standard_normal((n, S, F)))
-    X[:, :, FEATURES.index("log_errors")] = rng.poisson(0.4, (n, S))
-    X[:, :, FEATURES.index("trace_errors")] = np.abs(rng.normal(0.01, 0.005, (n, S)))
+    X = level * (1 + 0.04 * noise * rng.standard_normal((n, S, F)))
+    X[:, :, FEATURES.index("log_errors")] = rng.poisson(0.4 * noise, (n, S))
+    X[:, :, FEATURES.index("trace_errors")] = np.abs(rng.normal(0.01, 0.005 * noise, (n, S)))
     idx = {s: i for i, s in enumerate(services)}
 
     def hit(svc, t0, mag):

@@ -1,0 +1,74 @@
+[
+ {
+  "p_propagate": 0.3,
+  "victim_louder": false,
+  "n_service_windows": 16,
+  "prevalence": 0.125,
+  "auroc": {
+   "risk": 1.0,
+   "prior_only": 1.0,
+   "structural": 1.0,
+   "random": 0.4642857142857143
+  }
+ },
+ {
+  "p_propagate": 0.3,
+  "victim_louder": true,
+  "n_service_windows": 16,
+  "prevalence": 0.125,
+  "auroc": {
+   "risk": 1.0,
+   "prior_only": 1.0,
+   "structural": 1.0,
+   "random": 0.4642857142857143
+  }
+ },
+ {
+  "p_propagate": 0.6,
+  "victim_louder": false,
+  "n_service_windows": 32,
+  "prevalence": 0.15625,
+  "auroc": {
+   "risk": 0.9925925925925926,
+   "prior_only": 0.9925925925925926,
+   "structural": 0.9,
+   "random": 0.43703703703703706
+  }
+ },
+ {
+  "p_propagate": 0.6,
+  "victim_louder": true,
+  "n_service_windows": 32,
+  "prevalence": 0.15625,
+  "auroc": {
+   "risk": 0.9925925925925926,
+   "prior_only": 0.9925925925925926,
+   "structural": 0.9,
+   "random": 0.43703703703703706
+  }
+ },
+ {
+  "p_propagate": 0.9,
+  "victim_louder": false,
+  "n_service_windows": 71,
+  "prevalence": 0.14084507042253522,
+  "auroc": {
+   "risk": 1.0,
+   "prior_only": 1.0,
+   "structural": 0.95,
+   "random": 0.6442622950819672
+  }
+ },
+ {
+  "p_propagate": 0.9,
+  "victim_louder": true,
+  "n_service_windows": 71,
+  "prevalence": 0.14084507042253522,
+  "auroc": {
+   "risk": 1.0,
+   "prior_only": 1.0,
+   "structural": 0.95,
+   "random": 0.6442622950819672
+  }
+ }
+]

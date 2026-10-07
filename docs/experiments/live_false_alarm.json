@@ -1,0 +1,251 @@
+{
+ "windows": 119,
+ "services_active": [
+  "ad",
+  "cart",
+  "checkout",
+  "currency",
+  "email",
+  "flagd",
+  "frontend",
+  "frontend-proxy",
+  "frontend-web",
+  "image-provider",
+  "load-generator",
+  "payment",
+  "product-catalog",
+  "quote",
+  "recommendation",
+  "shipping"
+ ],
+ "settings": [
+  {
+   "baseline_windows": 20,
+   "z": 3.5,
+   "persistence": 2,
+   "eval_windows": 99,
+   "flag_rate": 0.3888888888888889,
+   "windows_with_any_flag": 0.8181818181818182,
+   "mean_services_flagged_per_window": 6.222222222222222
+  },
+  {
+   "baseline_windows": 20,
+   "z": 3.5,
+   "persistence": 3,
+   "eval_windows": 99,
+   "flag_rate": 0.3371212121212121,
+   "windows_with_any_flag": 0.7878787878787878,
+   "mean_services_flagged_per_window": 5.393939393939394
+  },
+  {
+   "baseline_windows": 20,
+   "z": 5.0,
+   "persistence": 2,
+   "eval_windows": 99,
+   "flag_rate": 0.3434343434343434,
+   "windows_with_any_flag": 0.7878787878787878,
+   "mean_services_flagged_per_window": 5.494949494949495
+  },
+  {
+   "baseline_windows": 20,
+   "z": 5.0,
+   "persistence": 3,
+   "eval_windows": 99,
+   "flag_rate": 0.30303030303030304,
+   "windows_with_any_flag": 0.7373737373737373,
+   "mean_services_flagged_per_window": 4.848484848484849
+  },
+  {
+   "baseline_windows": 20,
+   "z": 8.0,
+   "persistence": 2,
+   "eval_windows": 99,
+   "flag_rate": 0.2746212121212121,
+   "windows_with_any_flag": 0.7474747474747475,
+   "mean_services_flagged_per_window": 4.393939393939394
+  },
+  {
+   "baseline_windows": 20,
+   "z": 8.0,
+   "persistence": 3,
+   "eval_windows": 99,
+   "flag_rate": 0.24053030303030304,
+   "windows_with_any_flag": 0.696969696969697,
+   "mean_services_flagged_per_window": 3.8484848484848486
+  },
+  {
+   "baseline_windows": 30,
+   "z": 3.5,
+   "persistence": 2,
+   "eval_windows": 89,
+   "flag_rate": 0.43469101123595505,
+   "windows_with_any_flag": 0.8876404494382022,
+   "mean_services_flagged_per_window": 6.955056179775281
+  },
+  {
+   "baseline_windows": 30,
+   "z": 3.5,
+   "persistence": 3,
+   "eval_windows": 89,
+   "flag_rate": 0.3785112359550562,
+   "windows_with_any_flag": 0.8539325842696629,
+   "mean_services_flagged_per_window": 6.056179775280899
+  },
+  {
+   "baseline_windows": 30,
+   "z": 5.0,
+   "persistence": 2,
+   "eval_windows": 89,
+   "flag_rate": 0.38974719101123595,
+   "windows_with_any_flag": 0.8764044943820225,
+   "mean_services_flagged_per_window": 6.235955056179775
+  },
+  {
+   "baseline_windows": 30,
+   "z": 5.0,
+   "persistence": 3,
+   "eval_windows": 89,
+   "flag_rate": 0.34480337078651685,
+   "windows_with_any_flag": 0.8202247191011236,
+   "mean_services_flagged_per_window": 5.51685393258427
+  },
+  {
+   "baseline_windows": 30,
+   "z": 8.0,
+   "persistence": 2,
+   "eval_windows": 89,
+   "flag_rate": 0.3068820224719101,
+   "windows_with_any_flag": 0.8089887640449438,
+   "mean_services_flagged_per_window": 4.910112359550562
+  },
+  {
+   "baseline_windows": 30,
+   "z": 8.0,
+   "persistence": 3,
+   "eval_windows": 89,
+   "flag_rate": 0.2675561797752809,
+   "windows_with_any_flag": 0.7752808988764045,
+   "mean_services_flagged_per_window": 4.280898876404494
+  },
+  {
+   "baseline_windows": 40,
+   "z": 3.5,
+   "persistence": 2,
+   "eval_windows": 79,
+   "flag_rate": 0.4572784810126582,
+   "windows_with_any_flag": 0.9113924050632911,
+   "mean_services_flagged_per_window": 7.3164556962025316
+  },
+  {
+   "baseline_windows": 40,
+   "z": 3.5,
+   "persistence": 3,
+   "eval_windows": 79,
+   "flag_rate": 0.3963607594936709,
+   "windows_with_any_flag": 0.8987341772151899,
+   "mean_services_flagged_per_window": 6.341772151898734
+  },
+  {
+   "baseline_windows": 40,
+   "z": 5.0,
+   "persistence": 2,
+   "eval_windows": 79,
+   "flag_rate": 0.3987341772151899,
+   "windows_with_any_flag": 0.8987341772151899,
+   "mean_services_flagged_per_window": 6.379746835443038
+  },
+  {
+   "baseline_windows": 40,
+   "z": 5.0,
+   "persistence": 3,
+   "eval_windows": 79,
+   "flag_rate": 0.3504746835443038,
+   "windows_with_any_flag": 0.8607594936708861,
+   "mean_services_flagged_per_window": 5.6075949367088604
+  },
+  {
+   "baseline_windows": 40,
+   "z": 8.0,
+   "persistence": 2,
+   "eval_windows": 79,
+   "flag_rate": 0.3014240506329114,
+   "windows_with_any_flag": 0.8354430379746836,
+   "mean_services_flagged_per_window": 4.822784810126582
+  },
+  {
+   "baseline_windows": 40,
+   "z": 8.0,
+   "persistence": 3,
+   "eval_windows": 79,
+   "flag_rate": 0.2587025316455696,
+   "windows_with_any_flag": 0.810126582278481,
+   "mean_services_flagged_per_window": 4.139240506329114
+  }
+ ],
+ "default_setting_by_service": {
+  "ad": {
+   "flag_rate": 0.12359550561797752,
+   "top_feature": "span_rate"
+  },
+  "cart": {
+   "flag_rate": 0.6404494382022472,
+   "top_feature": "span_rate"
+  },
+  "checkout": {
+   "flag_rate": 0.24719101123595505,
+   "top_feature": "latency_p95"
+  },
+  "currency": {
+   "flag_rate": 0.11235955056179775,
+   "top_feature": "span_rate"
+  },
+  "email": {
+   "flag_rate": 0.2247191011235955,
+   "top_feature": "latency_p95"
+  },
+  "flagd": {
+   "flag_rate": 0.5393258426966292,
+   "top_feature": "latency_p95"
+  },
+  "frontend": {
+   "flag_rate": 0.8426966292134831,
+   "top_feature": "span_rate"
+  },
+  "frontend-proxy": {
+   "flag_rate": 0.6853932584269663,
+   "top_feature": "span_rate"
+  },
+  "frontend-web": {
+   "flag_rate": 0.5955056179775281,
+   "top_feature": "latency_p95"
+  },
+  "image-provider": {
+   "flag_rate": 0.4606741573033708,
+   "top_feature": "span_rate"
+  },
+  "load-generator": {
+   "flag_rate": 0.6741573033707865,
+   "top_feature": "span_rate"
+  },
+  "payment": {
+   "flag_rate": 0.11235955056179775,
+   "top_feature": "latency_p95"
+  },
+  "product-catalog": {
+   "flag_rate": 0.797752808988764,
+   "top_feature": "span_rate"
+  },
+  "quote": {
+   "flag_rate": 0.0449438202247191,
+   "top_feature": "latency_p95"
+  },
+  "recommendation": {
+   "flag_rate": 0.6629213483146067,
+   "top_feature": "latency_p95"
+  },
+  "shipping": {
+   "flag_rate": 0.19101123595505617,
+   "top_feature": "latency_p95"
+  }
+ }
+}

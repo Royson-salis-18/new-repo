@@ -1,0 +1,676 @@
+Copyright: © the author(s), publisher and licensee Technoscience Academy. This is an open-access article distributed under the 
+terms of the Creative Commons Attribution Non-Commercial License. 
+ 
+Original Article 
+International Journal of Scientific Research in Civil Engineering 
+Available online at : www.ijsrce.com  
+© 2023 | IJSRCE | Volume 7 | Issue 6 | ISSN : 2456-6667 
+doi : https://doi.org/10.32628/IJSRCE237530 
+  
+ 
+ 
+ 
+ 
+ 
+109 
+Cascading Failure Modes in Model-as-a-Service Architectures : 
+When Your Dependencies Think 
+Sheriff Adepoju 
+Prairie View A&M University, Texas, USA 
+sadepoju1@pvamu.edu 
+A R T I C L E I N F O  A B S T R A C T 
+Article History: 
+Accepted:  01 Dec 2023 
+Published: 15 Dec 2023 
+ 
+ Following an increased move towards machine learning becoming a 
+runtime dependency of contemporary software systems, the Model -as-a-
+Service (MaaS) architecture is subjected to a new category of systemic risks 
+where failure at one component propagates across decision -making when 
+it comes to systems. In contrast to the failure of standard microservices, 
+failure modes in services that rely on machine learning can silently 
+propagate throughout workflows, multiplying uncertainty, reducing the 
+quality of decision s, and destabilizing downstream services. In this study, 
+the authors investigated the cascading failure modes of MaaS architectures 
+and stated that resilience should be explicitly designed based on intelligent 
+dependencies. Based on cascading failure theory, service -oriented 
+architectures, and critical infrastructure systems, this study conceptualizes 
+how a combination of data inconsistencies, variability in model behavior, 
+orchestration misalignment, and the disruptive behavior of infrastructure 
+amplify fa ilure. This article proposes a resilience -based architectural 
+viewpoint that revolves around circuit breakers, fallback plans, and 
+graceful degradation systems that are specific to machine -learning-reliant 
+systems. Circuit breakers are re -conceptualized as resilience to erratic 
+inference behavior and delays in decision -making; fallback strategies are 
+re-conceptualized as goal -preserving, which does not lead to dramatic 
+service outages but gradual decay in decision faithfulness; and graceful 
+degradation is r e-conceptualized as a controlled decline in decision 
+faithfulness as opposed to a sudden crash in the service 
+Keywords: Model-as-a-Service (MaaS); cascading failures; machine 
+learning reliability; resilient architectures; circuit breakers; fallback 
+strategies; graceful degradation; service orchestration; decision 
+uncertainty; infrastructure risk; AI system dependability; intelligent 
+dependencies. 
+ 
+Publication Issue 
+Volume 7, Issue 6 
+November-December-2023 
+ 
+Page Number  
+109-120 
+   International Journal of Scientific Research in Civil Engineering  (www.ijsrce.com) 
+Sheriff Adepoju Int J Sci Res Civil Engg. November-December-2023, 7 (6)  :  109-120 
+ 
+ 
+ 
+ 
+ 
+110 
+INTRODUCTION 
+ 
+Modern software systems are built on cloud -native and microservice architectures, where functionality is 
+broken down into service -based, extensively loosely coupled deployable services. In this architectural 
+paradigm, machine learning has shifted from being an offline analytic resource to  a runtime requirement 
+that directly guides operation decisions, service coordination , and end-user response. This has been 
+catalyzed by the integration of the similarity of Model -as-a-Service (MaaS) , where forecasting and 
+suggestive functions are surfaced as network -accessible services and embedded into core processes. 
+Consequently, contemporary systems have become reliant not only  on the availability of the service but 
+also on the accuracy, reliability, and timeliness of the results of machine learning (Pappula, 2022; Koneru 
+et al., 2021). 
+ 
+Conventional resilience engineering in distributed systems has mainly aimed at reducing system -level 
+failures at the infrastructure level , such as node crashes, network partitions , and resource exhaustion. 
+Although these approaches are still needed, they are becoming inadequate in contexts where machine -
+learning-dependent services are used for  decision-making. By incorporating predictive features into 
+automated workflows, failures are not only observed in the form of service failure, but decision-path 
+failure begins to take shape, where erroneous, tardy, or unsteady results are spawned across other services 
+and business operations ( Νούσiασ, 2021). These failures are especially difficult to notice because systems 
+can be technically open and provide low-quality or misguided results. 
+ 
+This difficulty is also extended by the application of machine learning to end -to-end data and decision-
+making pipelines. The model  behavior can also be non -deterministic depending on the changing data 
+distributions, inconsistencies in upstream pipelines , or changes in execution context, making service 
+chains that are otherwise deterministic. In contrast to traditional software parts, services based on 
+machine learning can fail silently, delivering outputs that meet syntactic requirements but do not fulfil 
+semantic or operational requirements. Current fault tolerance techniques, such as retries, replication, and 
+timeouts, are poorly prepared to deal with such types of degradation because they deal with unambiguous 
+failure indicators instead of the insidious slow erosion of decision quality (Satyanarayanan, 2022). 
+ 
+To comprehend cascading failures in the architecture of MaaS, one must base it on theories that have been 
+developed in complex, interdependent systems. Cascades are not due to the working of a single bogus 
+component but rather due to the interplay of tightly coupled subsystems , such that the disturbances are 
+amplified by the systems as they propagate. This section synthesizes background information on cascading 
+failure theory and resilience engineering to set the conceptual framework for analyzing the propagation of 
+failures in machine-learning-dependent frameworks. 
+ 
+Cascading failure theory results from the analysis of critical infrastructures and systems prone to disasters , 
+where local failures tend to provoke global and disproportionate effects. Such systems are linked with 
+physical, informational, or logical dependencies between their components, which promote the spread of 
+failures outside their root causes. Kim and Lee (2018) point to interdependency as the most dominant 
+   International Journal of Scientific Research in Civil Engineering  (www.ijsrce.com) 
+Sheriff Adepoju Int J Sci Res Civil Engg. November-December-2023, 7 (6)  :  109-120 
+ 
+ 
+ 
+ 
+ 
+111 
+event that leads to systemic failure; however, it is not the fragility of components that drives systemic 
+failures, but interdependency, which creates pathways of layered infrastructures via feedback and control 
+loops. Similarly, cascading effects theoretical models point to nonlinear propagation dynamics, delayed 
+effects, and the compounding nature of secondary failures, which make it challenging to make predictions 
+and mitigate them (Zuccaro et al., 2018). 
+ 
+These lessons have been applied to digitally mediated spaces , especially in the world of the Internet of 
+Things and cyber-physical systems. In this context, information -level failures can often cause a cascading 
+effect, and the catalysts are most commonly unreliable data, slow responsiveness, or a mismatch in control 
+decisions. Xing (2020) proved that the shortage of fault isolation, heterogeneous components, and dense 
+connections make IoT systems extremely susceptible to cascade vulnerabilities. Nguyen et al. (2021) also 
+demonstrated from a resilience viewpoint that there can be coordinated disruption in cyber -physical 
+systems, such as  smart grids, to take advantage of dependency structures in order to extend failures to 
+control and communication levels. These results demonstrate the applicability of cascading failure theory 
+to machine-learning-reliant systems, in which the output of solutions serves as vital control elements in 
+distributed systems. 
+ 
+Traditionally, drawbacks have been dealt with resilience in software engineering with architectural 
+patterns that focus on fault and failure isolation. Both service and microservice systems are facilitated by 
+loose coupling and independent deployments as devices of containment for the propagation of failure. 
+Nonetheless, empirical research indicates that these architectures are vulnerable to cascading failures if 
+the service dependencies are intricate or poorly known. Zhou et al. (2018) recorded how mistakes in 
+microservice systems often spread owing to synchronous calls, data stores, and implicit logic of 
+coordination, affecting isolation and autonomy premises. Power and Kotonya (2018). 
+ 
+Model-as-a-Service (MaaS) architectures are an extension of service -oriented and microservice -based 
+systems, where machine -learning components are exposed to the world as services that can be 
+individually accessed and incorporated into operation workflows. Models in these architectures are no 
+longer passive analysis devices but elements of runtime decisions, taking control flows, resource allocation, 
+and user-visible results. This change profoundly alters the character of system dependency , whereby the 
+accuracy and reliability of machine learning are of equal significance to the services. 
+ 
+Plans Architecturally, MaaS software normally consists of data ingestion pipes, feature transformation 
+services, model inference endpoints , and downstream decision or orchestration services. These 
+components are typically used in cloud -native environments when the focus is on scalability, elasticity, 
+and continuous deployment (Koneru et al., 2021). Although forceful development and efficiency in work 
+are enhanced in these types of environments, they also bring about chains of closely linked dependencies, 
+whereby any sort of disruption at one of the points in the system can spread to other parts and areas of the 
+system. These changes in the types of architecture have further amplified the number of points of 
+interaction upon which failures can propagate by the transition from monolithic architectures to service-
+oriented and microservice-based designs (Pappula, 2022; Enjam & Tekale, 2020). 
+   International Journal of Scientific Research in Civil Engineering  (www.ijsrce.com) 
+Sheriff Adepoju Int J Sci Res Civil Engg. November-December-2023, 7 (6)  :  109-120 
+ 
+ 
+ 
+ 
+ 
+112 
+ 
+In machine learning  systems, failure propagation  is different from that  in distributed systems of other 
+types. In MaaS settings, failures are incidental to a binary service failure, rather than the result of a gradual 
+decrease in the quality of decisions that spread via interdependent services and automated processes. These 
+propagation mechanisms are influenced by the probabilistic aspects of machine learning, screened 
+composing structure services, and rigid attachment of inference outputs to downstream control logic. 
+ 
+Machine learning  services are also commonly used in MaaS architectures as components of larger 
+processes (i.e., determining routing, prioritization, or policy enforcement). In case such services generate 
+faulty, slow, or unavailable services, the resulting failures spread along decision paths and not technical 
+interfaces. Contrary to conventional service failures, decision -based cascades do not necessarily cause 
+instant exceptions or warnings; systems still run and perform suboptimal or risky tasks. 
+ 
+Predictive parts generate predictive workflows for automated decision-making, enhancing the effects of 
+even slight model errors ( Nousias, 2021). In the long term, such failures can be compounded and cause a 
+systematic decline in multiple services. Self -healing and adaptive pipelines also add to this dynamic 
+because self-healing systems can depend on the same failing signals they are meant to fix, and this 
+reinforces feedback loop processes that increase the speed of failure propagation (Satyanarayanan, 2022). 
+ 
+Data pipelines, which are key system failure points, can be used to introduce a locus of failure spread in 
+machine-learning-dependent systems . The lack of steady data quality , slow ingestion, or any form of 
+subtle changes in distribution may cause the same changes in model behavior without clear signals of 
+failure. Because MaaS architectures can have overlapping data sources between access points of many 
+services, these disturbances can propagate through many models concurrently through parallel cascading. 
+ 
+1) 4.3 Cascades 4.3 Infrastructure and Orchestration Cascades. 
+ 
+Although decision - and data -centric failures rule the dynamics of MaaS propagation , aspects related to 
+infrastructure and orchestration layers also play an important role. Elastic scaling is presented by the 
+change in the cloud-native deployment, along with dynamic scaling and automatic recovery tools, which , 
+when not coordinated to the distribution of machine -learning loads , can result in cascading failures. 
+Resource contention, autoscaling oscillations, and latency spikes can cause problems in inference services 
+by spreading an uneven load across dependent components (Karanjkar, 12022). 
+ 
+  
+   International Journal of Scientific Research in Civil Engineering  (www.ijsrce.com) 
+Sheriff Adepoju Int J Sci Res Civil Engg. November-December-2023, 7 (6)  :  109-120 
+ 
+ 
+ 
+ 
+ 
+113 
+Table 1: Failure Propagation in Machine-Learning–Dependent MaaS Architectures 
+ 
+Failure Type 
+ 
+Propagation Mechanism 
+ 
+Affected Layers 
+ 
+Example Impact 
+ 
+Decision-
+Centric Cascade 
+ 
+Incorrect or delayed 
+inference propagates through 
+automated workflows 
+ 
+Application / 
+Decision 
+ 
+Suboptimal routing or policy 
+enforcement across multiple 
+services (Νούσιας, 2021) 
+ 
+Data-Induced 
+Cascade 
+ 
+Shifts in input data, schema 
+changes, or delayed ingestion 
+affect multiple models 
+ 
+Data / Model 
+ 
+Compounded prediction errors; 
+degradation of ensemble outputs 
+(Xing, 2020; James & Hristozov, 
+2021) 
+ 
+Infrastructure 
+Cascade 
+ 
+Cloud autoscaling, latency 
+spikes, or resource contention 
+triggers service disruptions 
+ 
+Infrastructure / 
+Orchestration 
+ 
+Delays in inference pipelines; 
+cascading timeouts (Karanjkar, 
+2022) 
+ 
+Orchestration 
+Cascade 
+ 
+Faults propagate through 
+synchronous calls and  
+ 
+Service / 
+Orchestration 
+ 
+Service chain instability; 
+uncoordinated retries (Zhou et  
+ 
+Cross-Layer 
+Amplification 
+ 
+Interactions between 
+decision, data, and 
+infrastructure failures amplify 
+impact 
+ 
+Multi-layer 
+ 
+Systemic degradation; silent 
+failures affecting multiple 
+dependent workflows (Nguyen et 
+al., 2021) 
+ 
+ 
+Circuit breakers are a resilience mechanism that is fundamental in stopping a localized failure, which leads 
+to a localized failure in other interdependent services. Circuit breakers , which were initially intended to 
+be used in service -oriented architecture and microservice architecture , check the health of a service and 
+block requests to a failed component temporarily but do not allow it to crash permanently after the failure 
+threshold is reached. When a machine-learned dependent Model-as-a-Service (MaaS) architecture design 
+is used, (circuit breakers) must be modified to deal not only with failure in service availability, but also 
+with the correction of output, latency, and reliability of decisions. 
+ 
+Conventional circuit breakers are based on evidence of failures , such as time-out or other error responses 
+to trips. However, in MaaS architectures, machine learning  could be technically accessible but could 
+generate poor, biased, or inconsistent  results. This type of failure-in-silence means that we need a more 
+comprehensive definition of circuit breakers that considers technical health together with decision fidelity. 
+Circuit breaker indicators may involve abnormal prediction distributions, ongoing worsening of 
+confidence, slow responses to inferences, or other discrepancies between model predictions and 
+anticipated business policies (Satyanarayanan, 2022). 
+   International Journal of Scientific Research in Civil Engineering  (www.ijsrce.com) 
+Sheriff Adepoju Int J Sci Res Civil Engg. November-December-2023, 7 (6)  :  109-120 
+ 
+ 
+ 
+ 
+ 
+114 
+ 
+The use of circuit breakers in systems whose functionality relies on machine learning presents unique 
+architectural challenges. In contrast to standard service failures, intelligent service degradation is usually 
+progressive and necessitates adaptive thresholds and dynamic analysis with a window. Monitoring 
+implementation should be context -driven and involve a combination of data drift, model behavior, and 
+sensitivity of downstream dependencies (Xing, 2020). Moreover, distributed implementations of MaaS can 
+use chain or ensemble models, whereby the triggering of a circuit breaker in a single service impacts the 
+activities of other workflows down the chain. Coordination strategies are necessary to mitigate cascading 
+isolation or redundant disruption of services (Zhou et al., 2018). 
+ 
+Infrastructure-level scale mechanisms also play a role in circuit breakers. Elastic cloud environments can 
+hide the existence of service degradation through the process of scaling resources ; however,  when the 
+model performance is unknown, scaling can be insufficient to avoid decision -path failures (Karanjkar, 
+2022). Therefore, machine -learning-dependent service circuit breakers must cross-cut between layers, 
+measuring data integrity, model outputs, orchestration behavior, and infrastructure performance to offer 
+multidimensional protection. 
+ 
+Suppose that a preferred forecasting routing service is part of the MaaS process. If the model starts 
+providing irrelevant outputs because of changes in the input data, a regular service health check would not 
+identify the decline. The circuit breaker , which is sensitive to output distributions, could depend on the 
+output to automatically channel requests to one of the fallback models or default routing logics that do not 
+propagate the anomaly among other services. This would guarantee further operational performance, 
+minimize the threat of failure of the entire system, and the affected model could be maintained or 
+retrained without stopping the entire system. 
+ 
+Therefore, circuit breakers are resilience-first-line elements in machine-learn-based MaaS architectures . 
+They absorb the effects of failures, allow safe experimentation and updates, and complement  other 
+resilience strategies such as fallback mechanisms and graceful degradation. As decision quality and model 
+behavior are finally explicitly included in the evaluation criteria of the circuit breakers, they become 
+intelligent and aware of protective patterns and are not confined to infrastructure-based protection. 
+ 
+In the context of Model -as-a-Service (MaaS) architectures, circuit  breakers are also critically 
+supplemented by fallback strategies that offer backup mechanisms to discontinue operations when 
+primary services are slower or break down. Whereas circuit breakers are used to physiologically separate 
+failed components, fallback mechanisms are used to continue the workflow with a reduced or estimated 
+capacity. The fallback  mechanism in machine -learning-dependent systems should support the 
+probabilistic characteristics of machine -learned outputs, structure of service dependencies, and semantics 
+of somewhat weak predictions. 
+ 
+Fallbacks: These are some of the preconfigured alternative services or default outputs that are offered 
+when the default model is broken or considered untrustworthy. For example, a routing service can regress 
+   International Journal of Scientific Research in Civil Engineering  (www.ijsrce.com) 
+Sheriff Adepoju Int J Sci Res Civil Engg. November-December-2023, 7 (6)  :  109-120 
+ 
+ 
+ 
+ 
+ 
+115 
+to a rule -based algorithm when the predictive model is beyond the error limits. Fallbacks are static and 
+easy to implement, but they can be expensive in terms of  performance or decision-making accuracy 
+(Ranjani, 2021). 
+ 
+Dynamic Fallbacks: These methods choose alternative services or models under real-time conditions of the 
+system, quality of the data , or pattern of the workloads. Dynamic fallbacks respond to different 
+operational conditions to reduce the effect of failed applicants by assessing various candidate models or 
+services at any given time (Satyanarayanan, 2022). 
+ 
+Circuit breakers are strongly intertwined with fallback plans. In case of instability of the model or poor 
+quality of the output of the circuit breaker, fallback mechanisms are attempted to divert the requests to 
+other services, simpler models, or default workflows. It is combined in a way that reaches the decision 
+path cascades and scans the likelihood of systemic failure. An example is the collapse of an upstream 
+predictive service that is compensated by directing inputs to an unsophisticated yet resilient downstream 
+model so that the entire workflow does not fail (Satyanarayanan, 2022; Zhou et al., 2018). 
+ 
+To develop successful fallback plans in machine-learning-based systems, several considerations should be 
+carefully considered. 
+ 
+a) Dependency Sensitivity : Fallback is expected to work with downstream services to prevent the 
+introduction of other errors (James and Hrist ozov, 2021).  
+b) Operational Priorities : There  must  be  trade-offs   in  accuracy, latency ,  and functional continuity.  
+c) Monitoring and Adaptation :  Constant  monitoring of fallback performance is essential to  ensure  
+that the approximations can be accepted over time and when the system conditions change (Xing, 
+2020).  
+d) Resource Management : Dynamic fallbacks can be extra computational or storage resources  that must  
+be automatically controlled to avoid cascades associated with resource utilization (Karanjkar, 2022).  
+ 
+Figure 1 : The Below Diagram shows the Resilience Strategies in Machine-Learning-Dependent Systems 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   International Journal of Scientific Research in Civil Engineering  (www.ijsrce.com) 
+Sheriff Adepoju Int J Sci Res Civil Engg. November-December-2023, 7 (6)  :  109-120 
+ 
+ 
+ 
+ 
+ 
+116 
+ 
+ 
+ 
+ 
+In addition to problem failures, information and infrastructure failures, machine-learning-reliant systems 
+are prone to failures caused by security threats, privacy limitations, and restrictions guided by policies. 
+These components open up special propagation pathways, since the disruption may be a compliance , 
+adversarial, or regulatory action, not necessarily a technical malfunction. Knowledge of these cascade 
+modes is critical for designing an MaaS architecture that is not only robust to operational failure but also 
+to socio-technical pressure. 
+ 
+Failure modes in systems that rely on machine learning  can spread failures in a manner similar  to 
+traditional infrastructure cascades and can be even more severe. For example, inputs can be corrupted, 
+inference outputs can be manipulated, and essential services can be shut down when an unauthorized 
+person accesses or exploits a model endpoint. When implemented in microservices and MaaS, the effect 
+can propagate along chained models or workflows and on upstream and downstream services (Yarygina 
+and Bagge, 2018). Industrial IoT systems and SCADA environments both provide empirical data that 
+compromised nodes can cause a cascading impact on interconnected services when they share data or 
+control signals (Tariq et al., 2019; Pal and Jadidi, 2021). 
+ 
+The problems with privacy hand it in with a more low key, yet no less substantial, ripple effects. Cascaded 
+privacy policies (e.g., anonymization, data masking, or access control) by automated decision pipelines that 
+operate on sensitive data could be imposed, impacting all services that are dependent on them. As shown 
+by Adjerid et al. (2019), privacy -related choice architecture can enhance subsequent limitations and even 
+cause service degradation in the absence of conventional faults. Cascades related to privacy can be realized 
+in machine-learning-dependent processes in terms of lower data quality, decreased feature accessibility, or 
+distorted system predictions, which can potentially negatively affect the accuracy of decisions and overall 
+system reliability. 
+ 
+There may be other pathways in the cascade of restricting factors that may be policy as an element, for 
+example, the need to comply with regulatory requirements, audit requirements, or contractual obligations. 
+Dependent workflows may be delayed or have degraded functionality when a service fails to perform its 
+duties because it has to throttle, halt , or alter its outputs to meet a policy requirement. They become 
+especially pronounced in settings where machine learning  outputs become a critical part of either a 
+business or a controversial area, that is, financial decision-making, health robotization, or safety -critical 
+industry (Núsias, 2021; Satyanarayan, 2022). 
+ 
+Despite the rich developments in the resilience engineering of distributed systems, machine -learning-
+driven model-as-a-service (MaaS) architectures pose new and unsolved challenges. These issues are due to 
+the probabilistic nature of the models, structural dependency models, multi-layered propagation schemes, 
+   International Journal of Scientific Research in Civil Engineering  (www.ijsrce.com) 
+Sheriff Adepoju Int J Sci Res Civil Engg. November-December-2023, 7 (6)  :  109-120 
+ 
+ 
+ 
+ 
+ 
+117 
+and socio-technical barriers, such as  security, privacy, and policy containment. These issues must be 
+addressed to guarantee the stability, reliability, and operational continuity of modern intelligent systems. 
+ 
+Omnipresent protection is achieved using  circuit breakers, fall -back, and graceful degradation programs, 
+mostly on the assumption of observable deterministic failures. Services operating on machine learning 
+have a silent failure mode, in which the output is grammatically (but semantically) incorrect. This causes 
+on-blind monitoring and fault containment approaches, which diminish their performance. In addition, 
+error propagation is aggravated by multi-model chains, ensemble architectures, and feedback loops, which 
+pose a challenge to contemporary resilience designs (James and Hristozov, 2021; Satyanarayanan, 2022). 
+ 
+The non -determinism and operational dynamism of MaaS systems make testing their resiliency a 
+complicated task. Simulation-based methods may be unable to reflect real -world drift, model adaptation, 
+or changes in behavior as they arise due to policies. In addition, stress testing chained or ensemble models 
+without side effects is not a simple task (Zhou et al., 2018; Karanjkar, 2022). 
+ 
+New areas of research are currently under development , such as multi -layer, proactive, and adaptive 
+resilience mechanisms, such as: 
+ 
+a) Intelligence-psychic monitoring schemes that fuse output faithfulness, choice-path integrity ,  and 
+dependency effect  studies .  
+b) Cascading failure cross- usually interfering simulating and testing platforms, data, model, 
+infrastructural, and socio-technical considerations  
+c) Evolutionary code orchestration and self-driving pipelines with constantly varied workflows  are  
+adjusted with immediate failure predictions.  
+d) Probabilistic failure propagation, uncertainty in decisions made ,  and  mitigation effectiveness  are 
+formal resilience models.  
+ 
+Table 2 : Key Challenges and Research Directions for Cascade-Resilient MaaS Architectures 
+ 
+Challenge 
+ 
+Description 
+ 
+Potential Research Direction 
+ 
+Silent Failures 
+ 
+Model outputs degrade without 
+triggering conventional service 
+errors 
+ 
+Develop intelligence -aware monitoring and 
+anomaly detection frameworks 
+(Satyanarayanan, 2022) 
+ 
+Multi-Model 
+Dependency 
+Amplification 
+ 
+Errors propagate across chained or 
+ensemble models 
+ 
+Design cascade -aware orchestration and 
+adaptive fallback strategies (James & 
+Hristozov, 2021) 
+ 
+Cross-Layer Cascade 
+Complexity 
+ 
+Interactions between data, model, 
+infrastructure, and policy layers 
+amplify failures 
+Create simulation platforms for integrated 
+multi-layer failure analysis (Xing, 2020; 
+Nguyen et al., 2021) 
+   International Journal of Scientific Research in Civil Engineering  (www.ijsrce.com) 
+Sheriff Adepoju Int J Sci Res Civil Engg. November-December-2023, 7 (6)  :  109-120 
+ 
+ 
+ 
+ 
+ 
+118 
+  
+Metrics and 
+Quantification Gaps 
+ 
+Traditional system metrics do not 
+capture decision -quality 
+degradation 
+ 
+Define formal resilience metrics integrating 
+accuracy, confidence, and systemic impact 
+(Zhou et al., 2018) 
+ 
+Testing and 
+Validation 
+ 
+Non-determinism and dynamic 
+contexts make stress -testing 
+difficult 
+ 
+Develop scenario -based and adaptive testing 
+approaches for intelligent workflows 
+(Karanjkar, 2022) 
+ 
+Socio-Technical 
+Cascades 
+ 
+Security breaches, privacy 
+restrictions, and policy 
+enforcement induce unexpected 
+failures 
+ 
+Incorporate policy - and security -aware 
+fallback and degradation mechanisms 
+(Yarygina & Bagge, 2018; Adjerid et al., 2019) 
+ 
+ 
+Machine-learning-related Model -as-a-Service (MaaS ) designs are a revolutionary change in distributed 
+systems that deliver smart, automated decision-making in complex workflows. The integration of machine 
+learning as a runtime dependency has been added  to the existing cascading failure modes beyond 
+traditional infrastructure failure modes. Issues can widen in the lines of decisions, data streams, machine 
+setups, and socio-technical restrictions, expanding risks and disrupting operational procedures. 
+ 
+This study systematically evaluated the dynamics of failure  and outlined the resilience mechanisms that 
+are unique to systems that depend on machine learning. Circuit breakers have been rethought in terms of 
+their monitoring service availability  and decision fidelity to allow the isolation of sick models at an early 
+stage. Fallback strategies were described as novel and goal-saving strategies that maintain the continuity of 
+work even in degraded conditions. The mechanisms of graceful degradation are placed as managed 
+degradations in decision fidelity , enabling systems to run safely and reliably despite the existence of 
+uncertainties. The discussion was also extended to the concepts of security, privacy, and cascades because 
+of policy formulation and the significance of multi-dimensional socio-technical resilience. 
+ 
+This research highlights the imminent importance of intelligence -mindful resilience engineering through 
+the synthesis of  cascading failure theory  and distributed systems study, and how machine -learning-
+established patterns of deployments ought to be. The identified challenges and directions of research have 
+also yielded silent failures, multi -model dependency amplification, cross -layer complexity, and gaps in 
+metrics and validation, which emphasize the open opportunities for exploration and innovation in the 
+future. Indeed, the proactive incorporation of circuit breakers, fallback, and graceful degradation into the 
+MaaS architecture can enable organizations to predict and alleviate cascading failures, enabling even vital 
+workflows to work effectively, even in cases where machine-learning elements act unreliably. 
+References 
+ 
+   International Journal of Scientific Research in Civil Engineering  (www.ijsrce.com) 
+Sheriff Adepoju Int J Sci Res Civil Engg. November-December-2023, 7 (6)  :  109-120 
+ 
+ 
+ 
+ 
+ 
+119 
+1. Kim, H. S., & Lee, S. W. (2018). Dependability -enhanced unified modeling and simulation 
+methodology for  critical   infrastructure .   Information and Software Technology ,   102 , 175 -192. 
+https://doi.org/10.1016/j.infsof.2018.06.002  
+2. Souza, E., & Moreira, A. (2018, April). Deriving services from KAOS models. In   Proceedings of the 
+33rd Annual ACM Symposium on Applied Computing  (pp. 1308 -1315).  
+https://doi.org/10.1145/3167132.3167273 
+3. Νούσιας, Ν. (2021). Business process and decision automation: end -to-end deployment with a 
+BPMN and DMN-based workflow engine.  http://dspace.lib.uom.gr/handle/2159/25185 
+4. James, T., & Hristozov, D. (2021). Deep learning and computational chemistry. In   Artificial 
+Intelligence in Drug Design  (pp. 125 -151). New York, NY: Springer US.  
+https://doi.org/10.1007/978-1-0716-1787-8_5  
+5. Koch, A. (2021). Proceedings of the 17TH International Congress on Circumpolar Health, August 
+12–15, 2018, Copenhagen, Denmark (ICCH17).   International Journal of Circumpolar Health ,   80 
+(sup1), 1893013.  https://doi.org/10.1080/22423982.2021.1893013 
+6. Xing, L. (2020). Cascading failures in Internet of Things: Review and perspectives on reliability and 
+resilience.  IEEE Internet of Things Journal ,   8 (1), 44 -64.  
+https://doi.org/10.1109/JIOT.2020.3018687 
+7. Pappula, K. K. (2022). Architectural Evolution: Transitioning from Monoliths to Service -Oriented 
+Systems.  International Journal of Emerging Research in Engineering and Technology ,  3 (4), 53-62.  
+https://doi.org/10.63282/3050-922X.IJERET-V3I4P107 
+8. Pitakrat, T., Okanović, D., Van Hoorn, A., & Grunske, L. (2018). Hora ,  Architecture -aware online 
+failure prediction ,   Journal of Systems and Software ,   137 , 669 -685.  
+https://doi.org/10.1016/j.jss.2017.02.041 
+9. Karanjkar, R. (2022). Resiliency Testing in Cloud Infrastructure for Distributed 
+Systems.  International Journal of Research Publications in Engineering, Technology and 
+Management (IJRPETM) ,  5 (4), 7142-7144.  https://doi.org/10.15662/IJRPETM.2022.0504007 
+10. Koneru, S. H.,  &  Avireneni,  T., Yelkoti, N. K. K. R., & Khaga, S. P. Y. (2021). Cloud -Native  
+Microservices  Architecture.   International Journal of Emerging Trends in Computer Science and 
+Information Technology ,  2 (4), 86-94.  https://doi.org/10.63282/3050-9246.IJETCSIT-V2I4P110 
+11. Zhou, X., Peng, X., Xie, T., Sun, J., Ji, C., Li, W., & Ding, D. (2018). Fault analysis and debugging of 
+microservice systems: Industrial survey, benchmark system, and empirical study.  IEEE Transactions 
+on Software Engineering ,  47 (2), 243-260.  https://doi.org/10.1109/TSE.2018.2887384 
+12. Power, A., & Kotonya, G. (2018, June). A microservices architecture for reactive and proactive fault 
+tolerance in iot systems. In   2018 IEEE 19th International Symposium on" A World of Wireless, 
+Mobile and Multimedia Networks"(WoWMoM)  (pp. 588 -599). IEEE.  
+https://doi.org/10.1109/WoWMoM.2018.8449789 
+13. Enjam, G. R., & Tekale, K. M. (2020). Transitioning from Monolith to Microservices in Policy 
+Administration.  International Journal of Emerging Research in Engineering and Technology ,  1 (3), 
+45-52.  https://doi.org/10.63282/3050-922X.IJERETV1I3P106 
+   International Journal of Scientific Research in Civil Engineering  (www.ijsrce.com) 
+Sheriff Adepoju Int J Sci Res Civil Engg. November-December-2023, 7 (6)  :  109-120 
+ 
+ 
+ 
+ 
+ 
+120 
+14. Satyanarayanan, A. (2022). Foundational Framework Self-Healing Data Pipelines for AI Engineering: 
+A Framework and Implementation.   International Journal of Artificial Intelligence, Data Science, 
+and Machine Learning ,  3 (1), 63-76.  https://doi.org/10.63282/3050-9262.IJAIDSML-V3I1P107 
+15. Brefort, D., Shields, C., Jansen, A. H., Duchateau, E., Pawling, R., Droste, K., ... & Kana, A. A. (2018). 
+An architectural framework for distributed naval ship systems.  Ocean Engineering ,  147 , 375-385.  
+https://doi.org/10.1016/j.oceaneng.2017.10.028 
+16. Adjerid, I., Acquisti, A., & Loewenstein, G. (2019). Choice architecture, framing, and cascaded 
+privacy choices.  Management science ,  65 (5), 2267-2290.  https://doi.org/10.1287/mnsc.2018.3028 
+17. Yarygina, T., & Bagge, A. H. (2018, March). Overcoming security challenges in microservice 
+architectures. In  2018 IEEE Symposium on Service -Oriented System Engineering (SOSE)  (pp. 11-
+20). IEEE.  https://doi.org/10.1109/SOSE.2018.00011 
+18. Ranjani, S. (2021). Design patterns for scalable microservices in banking and insurance systems: 
+insights and innovations.   International Journal of Emerging Research in Engineering and 
+Technology ,  2 (1), 17-26.  https://doi.org/10.63282/3050-922X.IJERET-V2I1P103 
+19. Tariq, N., Asim, M., & Khan, F. A. (2019). Securing SCADA -based critical infrastructures: 
+Challenges and open issues.   Procedia computer science ,   155 , 612 -617.  
+https://doi.org/10.1016/j.procs.2019.08.086 
+20. Pal, S., & Jadidi, Z. (2021). Analysis of security issues and countermeasures for the industrial 
+internet of things.  Applied Sciences ,  11 (20), 9393.  https://doi.org/10.3390/app11209393 
+21. Zuccaro, G., De Gregorio, D., & Leone, M. F. (2018). Theoretical model for cascading effects 
+analyses.  International journal of disaster risk reduction ,   30 , 199 -215.  
+https://doi.org/10.1016/j.ijdrr.2018.04.019 
+22. Bandur, V., Selim, G., Pantelic, V., & Lawford, M. (2021). Making the case for centralized 
+automotive E/E architectures.   IEEE Transactions on Vehicular Technology ,   70 (2), 1230 -1245.  
+https://doi.org/10.1109/TVT.2021.3054934 
+23. Nguyen, T. N., Liu, B. H., Nguyen, N. P., Dumba, B., & Chou, J. T. (2021). Smart grid vulnerability 
+and defense analysis under cascading failure attacks.  IEEE Transactions on Power Delivery ,  36 (4), 
+2264-2273.  https://doi.org/10.1109/TPWRD.2021.3061358  
+ 

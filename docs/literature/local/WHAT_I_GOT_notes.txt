@@ -1,0 +1,23 @@
+
+1. MicroRCA-Agent (Tang et al., 2025)
+What I got: I got the exact system architecture needed for my AI Agent Copilot. I learned that I cannot feed raw data to an LLM without causing hallucinations. Instead, I got a proven blueprint: use the Drain algorithm to compress logs into templates, use Isolation Forests to filter trace anomalies, and use strict cross-modal prompts to force the LLM to output a structured JSON report (Component, Reason, Trace).
+2. A Comprehensive Survey on Root Cause Analysis (Wang & Qi, 2024)
+What I got: I got a deep understanding of the "alert storm" problem and how failures cascade through microservices. I learned that current state-of-the-art models either suffer from massive computational complexity or completely lack explainability. This gave me the exact justification for why my project’s hybrid approach (Lightweight Event Graphs + LLM Agents) is highly necessary.
+3. AI for Microservice Monitoring & Anomaly Detection (Podduturi, 2025)
+What I got: I got the core argument for why I am using an LLM instead of Deep Learning. I learned that while Deep Learning models (like LSTMs) are highly accurate at detecting anomalies, they act as "black boxes." Because human engineers cannot trust unexplainable AI, I realized my system must include an LLM Agent to translate the math into human-readable reasoning.
+4. CHASE: Causal Hypergraph Framework (Zhao et al., 2024)
+What I got: I learned how to structure a multimodal invocation graph. I got a clear understanding of how to map out a system where nodes represent microservices and edges represent API calls, and how to attach metric and log data directly to those specific nodes to track where the failure started.
+5. Chain-of-Event (Yao et al., 2024)
+What I got: I got the mathematical foundation for my "Probabilistic Cascading Failure Prediction." Instead of using heavy, slow causal discovery math, I learned how to abstract raw anomalies into discrete "events" (e.g., "High CPU on Service A") to build a Naive Event-Causal Graph (NEG). I learned how to score these events to calculate the exact probability of one event triggering another.
+6. Few-Shot Cross-System Anomaly Trace Classification (Wang et al., 2024)
+What I got: I got the exact open-source datasets I need to build my project. This paper pointed me directly to the DeepTraLog and Nezha benchmark datasets, which already contain ready-to-use injected faults (like CPU contention and network delays) and the exact multimodal data (logs, metrics, traces) required to test my model.
+7. Graph Neural AI with Temporal Dynamics (Zhang et al., 2025)
+What I got: I got a strong theoretical understanding of how anomalies propagate. I learned the difference between spatial propagation (how an error jumps from an upstream service to a downstream database) and temporal evolution (how an error gets worse over time). I will use this theory to explain the "cascading" part of my project to my professors.
+8. Hybrid Root Cause Analysis for Partially Observable Microservices (Erakovic & Pahl, 2025)
+What I got: I got a set of practical, rule-based heuristics for finding root causes when server metrics are hidden. I learned specific rules—for example, a rapid latency spike across shared components means "CPU Exhaustion," while widespread latency spikes mean a "Host Network Error." I can code these rules as a backup detection method.
+9. Real-Time Context-Aware Microservice Architecture (Ortiz et al., 2019)
+What I got: I got a clear strategy for harmonizing streaming data. Because logs, metrics, and traces arrive at different times and in different formats, I learned how to align them using fixed time windows and message brokers. This ensures my data is perfectly synchronized before it reaches the AI.
+10. Observability in Microservices (Faseeha et al., 2025)
+What I got: I got a strong grasp of industry-standard observability terminology. I learned how to correctly categorize the "Three Pillars of Observability" (Logs, Metrics, Traces) across the System, Service, and Network levels. This gives me the professional vocabulary I need for my project presentation and final report.
+11. Root Cause Analysis based on Causal Inference: How Far Are We? (Pham et al., 2024)
+What I got: I got the ultimate empirical proof to defend my project's simplified scope. If my professors ask why I didn't use advanced traditional math (like the PC-Algorithm or Granger causality), I learned from this paper that those algorithms fail on large real-world systems, taking hours to run or crashing completely. This proves my lightweight "Event-Based" approach is the right choice for a real-time system.

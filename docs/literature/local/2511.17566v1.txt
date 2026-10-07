@@ -1,0 +1,1330 @@
+Root Cause Analysis for Microservice Systems via
+Cascaded Conditional Learning with Hypergraphs
+Shuaiyu Xie 1,*, Hanbin He 1,*, Jian Wang 1,2,†, Bing Li 1,2,†
+1Wuhan University, Wuhan, China
+2Zhongguancun Laboratory, Beijing, China
+Email: theory@whu.edu.cn, hhbsgsh@whu.edu.cn, jianwang@whu.edu.cn, bingli@whu.edu.cn
+Abstract—Root cause analysis in microservice systems typically
+involves two core tasks: root cause localization (RCL) and
+failure type identification (FTI). Despite substantial research
+efforts, conventional diagnostic approaches still face two key
+challenges. First, these methods predominantly adopt a joint
+learning paradigm for RCL and FTI to exploit shared informa-
+tion and reduce training time. However, this simplistic integration
+neglects the causal dependencies between tasks, thereby impeding
+inter-task collaboration and information transfer. Second, these
+existing methods primarily focus on point-to-point relationships
+between instances, overlooking the group nature of inter-instance
+influences induced by deployment configurations and load bal-
+ancing. To overcome these limitations, we propose CCLH, a
+novel root cause analysis framework that orchestrates diagnostic
+tasks based on cascaded conditional learning. CCLH provides
+a three-level taxonomy for group influences between instances
+and incorporates a heterogeneous hypergraph to model these
+relationships, facilitating the simulation of failure propagation.
+Extensive experiments conducted on datasets from three mi-
+croservice benchmarks demonstrate that CCLH outperforms
+state-of-the-art methods in both RCL and FTI.
+Index Terms—Microservice, Root cause analysis, Cascaded
+conditional learning, Hypergraph
+I. INTRODUCTION
+Microservice architecture has been widely adopted by
+cloud-native enterprises due to its flexibility, scalability, and
+loose coupling. In microservice systems (MSS), each microser-
+vice typically reproduces multiple instances, which collaborate
+with instances affiliated with other microservices to handle
+user requests [1], [2]. As these systems scale up, they may
+suffer from reliability issues, aka failures, attributable to the
+increasing complexity and dynamicity. Worse still, diagnosing
+failures in microservice systems is labor-intensive and time-
+consuming, due to the intricate failure propagation and the
+overwhelming volume of telemetry data. For example, GitHub
+once took approximately one and a half hours to resolve a
+failure that disrupted the codespace service, affecting millions
+of developers and repositories [3].
+Traditional root cause analysis (RCA) in MSS encompasses
+two tasks: root cause localization (RCL) and failure type
+identification (FTI). Site Reliability Engineers (SREs) need
+to dissect excessive telemetry data to pinpoint the culprit
+component (e.g., the codespace service) and infer the failure
+* Shuaiyu Xie and Hanbin He contributed equally to this work.
+† Jian Wang and Bing Li are the corresponding authors.
+type (e.g., CPU overload). It remains a laborious and error-
+prone endeavor, even for veteran SREs. To alleviate the burden
+on SREs and achieve prompt recovery, AIOps researchers have
+explored various automated RCA methods, reducing human
+intervention in RCL [4]–[6] and FTI [7], [8]. Furthermore,
+some recent works have sought to jointly optimize these two
+tasks by incorporating deep learning-based methods, aiming to
+capture shared representations and reduce repetitive processing
+efforts [1], [9], [10].
+Although existing multitask learning techniques perform
+competitively in RCA, several challenges persist.The most
+critical issue arises from the insufficient exploitation of
+group-level relationships between microservice instances.
+In MSS, microservices typically spawn multiple instances
+deployed across distributed hosts to support scalability and
+fault tolerance. However, the distributed nature and the load
+balancing mechanism complicate the propagation of failures
+between instances. For example, we assume a scenario where
+an instance with a high CPU limit encounters CPU overhead.
+This can have two cascading effects. On the one hand,
+the performance degradation of this instance may affect all
+upstream instances that maintain synchronous communication
+with it. On the other hand, an excessively high CPU limit
+can preempt more CPU time, degrading the performance of
+other co-located instances on the shared host. Ultimately,
+the overwhelmed instance may incur a failure state. As a
+result, the load-balancing mechanism will route traffic to other
+instances affiliated with the same microservice, further exac-
+erbating their resource shortages. Most existing methods focus
+exclusively on call-level influences [4], [11]. Moreover, they
+often oversimplify inter-instance influences as point-to-point
+relationships, overlooking complex group-level interactions
+such as resource contention among co-located instances.
+The second issue lies in the parallel learning mechanism
+adopted for the diagnostic tasks. Current multitask diagnos-
+tic methods ignore the inherent causal order between diagnos-
+tic tasks like RCL and FTI, leading to a disconnect between the
+identified culprit components and their corresponding failure
+types. For example, recent practices such as DiagFusion [10]
+and TVDiag [1] simultaneously optimize RCL and FTI by
+performing a weighted sum of their losses in an objective
+function. However, optimizing diagnostic tasks in parallel
+deviates from the intrinsic intuition of SREs in real-world
+arXiv:2511.17566v1  [cs.LG]  14 Nov 2025
+scenarios. Since a microservice failure can trigger broader
+system anomalies due to the ripple effect, SREs typically begin
+by localizing the culprit component to eliminate interference
+from the excessive failure noise. Only after identifying the
+culprit component do they perform a more focused analysis
+of its telemetry data to determine the specific failure type [12].
+Therefore, it is more practical to design a sequential diagnosis
+approach that first performs root cause localization, followed
+by failure type identification. Such a design better reflects real-
+world diagnostic workflows and improves the interpretability
+and reliability of failure diagnosis.
+In addressing these concerns, we propose CCLH, a root
+cause analysis framework designed to pinpoint culprit compo-
+nents and further classify the types of their failures. CCLH
+consists of three stages: (1)Multimodal Feature Extrac-
+tion. Given heterogeneous multimodal telemetry data, CCLH
+extracts and fuses the temporal features of each modality
+using gated recurrent units (GRUs) and cross-modal atten-
+tion mechanisms (section IV-B). (2)Hypergraph-based Status
+Fusion. We provide a three-level taxonomy for the diverse
+relationships between instances. More specifically, we utilize
+a hypergraph to fuse all instance status through heteroge-
+neous hyperedges, endowing CCLH with the elaborate ability
+to perceive group influences (section IV-C). (3)Cascaded
+Conditional Learning and Diagnosis. Recognizing the inher-
+ent causal order between diagnostic tasks, CCLH devises a
+cascaded conditional learning mechanism to orchestrate tasks
+during both training and inference phases, facilitating inter-
+task collaboration and information transfer (section IV-D). The
+major contributions of CCLH can be summarized as follows:
+•We present CCLH, a root cause analysis framework
+that coordinates different diagnostic tasks via a cascaded
+conditional learning mechanism.
+•We introduce a three-level taxonomy for the diverse rela-
+tionships between instances and design a heterogeneous
+hypergraph to perceive group influences in RCA.
+•Extensive experiments are conducted on a public dataset
+and two popular microservice systems.
+II. BACKGROUND
+A. Root Cause Analysis in MSS
+Basic Concepts. The microservice architecture decomposes
+traditional monolithic software into granular and loosely cou-
+pled service units. Although the paradigm shift indeed facili-
+tates the development process, it inevitably introduces failures
+due to unprecedented complexity and dynamicity.Failuresare
+unexpected incidents characterized by performance degrada-
+tion or even service outages within MSS [5]. To avoid financial
+loss and reputational damage, SREs must promptly diagnose
+failures and implement appropriate recovery strategies after
+detecting anomalies [1], [13]. The life cycle of root cause
+analysis (RCA) involves root cause localization (RCL) and
+failure type identification (FTI). The goal of RCL is to locate
+the culprit component, namely the originating instance respon-
+sible for the current failure. FTI follows as the subsequent
+step, where SREs infer the underlying failure reason (e.g., file
+descriptor exhaustion) of the identified component. Failures of
+the culprit component can propagate to other instances through
+sophisticated inter-instance relationships, such as synchronous
+calls, resource contention, and load balancing, rendering RCA
+a laborious and error-prone task, even for experienced SREs.
+This highlights the need for an automated diagnostic tool
+capable of accurately narrowing the range of candidate mi-
+croservices and determining the corresponding failure types.
+Multimodal Telemetry Data. After failures are detected,
+the foremost step is to acquire failure-related telemetry to
+prepare for the subsequent diagnosis. Telemetry data, which
+includes metrics, traces, and logs, serves as the cornerstone
+of observability in the MSS. Metrics capture the key per-
+formance indicators in the form of time series. Traces are
+tree-like structures that record the processing trajectory of
+requests and the execution status of microservices in MSS.
+Logs document system events with timestamps, messages,
+and recorders, typically in a semi-structured format. Although
+telemetry offers significant practical benefits, the sheer volume
+of data leaves SREs preoccupied with filtering and processing,
+thereby impeding their ability to rapidly consolidate failure-
+related information.
+Problem Formulation. Given metricsM, tracesT, and
+logsL, we group and transform them into a set of features
+H={h M
+v ,hT
+v,hL
+v|v∈ V}, whereVdenotes the set of
+instances and
+ 
+hM
+v ,hT
+v,hL
+v
+
+denotes the processed features
+of metrics, traces, and logs from instancev. Subsequently,
+we aim to design an automated approachDfor root cause
+analysis, which assigns scores to all instances, indicating their
+likelihood of being the culprit component. Furthermore, the
+approachDanatomizes the predicted culprit component for
+failure type identification. The process can be formulated as
+D(H)→t,S, whereS={s 1,s 2,...,s v|v∈ V}denotes
+scores of all instances, andtrepresents the failure type.
+B. Hypergraph
+Typically, instances within MSS manifest group relation-
+ships rather than isolated pairwise patterns. For example, the
+co-located instances, which are deployed on the same host,
+often compete for shared resources, including CPU time,
+memory, and network bandwidth. An improper configuration
+of an instance may induce collective starvation, thereby af-
+fecting all co-located instances. Similarly, when a particular
+instance crashes, the resulting traffic is distributed across
+multiple remaining instances under the same microservice.
+Such group-affecting behaviors are difficult to capture solely
+using traditional graph structures that restrict connections as
+point-to-point relationships (i.e., A is connected to B).
+Hypergraphs, which allow each edge to link any number
+of vertices, inherently capture these group relationships. For-
+mally, a hypergraph is defined asHG= (V,E), whereV
+denotes the set of nodes, andEis the set of hyperedges,
+each representing a subset of interacting nodes. This distinctive
+structure effectively represents the many-to-many relationships
+inherent in MSS, such as resource contention and load balanc-
+0 100 200 300 400 500 600
+Time (s)
+0
+200
+400
+600
+800P90 Latency (ms)
+Inject delay Remove delay
+recommendation-1
+frontend-0
+frontend-1
+productcatalog-0
+(a) Call relationship
+0 200 400 600 800 1000 1200
+Time (s)
+0
+50
+100
+150
+200P90 Latency (ms)
+Add workloads to currency-0
+0
+20
+40
+60
+80
+CPU usage
+recommendation-0&p90
+productcatalog-0&p90
+recommendation-0&CPU
+productcatalog-0&CPU (b) Deployment relationship
+100 200 300 400 500 600
+Time (s)
+0
+50
+100
+150
+200P90 Latency (ms)
+kill recommendation-2
+5
+10
+15
+20
+25
+QPS
+recommendation-0&p90
+recommendation-1&p90
+recommendation-2&p90
+recommendation-0&qps
+recommendation-1&qps
+recommendation-2&qps (c) Load balancing relationship
+Fig. 1. The group relationships between instances.
+frontend
+recommendation productcatalog
+currencycheckout
+carts redisshipping
+Fig. 2. Part of call relationships in Online Boutique.
+ing. To handle the complexities and expressiveness of hyper-
+graphs, many studies [14]–[17] have made initial endeavors in
+the development of hypergraph neural networks (HGNNs), a
+deep learning architecture tailored to hypergraph learning. Due
+to the superiority of HGNNs in hypergraph learning, CCLH
+implements HGNNs based on a popular framework, namely
+UniGAT [16], and further incorporates heterogeneous hyper-
+edges to individualize different group relationships between
+instances.
+III. OBSERVATIONS ANDINSIGHTS
+In this section, we investigate two key aspects of root cause
+analysis: the group relationships between instances and the
+causal relationships between diagnostic tasks in root cause
+analysis. Our observations are based on experiments conducted
+using a widely adopted microservice system, OnlineBoutique
+[18]. Fig. 2 shows the partial call relationships in the system.
+We deploy Online Boutique in a local cluster and initialize sev-
+eral instances for each microservice. For example, “frontend-
+0” and “frontend-1” are two subordinate instances of the
+“frontend” microservice.
+A. Group relationships between instances
+In traditional monolithic software, failures propagate be-
+tween functions in a linear and point-to-point manner. In
+contrast, in MSS, failure propagation among instances often
+manifests an explosive pattern, where multiple instances, both
+directly and indirectly associated, are affected simultaneously.
+This is largely due to the diverse group relationships that exist
+among instances in MSS. In this section, we summarize three
+typical group relationships and their corresponding failure
+patterns, including call, deployment, and load balancing.
+Call. As shown in Fig. 1 (a), we inject the network delay
+into the instance “recommendation-1”, which results in a
+significant increase in latency, thus degrading the performance
+of all upstream callers (“frontend-0” and “frontend-1”). In
+contrast, the downstream instance “productcatalog-0” remains
+unaffected, maintaining stable latency due to the directional
+nature of the call relationship.
+Deployment. Co-located instances deployed on the same
+host are logically independent but compete for shared re-
+sources such as CPU. We deploy three instances, including
+“recommendation-0”, “productcatalog-0”, and “currency-0”,
+on a resource-limited host. Note that “currency-0” has no
+direct call relationships with the other two instances. To
+examine the impact of resource contention, we send requests to
+all instances while progressively increasing the traffic load on
+“currency-0”. We also lift the resource limits on “currency-0”
+to simulate failures caused by unrestrained resource alloca-
+tion. Fig. 1 (b) illustrates the fluctuation of host resources
+and instance performance. As CPU usage of “currency-0”
+increases, “recommendation-0” and “productcatalog-0” incur
+a significant performance degradation due to the round-robin
+CPU scheduling mechanism. This is further evidenced by the
+sustained decline in CPU usage of “recommendation-0” and
+“productcatalog-0”. The experiment confirms that resource
+contention can affect all co-located instances, regardless of
+logical dependencies, as they share the same physical host.
+Load Balancing. We simulate an eviction scenario caused
+by insufficient machine resources by deliberately killing an
+instance (“recommendation-2”). As depicted in Fig. 1 (c), once
+“recommendation-2” is terminated, the system’s load balanc-
+ing mechanism redirects its unprocessed requests to sibling
+instances (i.e., “recommendation-0” and “recommendation-
+1”). This results in an increased workload for these instances,
+leading to a significant rise in their response latency. This type
+of influence is inherently group-based, as all sibling instances
+are collectively impacted by the failure of one. The impact
+becomes particularly severe when the traffic is heavy and the
+number of available sibling instances is limited.
+Insight 1:Unlike the linear and point-to-point failure
+propagation typically observed in monolithic software sys-
+tems, inter-instance influences in MSS are more diverse
+and exhibit group-level effects. These effects are primarily
+driven by factors such as shared resource contention and
+load balancing mechanisms. This observation highlights
+the need for more accurate modeling techniques, such as
+hypergraphs, capable of capturing complex group relation-
+ships beyond simple pairwise relations.
+B. Causal order across diagnostic tasks
+Most existing approaches [1], [4], [9], [10] jointly train
+diagnostic tasks (RCL and FTI) using a shared objective or
+model. This multitask learning mechanism improves the per-
+formance of relevant tasks by focusing on shared knowledge
+and reducing overfitting [19], [20]. However, these methods
+overlook the intrinsic dependency between two diagnostic
+tasks, i.e., the outcome of one task can meaningfully inform
+and facilitate the other. As a result, performing RCL and FTI in
+parallel can lead to inconsistencies or contradictions between
+the identified culprit components and associated failure types.
+Take Fig. 1 (c) as an example. If SREs attempt to determine
+the failure type directly without first performing RCL, they
+may intuitively attribute the issue to CPU overhead based
+on the observed latency in traces and the CPU utilization
+of the two surviving instances in metrics. In contrast, if
+the culprit component (e.g., “recommendation-2”) is localized
+beforehand, the diagnostic process can be focused specifically
+on its associated telemetry data, enabling faster and more
+accurate FTI.
+Unfortunately, existing methods rely on a parallel training
+paradigm that prevents FTI from harnessing the narrowed
+search space identified by RCL. The FTI model must in-
+gest features from all instances indiscriminately based on
+techniques like pooling, which introduces noise and hampers
+generalizability, especially in scenarios with numerous and
+dynamic instances. This insight is further evidenced by the
+experimental results depicted in section V-B. Consequently,
+we argue that diagnostic tasks should follow a sequential
+paradigm, where RCL is executed first to constrain the scope
+for FTI. This principle is embedded in the design of CCLH,
+which aligns with practical diagnostic workflows and allows
+FTI to focus on a subset of likely faulty components.
+Insight 2:Existing multitask diagnostic frameworks adopt
+parallel training and inference strategies, overlooking the
+inherent causal dependencies between diagnostic tasks.
+This limitation impedes effective coordination and infor-
+mation flow across tasks, ultimately constraining diagnostic
+accuracy and interpretability.
+IV. METHODOLOGY
+A. Overview
+Inspired by the preceding insights, we propose a novel root
+cause analysis approach, namely CCLH, which cascades the
+localization of culprit components and the identification of
+their corresponding failure types. Fig. 3 illustrates the overall
+architecture of CCLH. CCLH is composed of three phases: (1)
+Multimodal Feature Extraction. To unify the representation of
+multimodal heterogeneous telemetry, CCLH uses gated recur-
+rent units and a cross-modal attention mechanism to extract
+temporal features at the instance level. (2)Hypergraph-based
+Status Fusion. Given the features of all instances, CCLH con-
+structs a hypergraph to integrate their status. More specifically,
+we design heterogeneous hyperedges based on the taxonomy
+of group relationships among instances, enabling CCLH to
+tailor representations for various relationships. (3)Cascaded
+Conditional Learning and Diagnosis. In this phase, CCLH
+cascades diagnostic tasks in the multitask training phase,
+emphasizing the inherent inter-task causality and preserving
+the shared knowledge. Specifically, we leverage instance-level
+features to predict the culprit component and then infer its
+failure type. Considering that the predicted culprit component
+is the prerequisite for FTI, we devise a two-stage training
+strategy: the RCL task is first trained independently to ensure
+reliable performance, after which the FTI task is introduced
+in the subsequent stage.
+During the online diagnosis phase, CCLH still follows the
+same inference order as in the training phase, performing RCL
+first to pinpoint the culprit component, followed by FTI on the
+predicted instance.
+B. Multimodal Feature Extraction
+1) Data Preprocessing:After MSS undergoes failures, the
+first step typically taken by SREs is to collect sufficient
+telemetry data during the failure period [13]. As discussed
+in section II, multimodal telemetry data is heterogeneous
+and voluminous. Therefore, it is advisable to transform this
+telemetry into unified time series representations that facilitate
+subsequent analysis and learning.
+Given a sliding window with both the length and the stride
+set toτ(30s by default), CCLH uniformly segments the failure
+period into a sequence of snapshots, where each snapshot
+represents the state of the MSS within the corresponding time
+window. Subsequently, we serialize the multimodal telemetry
+for each instance. For metrics, due to their temporal nature, we
+compute the average value of each metric within every snap-
+shot. For traces, we calculate the average instance duration and
+count the occurrences of each status code within a snapshot.
+For logs, CCLH first parses raw logs using a widely adopted
+log parser, namely Drain [21], to extract fixed templates.
+Then, we count the frequency of each template within each
+snapshot. After preprocessing, we concatenate all snapshots to
+construct a multimodal sequence setX={X M,XT,XL},
+whereXM,XT , andXL correspond to sequences of metrics,
+traces, and logs, respectively. LetVdenote the set of instances.
+Specifically,X D∈R|V|×N D×T , where|V|is the total number
+of instances andTis the number of snapshots. Note that
+N D is the modality-specific dimension of the modalityD.
+For example,N L denotes the number of log templates.
+2) Inter-Modality Feature Fusion:This module is tasked
+with building the cross-modal relationship between multi-
+modal telemetry. It comprises two parts: encoders for temporal
+feature extraction and an attention mechanism for multi-
+modal fusion. Given sequences of three modalitiesX=
+{XM,XT,XL}, we define the snapshot feature at the time
+stept(t∈[1,T]) asX D
+t , whereD∈ {M,T,L}and
+X D
+t ∈R |V|×N D
+. We employ gated recurrent units (GRUs)
+Logs
+Traces
+Metrics
+Attention
+Fusion
+Multimodal Feature Extraction Hypergraph-based Status Fusion
+GRU
+GRU
+GRU
+Dimension
+Snapshots
+Instances
+Cascaded Conditional Learning 
+& Diagnosis
+Instance 
+Status Fusion
+Hidden Size
+Instances
+Deployments
+Hypergraph 
+Construction
+Traces
+Root Cause Localization
+Task Trigger
+Failure Type
+Identification
+Culprit
+Component
+Fig. 3. Overall architecture of CCLH.
+as the encoder, which can effectively capture sequential de-
+pendencies, handling the temporal feature of each modalityD
+in turn. This process can be formulated as:
+zD
+t =σ(W D
+z [hD
+t−1,X D
+t ]),(1)
+rD
+t =σ(W D
+r [hD
+t−1,X D
+t ]),(2)
+˜hD
+t = tanh
+ 
+W D[rD
+t ⊙h D
+t−1,X D
+t ]
+
+,(3)
+hD
+t = (1−z D
+t )⊙ ˜hD
+t +z D
+t ⊙h D
+t−1,(4)
+where{W D
+z ,W D
+r ,W D}represent the learnable recurrent
+weight matrices.σ(·)and⊙denote the logistic sigmoid
+function and the Hadamard product, respectively.z D
+t and
+rD
+t represent the update and reset gates. Note that ˜hD
+t is a
+candidate activation computed based on the current input and
+the previous hidden state modified by the reset gate. With
+the help of the GRU cell, we can encapsulate the temporal
+information withinX D∈R|V|×N D×T , yieldingh D
+t ∈R|V|×d,
+which represents the new hidden state at time stept.dis the
+predefined dimension for featureh D
+t .
+CCLH uses the hidden states of the final time stepT,
+denotedh M
+T ,h T
+T , andh L
+T , as latent features that contain
+temporal information from this failure period. Rather than di-
+rectly concatenating multimodal features, CCLH introduces an
+attention mechanism to automatically bridge the gap between
+heterogeneous modalities:
+αD =σ(W ahD
+T )(5)
+ˆαD = exp(αD)P
+D′∈{M,T,L} exp(αD),(6)
+H=
+X
+D∈{M,T,L}
+ˆαDhD
+T,(7)
+whereW a denotes a learnable shared attention matrix, which
+computes modality-specific attention scoresα D for the final
+hidden statesh D
+T . Eq. 6 normalizes all attention scores through
+a softmax function. Finally, CCLH performs a weighted
+summation for all modality-specific features to get the fused
+featureH, whereH∈R |V|×d and the weights correspond to
+the normalized attention scoresˆα D.
+𝐴𝐴1
+𝐸𝐸1
+𝐵𝐵1
+𝐷𝐷1
+𝐵𝐵2
+𝐶𝐶1
+𝐶𝐶1
+Invocation InstanceHost Deployment Call Load Balancing
+𝐴𝐴1
+𝐵𝐵1
+𝐵𝐵2
+𝐸𝐸1
+𝐷𝐷1
+Fig. 4. Example of hypergraph construction. The left part of this figure
+illustrates the dependency graph of one MSS, capturing partial relationships
+between instances. The right part shows the corresponding hypergraph trans-
+formed from this dependency graph.
+C. Hypergraph-based Status Fusion
+1) Hypergraph Construction:Inspired by section III-A,
+we propose a three-level taxonomy to characterize group
+relationships between instances, which manifests potential
+propagation paths of failures. As illustrated in Fig. 4, the tax-
+onomy categorizes inter-instance group relationships into three
+types: call, deployment, and load balancing. To represent and
+capture these relationships, CCLH extracts dependencies from
+traces and deployment configurations, thereby constructing a
+hypergraphG= (V,E), whereVdenotes the set of instances,
+andEis the set of three types of hyperedge, defined as follows:
+•Call. The call is the most straightforward and intuitive
+relationship between instances. For example, as illustrated
+in Fig. 4, CPU overhead inE 1 may lead to prolonged
+response times, thus degrading the performance of its
+upstream callers (e.g.,D 1) through synchronous invoca-
+tions. Accordingly, we represent such group influences
+by linking the instance and its associated callers through
+a call hyperedge.
+•Deployment. As demonstrated in section III-A, co-
+located instances on the same host compete for shared
+resources such as CPU time, memory, and bandwidth,
+even though there may be no direct call relationship be-
+tween them (e.g.,B 1 andE 1). For all co-located instances
+that are deployed on the same host, we weave them with a
+deployment hyperedge to indicate the resource contention
+among them.
+•Load Balancing. Despite the operational independence
+of each instance within a microservice, concealed rela-
+tionships are inevitable due to the balanced nature of
+traffic routing strategies. For example, ifB 2 encounters a
+pod failure, all incoming requests are routed to its sibling
+instanceB 1. After a period of time,B 1 may experience
+degraded performance due to the overwhelming work-
+load, potentially propagating failures to upstream com-
+ponents such asA 1 through call relationships. To handle
+this scenario, we group instances by their superordinate
+microservices based on information from the deployment,
+and introduce a hyperedge to model the sibling relation-
+ships. For example, a hyperedge is added betweenB1
+andB2to represent their shared affiliation with the same
+microservice, capturing their implicit relationships.
+2) Instance Status Fusion:Given the constructed hyper-
+graphG= (V,E)with the fused featureH, we implement a
+heterogeneous hypergraph attention network, namely UniGAT-
+HE, aggregating spatio patterns from hyperedges and simulat-
+ing failure backtracking. For the fused featureH∈R |V|×d,
+we assign each instancevits corresponding embeddingh v
+(hv∈R d) along the first dimension.
+Unlike traditional graph neural networks that update node
+embeddings by directly merging information from neighbor-
+hoods, UniGAT-HE first aggregates information in each hyper-
+edge. For hyperedgee∈E, we calculate its own embedding
+fe by summarizing features of its associated instances:
+fe = 1
+|e|
+X
+j∈e
+hj,(8)
+whereh j is the embedding of instancejand|e|denotes the
+number of instances affiliated with this hyperedge.
+Although HGNNs [16] effectively facilitate message passing
+in hypergraphs, they struggle to differentiate between different
+types of hyperedges, which typically share a unified attention
+weight in implementation. Therefore, traditional HGNNs can
+hardly represent our three-level taxonomy for group rela-
+tionships between instances. To enable fine-grained model-
+ing of heterogeneous hyperedges and capture diverse failure
+propagation patterns, UniGAT-HE introduces distinct attention
+mechanisms for each hyperedge type. Leta t(e) represent the
+attention weight of hyperedgee, wheret(e)denotes the type of
+e, including call, deployment, and load balancing. We update
+each instance embeddingh v:
+αve =σ(a T
+t(e)[Wh v||Wf e]),(9)
+ˆαve = exp(αve)P
+e′∈E(v)exp(αve′),(10)
+hv =
+X
+e∈E(v)
+ˆαveWf e,(11)
+where[·||·]denotes the concatenation of two embeddings;
+Wrepresents the learnable parameters for linear transforma-
+tion; andσdenotes the nonlinear activation function. After
+computing the attention scoreα ve between instancevand
+hyperedgee, we subsequently apply the Softmax function to
+normalize the scores across all hyperedges (E(v)) connected
+tov, yieldingˆα ve that indicates the relative importance of
+hyperedgeeto instancev. Eventually, we update the instance
+embeddingh v by assimilating features from all associated
+hyperedges in a weighted manner.
+D. Cascaded Conditional Learning and Diagnosis
+Based on the set of updated instance embeddingsH=
+{hv|v∈V}, the subsequent action is to perform root cause
+localization (RCL) and failure type identification (FTI) at the
+instance level. To achieve this, CCLH incorporates a scorer for
+RCL and a classifier for FTI using two multilayer perceptrons
+(MLPs). Motivated by section III-B, we perform joint learning
+for these two tasks and orchestrate their diagnostic stages
+in a sequential manner, facilitating not only the utilization
+of shared knowledge but also alignment with the practical
+diagnostic workflow.
+During the training phase, CCLH first optimizes the scorer
+separately and freezes the classifier. Considering the dynamic
+nature of instances in MSS, we set the output size of the
+scorer to 1, rather than prematurely fixing it to the number of
+instances. The input size of the scorer is set to the dimension
+ofh v. Consequently, we feed each instance embeddingh v
+into the scorer to predict a suspect scores v, which reflects
+the likelihood that the instance is the culprit component. The
+RCL task is inherently a multiclass classification problem, as it
+involves collecting a set of scoresS={s 1,s 2,...,s v|v∈V}
+for all instance embeddings and then ranking them to identify
+the most likely culprit. Hence, we adopt the cross-entropy loss
+to optimize the deviation between the ground-truth and the
+predicted culprit component:
+L1 =− 1
+N
+NX
+i=1
+|V|X
+j=1
+yi
+jlog(pi
+j),(12)
+whereNis the total number of failure cases in the training
+dataset;y j
+i equals 1 if instancejis the culprit component in
+thei-th failure case, and 0 otherwise;p j
+i denotes the predicted
+probability of instancejbeing the culprit component.
+CCLH continuously optimizes the scorer until its perfor-
+mance, measured byHR@1as described in section V, exceeds
+the predefined condition that is quantified by a task triggerθ.
+θis a hyperparameter that can be adjusted manually. Note
+that a higherθin the training set does not necessarily indicate
+better final performance, as we must consider generalizability
+and avoid overfitting. After that, we introduce the optimization
+of the classifier for FTI. Unlike the scorer that scores each
+instance, the classifier receives the embedding of the culprit
+component and directly outputs the probabilities of each
+failure type. We also employ cross-entropy loss to guide the
+optimization for the classifier and update the total loss as:
+L=L 1 + (− 1
+N
+NX
+i=1
+|V|X
+k=1
+yi
+klog(pi
+k)),(13)
+wherep k
+i denotes the predicted probability of typekbeing the
+real failure type;y k
+i equals 1 if typekis the failure type in the
+i-th failure case, and 0 otherwise. During the inference phase,
+we also first locate the culprit component using the scorer and
+then utilize the classifier to identify its failure type.
+V. EVALUATION
+In this section, we evaluate the effectiveness of CCLH by
+answering five research questions (RQs):
+1) RQ1: How does CCLH perform on two diagnostic tasks?
+2) RQ2: What is the effectiveness of each component in
+CCLH?
+3) RQ3: How does the task trigger that governs cascaded
+task learning affect the overall performance?
+4) RQ4: Can CCLH generalize to scenarios involving pre-
+viously unseen culprit components during inference?
+5) RQ5: How does CCLH perform in terms of efficiency?
+A. Experimental Design
+Dataset. We conducted extensive experiments on one public
+dataset and two datasets collected from popular benchmarks.
+•DatasetA. This dataset 1 contains 1,099 labeled failure
+cases and the corresponding multimodal telemetry for two
+weeks, acquired from an online system that includes 10
+instances and 5 failure types.
+•DatasetsBandC. They were collected from two open
+source benchmarks, namely Online Boutique [18] and
+SockShop2. Following previous work [1], [4], [5], [22],
+we separately deployed these two MSSs in our clus-
+ter and deliberately injected failures based on Chaos
+Mesh3. Failures involve typical resource overhead (CPU,
+memory), network issues (loss, delay, and corruption),
+and pod/container faults. We injected failures into each
+instance and repeated five times, resulting in two datasets
+comprised of 489 and 700 failure cases, respectively.
+Baseline Methods. We selected several state-of-the-art di-
+agnostic methods as baselines, including two single-modal
+approaches and four multimodal methods for comparison.
+•MicroRCA [23]: It is a metric-based approach that incor-
+porates the Personalized PageRank algorithm into RCL.
+•LogCluster [24]: It annotates historical failures and clus-
+ters the corresponding logs, establishing a knowledge
+base capable of identifying failure types through log
+matching.
+•DiagFusion [10]: It is a multimodal method for RCL and
+FTI, which captures events in failure periods and adopts
+two independent topology adaptive graphs for feature
+learning.
+1https://github.com/CloudWise-OpenSource/GAIA-DataSet
+2https://github.com/microservices-demo/microservices-demo
+3https://chaos-mesh.org
+•TVDiag [1]: It presents a task-oriented and view-invariant
+feature learning method for RCL and FTI, capturing the
+intermodal and task-model relationships.
+•Medicine [7]: It is an FTI method that balances the bias
+of modalities based on multimodal adaptive optimization.
+•DeepHunt [25]: It is a multimodal RCL method that
+scores instances based on reconstruction errors and mod-
+eled failure propagation. To ensure fairness, we adopt the
+supervised variant of Deephunt.
+Evaluation Metrics. Since FTI is inherently a multiclass
+classification task, we adopted standard classification metrics
+for evaluation:Pre= T P
+T P+F P andRec= T P
+T P+F N , where
+TPdenotes the number of true positives andFPrepresents
+the number of false positives. To align with the preceding work
+[1], [10], we used a weighted average F1-score to account for
+class imbalance and provide a more comprehensive evaluation.
+Regarding RCL, we utilized the hit ratioHR@k=
+1
+N
+PN
+i=1ri∈R i[1 :k], whereNis the total number of failure
+cases,r i is the label of thei-th faliure case, andR i[1 :k]
+is the top k instances in the sorted results of scoresS. We
+further introducedAvg@k= 1
+k
+Pk
+i=1HR@ias the average
+performance of the hit ratio.
+Implementation Details. We implemented CCLH using
+Python 3.8, PyTorch 1.12.1, and DGL 0.9.1. All experi-
+ments were conducted on a Windows laptop equipped with
+a NVIDIA GeForce RTX 2070 GPU, a 16-core Intel(R)
+Core(TM) i7-10875H CPU, and 16 GB RAM. The GRU
+module was configured with 3 layers and a hidden dimension
+of 256. For UniGAT-HE, we used a 2-layer architecture with a
+hidden dimension of 256. To accelerate training convergence,
+we applied an early stopping strategy, terminating training
+when the loss plateaued on the training set. Each dataset was
+split into 60% for training and 40% for testing.
+B. RQ1: Performance Comparison & Ablation Study
+In this section, we evaluated selected approaches on three
+datasets. Table I summarizes the performance of different
+baselines.
+In terms of RCL, multimodal methods consistently outper-
+form single-modal methods in bothHR@kandAvg@3, owing
+to the ability to incorporate information from multiple views.
+CCLH yields a higher hit ratio than other baselines across
+all datasets, which is attributed to its granular taxonomy for
+inter-instance relationships that can effectively capture propa-
+gation patterns of failures. Moreover, both CCLH and TVDiag
+demonstrate superior localization accuracy compared to other
+multimodal baselines, as they leverage instance-level features
+to pinpoint the culprit component. In contrast, DiagFusion
+relies on graph-level features aggregated via a pooling layer
+over all instance-level features, leading to information loss
+and degraded performance when faced with a large number
+of instances in MSS.
+With respect to FTI, CCLH significantly surpasses baselines
+in almost all datasets. In the case of datasetA, CCLH performs
+comparably to other competitors, because the limited number
+of instances (only 10) in this MSS renders the failure scenario
+TABLE I
+PERFORMANCE COMPARISON ACROSS BASELINES.
+Approach
+A B C
+HR@1 HR@3 Avg@3 Pre Rec F1 HR@1 HR@3 Avg@3 Pre Rec F1 HR@1 HR@3 Avg@3 Pre Rec F1
+MicroRCA 0.207 0.449 0.328 - - - 0.061 0.231 0.146 - - - 0.050 0.154 0.101 - - -
+LogCluster - - - 0.485 0.503 0.485 - - - 0.242 0.246 0.243 - - - 0.167 0.168 0.167
+DiagFusion 0.465 0.886 0.726 0.937 0.934 0.933 0.533 0.718 0.625 0.479 0.456 0.464 0.398 0.631 0.522 0.379 0.358 0.364
+TVDiag 0.811 0.939 0.8840.976 0.977 0.977 0.834 0.925 0.884 0.585 0.568 0.577 0.832 0.904 0.877 0.510 0.500 0.505
+Medicine - - - 0.810 0.806 0.805 - - - 0.492 0.492 0.486 - - - 0.486 0.480 0.463
+DeepHunt 0.308 0.554 0.448 - - - 0.436 0.708 0.588 - - - 0.441 0.617 0.593 - - -
+CCLH 0.875 0.950 0.9200.944 0.941 0.941 0.923 0.954 0.938 0.777 0.764 0.768 0.918 0.950 0.938 0.778 0.774 0.772
+Note:“-” represents that there is no value in the corresponding cell. Boldface highlights the best performance for each metric.
+TABLE II
+ABLATIONSTUDY.
+Approach
+A B C
+Avg@3 F1 Avg@3 F1 Avg@3 F1
+CCLHw/oCH 0.875 0.933 0.921 0.633 0.930 0.728
+CCLHw/oDH 0.9230.935 0.932 0.679 0.932 0.687
+CCLHw/oLH 0.841 0.898 0.911 0.673 0.904 0.719
+CCLHw/oHE 0.905 0.935 0.915 0.709 0.888 0.708
+CCLHw/oHG 0.838 0.860 0.800 0.449 0.863 0.555
+CCLHw/oTT 0.885 0.919 0.937 0.692 0.928 0.670
+CCLH 0.9200.941 0.938 0.768 0.938 0.772
+Note:Boldface highlights the best performance for each metric.
+relatively less diverse. Notably, TVdiag, Medicine, and Diag-
+Fusion perform poorly on datasetsBandC, which involve
+more complex instance interactions. This is primarily because
+they perform FTI in parallel with RCL, requiring failure
+types to be inferred from graph-level features, which may
+dilute instance-specific signals. Compared to these methods,
+CCLH exhibits a significant improvement, achieving at least a
+19.1% increase in F1-score. The results align with our insight
+in section III-A that performing RCL first can effectively
+narrow the diagnostic scope, allowing FTI to focus on relevant
+instance-level information.
+C. RQ2: Ablation Study
+To demonstrate the effects of key components of CCLH,
+we further conducted extensive ablation studies across three
+datasets. The variants are described as follows:
+•CCLHw/oCH: Removes the call hyperedges from the
+hypergraph.
+•CCLHw/oDH: Removes the deployment hyperedges in
+the hypergraph.
+•CCLHw/oLH: Removes the load balancing hyperedges
+in the hypergraph.
+•CCLHw/oHG: Replaces the hypergraph with a directed
+graph and uses GAT as the backbone.
+•CCLHw/oHE: Substitutes the UniGAT-HE module with
+a standard UniGAT for hypergraph learning.
+•CCLHw/oTT: Removes the task triggerθand learns
+two tasks simultaneously.
+The ablation results are shown in Table II. We selectAvg@k
+and F1-score as the measurements of the variants. It can be
+observed that all components contribute positively to the final
+performance, demonstrating their effects on CCLH.
+To assess the proposed hyperedges defined in section IV-C,
+we ablated them individually and further replaced them with
+common directed edges. The results show that most variants
+exhibit a performance decrease when hyperedges are removed.
+In particular, variantw/oLH exhibits a substantial perfor-
+mance decline across all datasets, underscoring the importance
+of modeling the influence of sibling instances in hypergraph
+construction. The variantw/oHG exhibits a macroscopic
+performance degradation, with an average decrease of 9.8%
+inAvg@3and 20.6% in F1-score, which manifests the su-
+periority of modeling group relationships over point-to-point
+relationships, further demonstrating the insight proposed by
+section III-B.
+In addition, we measured the effectiveness of the proposed
+UniGAT-HE and the task triggerθ. CCLH achieves superior
+results compared to variantw/oHE. This is predominantly be-
+cause our UniGAT-HE can effectively capture high-order hy-
+peredge potentiality through an attention mechanism, thereby
+endowing CCLH with the ability to distinguish hyperedge
+weights across diverse failure scenarios. Section III-A argues
+that diagnostic tasks should be organized in alignment with
+their causal order. This insight is validated by the performance
+of the variantw/oTT, which suffers due to premature in-
+volvement of FTI during training. The underlying rationale for
+deferring the training of FTI is that CCLH relies on instance-
+level features from the suspected culprit component, which are
+identified by the RCL model. In the early training stages, the
+RCL model is still under-fitting, resulting in low-confidence
+localization and unreliable inputs for FTI.
+D. RQ3: Sensitivity to Task Trigger
+Task triggerθserves as a crucial control knob that governs
+when the FTI classifier participates in the cascaded conditional
+learning procedure. Fig. 5 shows the impact of differentθ
+on the performance of CCLH. We can deduce that the RCL
+module is insensitive to theθsetting, as it has already been
+optimized independently before meeting this threshold. In
+contrast, the performance of FTI exhibits more pronounced
+fluctuations across differentθvalues, highlighting its reliance
+on the maturity of the RCL model. We find that a higher
+θdoes not necessarily yield better FTI performance. This is
+mainly because prolonged independent optimization of RCL
+can lead to overfitting, reducing the generalizability of both the
+scorer and the classifier. Nonetheless, the overall performance
+of CCLH still remains steady across differentθsettings,
+0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9
+0.5
+0.6
+0.7
+0.8
+0.9
+1.0Value
+Dataset 
+0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9
+0.5
+0.6
+0.7
+0.8
+0.9
+1.0Value
+Dataset 
+0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9
+0.5
+0.6
+0.7
+0.8
+0.9
+1.0Value
+Dataset 
+Avg@3 F1-score
+Fig. 5. Performance comparison across different task triggers.
+DiagFusion TVDiag DeepHunt CCLH
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0Value
+Dataset 
+DiagFusion TVDiag DeepHunt CCLH
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0Value
+Dataset 
+DiagFusion TVDiag DeepHunt CCLH
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0Value
+Dataset 
+Avg@3:original Avg@3:dynamic F1-score:original F1-score:dynamic
+Fig. 6. Performance variation when encountering unseen culprit components. “original” and “dynamic” indicate the performance under the original and resplit
+(unseen component) settings, respectively.
+indicating the robustness and stability of CCLH. According
+to Fig. 5, we setθas 0.4 for datasetA, 0.6 for datsetB,
+and 0.7 for datasetC, respectively. Developing an automatic
+method for selectingθto minimize manual tuning remains an
+important direction for future work.
+E. RQ4: Generalization Capability
+Although we can simulate certain failures using chaos
+engineering techniques, unforeseen failures can still occur
+in production environments. For example, a known failure
+type arises in a microservice that was previously unaffected.
+To evaluate the generalization capability of CCLH in such
+scenarios involving unseen culprit components, we resplit all
+datasets accordingly. Specifically, for each failure type, we
+randomly select 60% of the culprit components for training,
+while reserving the remaining 40% for testing. This setting
+simulates cases where certain culprit components are not
+encountered during training.
+Fig. 6 illustrates the performance comparison between the
+original and reorganized datasets. DiagFusion and TVDiag
+exhibit a significant decline in two metrics across all datasets.
+This is primarily attributed to their alert embedding mecha-
+nism, which fails to generalize to new alerts absent from the
+training datasets. In contrast, CCLH and DeepHunt achieve
+more flexible adaptation to new patterns and ensure more
+stable performance, owing to their direct transformation of
+multimodal telemetry into learnable embeddings, facilitating
+more flexible adaptation to new patterns and ensuring more
+stable performance. It is worth noting that FTI performance
+shows a more pronounced decline compared to RCL in CCLH,
+since features from different culprit components inevitably
+exhibit tremendous discrepancies that hinder generalization.
+In summary, CCLH demonstrates strong generalizability when
+faced with previously unseen culprit components.
+TABLE III
+STATISTICS ABOUT THE TRAINING AND INFERENCE TIME CONSUMPTION
+OF DEEP LEARNING-BASED BASELINES.
+Approach
+DatasetA
+Offline training time (s) Training per epoch (s) Inference per case (s)
+DiagFusion 19.687 0.030 0.013
+TVDiag 386.176 2.645 0.408
+Medicine 7987.860 26.626 0.387
+DeepHunt 685.462 3.808 0.505
+CCLH 168.204 1.665 0.434
+F . RQ5: Efficiency
+Table III summarizes the time consumption of the training
+and inference phases in deep learning-based diagnostic mod-
+els. We only present the results of datasetAbecause there is
+little divergence between these datasets.
+In terms of training cost per epoch, DiagFusion achieves
+the quickest iteration speed due to its lightweight network
+structure, which comprises only two topology adaptive graphs
+and two MLPs. The training time of Medicine is longer than
+that of others, because it involves a gradient suppression
+module to adjust learning rates based on evaluation after each
+epoch, which introduces additional computational overhead,
+but remains within an acceptable range. CCLH exhibits modest
+efficiency because it locates culprit components by sorting
+scores of instances, achieving the trade-off between dynam-
+icity and efficiency. Nevertheless, the total offline training
+time remains efficient, as CCLH leverages an early stopping
+strategy that terminates training once model convergence is
+detected. Due to the infrequent nature of model updates, the
+time consumption of the training phase is acceptable.
+High inference costs are prohibitive, especially in produc-
+tion environments with real-time requirements. Generally, all
+models can diagnose failures within one second due to their
+lightweight network structures, which are sufficiently efficient
+in RCA.
+VI. DISCUSSION
+A. limitation
+There are two primary limitations in CCLH: (1) Integra-
+tion for platform events. CCLH perceives the status of the
+MSS through metrics, traces, and logs, focusing primarily on
+application-side performance. However, certain failures caused
+by software changes are more apparent on the platform side
+[26]. For example, SREs can often identify root causes by
+checking the corresponding change events on the platform
+[27]. This presents a limitation due to the absence of platform
+events in our datasets. In production environments, CCLH can
+mitigate this limitation by incorporating such events through
+natural language processing techniques, as demonstrated in
+previous studies [1], [10]. (2) Joint evaluation of diagnostic
+tasks. Despite comprehensive assessments of individual tasks,
+there are no established indicators that measure the joint per-
+formance of both tasks. In future work, we plan to investigate
+how to effectively integrate the outcomes of both tasks and
+assess the step-wise cost along the actual diagnostic trajectory.
+B. Threats to Validity
+The internal threat lies primarily in the task triggerθ, which
+governs the activation of diagnostic tasks. An inappropriate
+setting ofθcan degrade the performance of CCLH. For
+example, an extremely highθmay prevent the subsequent
+FTI task from being triggered. To alleviate this threat, we
+recommend that the SREs perform a top-down search for
+suitable values ofθ, gradually decreasing it until the RCL task
+achieves the required efficacy, thus triggering the FTI task.
+The external threat mainly concerns the generalizability and
+practicality of CCLH in real-world MSS. For generalizability,
+we utilize one public dataset and two datasets collected from
+online benchmarks, which, however, may not fully represent
+the diversity of software systems in real-world scenarios. This
+limitation can be alleviated by injected failures, which are
+representative of common issues in industrial MSS and are
+widely adopted in chaos engineering practices. In practical
+settings, CCLH often operates under a few-shot or even zero-
+shot scenario, where there is a complete lack of annotated
+failure data. To alleviate this threat, SREs can proactively
+collect and annotate training data from the testing environment
+using chaos engineering techniques.
+VII. RELATEDWORK
+Recently, significant efforts have been devoted to automated
+root cause analysis, which encompasses two critical tasks: root
+cause localization (RCL) [4], [6], [9], [28]–[36] and failure
+type identification (FTI) [8], [24], [37].
+For the FTI task, we categorize the relevant work into two
+types: heuristic methods and deep learning-based methods.
+(1) Heuristic methods. MicroCBR [38] constructs a spatio-
+temporal knowledge graph of failures and uses fault finger-
+prints to retrieve the most relevant historical cases for FTI.
+Nevertheless, the knowledge base adopted in this method is
+prone to obsolescence as microservice systems (MSS) con-
+tinue to evolve. TrinityRCL [39] constructs a multilevel causal
+graph and incorporates a PageRank algorithm to localize root
+causes across hierarchical layers. Despite the effectiveness of
+this architecture, traditional graph traversal techniques often
+suffer from computational overhead in large-scale microser-
+vices. (2) Deep learning-based methods. Medicine [7] is a
+multimodal method for FTI that adaptively balances the learn-
+ing rates of multimodal telemetry (metrics, logs, and traces)
+based on gradient suppression, allowing thorough exploration
+of the diagnostic potential of each modality. However, this
+adjustment mechanism is computationally sensitive, which
+inevitably increases the training overhead.
+Regarding the RCL task, Nezha [22] detects code-level
+culprits by identifying changes in event patterns. In addition,
+DeepHunt [25] is a self-supervised method that uses a graph
+autoencoder to learn a representation of normal data and
+identifies culprit pods through deviation detection. Although
+these methods are competitive in automated RCL, they solely
+regard the inter-instance relationship as a pairwise paradigm,
+ignoring the group attributes of instance-wise influences.
+Recent studies have focused on learning RCL and FTI
+jointly. DiagFusion [10] extracts events from multimodal
+telemetry for a unified representation. Subsequently, it incor-
+porates two topology adaptive graphs to handle RCL and FTI,
+respectively. TVDiag [1] correlates two diagnostic tasks and
+multimodal telemetry using contrastive learning, enabling an
+effective extraction of shared knowledge. TraFaultDia [40]
+introduces a meta-learning mechanism to tackle cross-system
+problems in root cause analysis, providing end-to-end RCL
+and FTI. OpenRCA [41] explores large language models
+(LLMs) for automated fault diagnosis. However, experimental
+results demonstrate suboptimal performance and high latency.
+Despite their successful combination for two tasks, they
+overlook the inherent causal order between RCL and FTI.
+Particularly, the parallel diagnostic setup compels the FTI
+model to assimilate information in a coarse-grained manner
+from all possible instances, resulting in noticeable performance
+degradation in scenarios with numerous unseen instances.
+VIII. CONCLUSION
+This paper proposes CCLH, a root cause analysis framework
+that orchestrates diagnostic tasks based on cascaded condi-
+tional learning with hypergraphs. CCLH incorporates a GRU-
+based feature extractor and cross-modal attention mechanism,
+distilling and fusing temporal information from multimodal
+telemetry data. We develop a three-level taxonomy for group
+relationships among instances and construct a hypergraph to
+model intricate dependencies. We further implement a hetero-
+geneous hypergraph attention network that aggregates spatial
+features from diverse hyperedges. By sequentially optimizing
+RCL and FTI in causal order, CCLH enables FTI to benefit
+from the results of the previously optimized RCL. Experi-
+mental results in three datasets demonstrate the effectiveness
+of CCLH. In the future, we will explore how to integrate
+more modalities (e.g., platform events) and investigate the joint
+measurements for two tasks.
+REFERENCES
+[1] S. Xie, J. Wang, H. He, Z. Wang, Y . Zhao, N. Zhang, and B. Li,
+“Tvdiag: A task-oriented and view-invariant failure diagnosis framework
+with multimodal data,”ACM Transactions on Software Engineering and
+Methodology, 2025.
+[2] S. Zhang, S. Xia, W. Fan, B. Shi, X. Xiong, Z. Zhong, M. Ma, Y . Sun,
+and D. Pei, “Failure diagnosis in microservice systems: A comprehensive
+survey and analysis,”ACM Transactions on Software Engineering and
+Methodology, 2024.
+[3] S. Sanders, “Github availability report: October
+2021,” https://github.blog/news-insights/company-news/
+github-availability-report-october-2021, 2025.
+[4] C. Lee, T. Yang, Z. Chen, Y . Su, and M. R. Lyu, “Eadro: An end-
+to-end troubleshooting framework for microservices on multi-source
+data,” in2023 IEEE/ACM 45th International Conference on Software
+Engineering (ICSE). IEEE, 2023, pp. 1750–1762.
+[5] L. Pham, H. Ha, and H. Zhang, “Baro: Robust root cause analysis for
+microservices via multivariate bayesian online change point detection,”
+Proceedings of the ACM on Software Engineering, vol. 1, no. FSE, pp.
+2214–2237, 2024.
+[6] L. Tao, X. Lu, S. Zhang, J. Luan, Y . Li, M. Li, Z. Li, Q. Yu,
+H. Xie, R. Xuet al., “Diagnosing performance issues for large-scale
+microservice systems with heterogeneous graph,”IEEE Transactions on
+Services Computing, 2024.
+[7] L. Tao, S. Zhang, Z. Jia, J. Sun, M. Ma, Z. Li, Y . Sun, C. Yang,
+Y . Zhang, and D. Pei, “Giving every modality a voice in microservice
+failure diagnosis via multimodal adaptive optimization,” inProceedings
+of the 39th IEEE/ACM International Conference on Automated Software
+Engineering, 2024, pp. 1107–1119.
+[8] Y . Sui, Y . Zhang, J. Sun, T. Xu, S. Zhang, Z. Li, Y . Sun, F. Guo, J. Shen,
+Y . Zhanget al., “Logkg: Log failure diagnosis through knowledge
+graph,”IEEE Transactions on Services Computing, vol. 16, no. 5, pp.
+3493–3507, 2023.
+[9] Y . Sun, B. Shi, M. Mao, M. Ma, S. Xia, S. Zhang, and D. Pei, “Art:
+A unified unsupervised framework for incident management in mi-
+croservice systems,” inProceedings of the 39th IEEE/ACM International
+Conference on Automated Software Engineering, 2024, pp. 1183–1194.
+[10] S. Zhang, P. Jin, Z. Lin, Y . Sun, B. Zhang, S. Xia, Z. Li, Z. Zhong,
+M. Ma, W. Jinet al., “Robust failure diagnosis of microservice system
+through multimodal data,”IEEE Transactions on Services Computing,
+vol. 16, no. 6, pp. 3851–3864, 2023.
+[11] C. Zhang, Z. Dong, X. Peng, B. Zhang, and M. Chen, “Trace-based
+multi-dimensional root cause localization of performance issues in mi-
+croservice systems,” inProceedings of the IEEE/ACM 46th International
+Conference on Software Engineering, 2024, pp. 1–12.
+[12] L. Zhang, T. Jia, M. Jia, Y . Wu, A. Liu, Y . Yang, Z. Wu, X. Hu,
+P. S. Yu, and Y . Li, “A survey of aiops for failure management
+in the era of large language models,” 2024. [Online]. Available:
+https://arxiv.org/abs/2406.11213
+[13] D. Roy, X. Zhang, R. Bhave, C. Bansal, P. Las-Casas, R. Fonseca, and
+S. Rajmohan, “Exploring llm-based agents for root cause analysis,” in
+Companion Proceedings of the 32nd ACM International Conference on
+the Foundations of Software Engineering, 2024, pp. 208–219.
+[14] S. Bai, F. Zhang, and P. H. Torr, “Hypergraph convolution and hyper-
+graph attention,”Pattern Recognition, vol. 110, p. 107637, 2021.
+[15] Y . Feng, H. You, Z. Zhang, R. Ji, and Y . Gao, “Hypergraph neural net-
+works,” inProceedings of the AAAI conference on artificial intelligence,
+vol. 33, no. 01, 2019, pp. 3558–3565.
+[16] J. Huang and J. Yang, “Unignn: a unified framework for graph and hy-
+pergraph neural networks,” inProceedings of the Thirtieth International
+Joint Conference on Artificial Intelligence, IJCAI-21, 2021.
+[17] D. Arya, D. K. Gupta, S. Rudinac, and M. Worring, “Hypersage:
+Generalizing inductive representation learning on hypergraphs,”arXiv
+preprint arXiv:2010.04558, 2020.
+[18] GoogleCloudPlatform, “Onlineboutique,” https://github.com/
+GoogleCloudPlatform/microservices-demo, 2025.
+[19] C. Fifty, E. Amid, Z. Zhao, T. Yu, R. Anil, and C. Finn, “Efficiently
+identifying task groupings for multi-task learning,”Advances in Neural
+Information Processing Systems, vol. 34, pp. 27 503–27 516, 2021.
+[20] Y . Zhang and Q. Yang, “A survey on multi-task learning,”IEEE
+transactions on knowledge and data engineering, vol. 34, no. 12, pp.
+5586–5609, 2021.
+[21] P. He, J. Zhu, Z. Zheng, and M. R. Lyu, “Drain: An online log parsing
+approach with fixed depth tree,” in2017 IEEE international conference
+on web services (ICWS). IEEE, 2017, pp. 33–40.
+[22] G. Yu, P. Chen, Y . Li, H. Chen, X. Li, and Z. Zheng, “Nezha:
+Interpretable fine-grained root causes analysis for microservices on
+multi-modal observability data,” inProceedings of the 31st ACM Joint
+European Software Engineering Conference and Symposium on the
+Foundations of Software Engineering, 2023, pp. 553–565.
+[23] L. Wu, J. Tordsson, E. Elmroth, and O. Kao, “Microrca: Root cause
+localization of performance issues in microservices,” inNOMS 2020-
+2020 IEEE/IFIP Network Operations and Management Symposium.
+IEEE, 2020, pp. 1–9.
+[24] Q. Lin, H. Zhang, J.-G. Lou, Y . Zhang, and X. Chen, “Log clustering
+based problem identification for online service systems,” inProceedings
+of the 38th international conference on software engineering companion,
+2016, pp. 102–111.
+[25] Y . Sun, Z. Lin, B. Shi, S. Zhang, S. Ma, P. Jin, Z. Zhong, L. Pan,
+Y . Guo, and D. Pei, “Interpretable failure localization for microservice
+systems based on graph autoencoder,”ACM Transactions on Software
+Engineering and Methodology, vol. 34, no. 2, pp. 1–28, 2025.
+[26] J. Huang, P. Chen, G. Yu, Y . Wang, H. Huang, and Z. He, “Faasrca:
+Full lifecycle root cause analysis for serverless applications,” in2024
+IEEE 35th International Symposium on Software Reliability Engineering
+(ISSRE). IEEE, 2024, pp. 415–426.
+[27] G. Yu, P. Chen, Z. He, Q. Yan, Y . Luo, F. Li, and Z. Zheng, “Changerca:
+Finding root causes from software changes in large online systems,”
+Proceedings of the ACM on Software Engineering, vol. 1, no. FSE, pp.
+24–46, 2024.
+[28] Y . Han, Q. Du, Y . Huang, P. Li, X. Shi, J. Wu, P. Fang, F. Tian, and
+C. He, “Holistic root cause analysis for failures in cloud-native systems
+through observability data,”IEEE Transactions on Services Computing,
+2024.
+[29] Y . Wang, Z. Zhu, Q. Fu, Y . Ma, and P. He, “Mrca: Metric-level root
+cause analysis for microservices via multi-modal data,” inProceedings
+of the 39th IEEE/ACM International Conference on Automated Software
+Engineering, 2024, pp. 1057–1068.
+[30] G. Somashekar, A. Dutt, M. Adak, T. Lorido Botran, and A. Gandhi,
+“Gamma: Graph neural network-based multi-bottleneck localization for
+microservices applications,” inProceedings of the ACM Web Conference
+2024, 2024, pp. 3085–3095.
+[31] L. Wang, N. Zhao, J. Chen, P. Li, W. Zhang, and K. Sui, “Root-cause
+metric location for microservice systems via log anomaly detection,” in
+2020 IEEE international conference on web services (ICWS). IEEE,
+2020, pp. 142–150.
+[32] L. Zheng, Z. Chen, J. He, and H. Chen, “Mulan: multi-modal causal
+structure learning and root cause analysis for microservice systems,” in
+Proceedings of the ACM Web Conference 2024, 2024, pp. 4107–4116.
+[33] Z. Yao, C. Pei, W. Chen, H. Wang, L. Su, H. Jiang, Z. Xie, X. Nie, and
+D. Pei, “Chain-of-event: Interpretable root cause analysis for microser-
+vices through automatically learning weighted event causal graph,” in
+Companion Proceedings of the 32nd ACM International Conference on
+the Foundations of Software Engineering, 2024, pp. 50–61.
+[34] Z. Zhu, C. Lee, X. Tang, and P. He, “Hemirca: Fine-grained root
+cause analysis for microservices with heterogeneous data sources,”ACM
+Transactions on Software Engineering and Methodology, vol. 33, no. 8,
+pp. 1–25, 2024.
+[35] Z. Xie, S. Zhang, Y . Geng, Y . Zhang, M. Ma, X. Nie, Z. Yao, L. Xu,
+Y . Sun, W. Liet al., “Microservice root cause analysis with limited
+observability through intervention recognition in the latent space,” in
+Proceedings of the 30th ACM SIGKDD Conference on Knowledge
+Discovery and Data Mining, 2024, pp. 6049–6060.
+[36] Z. Li, N. Zhao, M. Li, X. Lu, L. Wang, D. Chang, X. Nie, L. Cao,
+W. Zhang, K. Suiet al., “Actionable and interpretable fault localization
+for recurring failures in online service systems,” inProceedings of
+the 30th ACM Joint European Software Engineering Conference and
+Symposium on the Foundations of Software Engineering, 2022, pp. 996–
+1008.
+[37] Y . Yuan, W. Shi, B. Liang, and B. Qin, “An approach to cloud execution
+failure diagnosis based on exception logs in openstack,” in2019 IEEE
+12th International Conference on Cloud Computing (CLOUD). IEEE,
+2019, pp. 124–131.
+[38] F. Liu, Y . Wang, Z. Li, R. Ren, H. Guan, X. Yu, X. Chen, and G. Xie,
+“Microcbr: Case-based reasoning on spatio-temporal fault knowledge
+graph for microservices troubleshooting,” inInternational Conference
+on Case-Based Reasoning. Springer, 2022, pp. 224–239.
+[39] S. Gu, G. Rong, T. Ren, H. Zhang, H. Shen, Y . Yu, X. Li, J. Ouyang,
+and C. Chen, “Trinityrcl: Multi-granular and code-level root cause
+localization using multiple types of telemetry data in microservice
+systems,”IEEE Transactions on Software Engineering, vol. 49, no. 5,
+pp. 3071–3088, 2023.
+[40] Y . Wang, M. V . M ¨antyl¨a, J. Nyyss ¨ol¨a, K. Ping, and L. Wang, “Cross-
+system software log-based anomaly detection using meta-learning,” in
+2025 IEEE International Conference on Software Analysis, Evolution
+and Reengineering (SANER). IEEE, 2025, pp. 454–464.
+[41] J. Xu, Q. Zhang, Z. Zhong, S. He, C. Zhang, Q. Lin, D. Pei, P. He,
+D. Zhang, and Q. Zhang, “Openrca: Can large language models locate
+the root cause of software failures?” inThe Thirteenth International
+Conference on Learning Representations.
