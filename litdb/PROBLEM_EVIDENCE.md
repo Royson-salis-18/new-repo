@@ -43,6 +43,9 @@ this lengthens debugging time for operators.
 | A31 | Among 25 reviewed observability frameworks, root cause analysis (34.2%) and performance analysis (30.1%) are the main purposes | realtimeobse, p.20 (Fig 4) | counted from a non-reproducible selection | weak |
 | A32 | Silent decision-quality failures in ML-dependent services propagate along decision paths without errors | sheriffadepoju2023cascading, pp.4-5, Table 1 | conceptual, no data | very weak |
 | A33 | Metrics-only anomaly detection with class-weighted Mamba reaches F1 0.91, AUROC 0.98 on RS-Anomic (about 12% anomalous per the dataset README) | costsensitiv, Table 2 p.7 | measured, unverifiable baselines | very weak |
+| A34 | An LLM-agent RCA framework reports 94.3% top-5 on Sock-Shop and a 91% MTTR cut in production, but the same paper's two timing tables disagree and the CI width does not fit 50 scenarios | bridgingtheg, pp.10-13 | measured claims, internally inconsistent, unverifiable | very weak |
+| A35 | Position paper argues RCA quality is bounded by freshness of topology and change context; no data of its own | theysayitsre, pp.1-7 | assumed (copies others' numbers) | very weak |
+| A36 | Metric causal-graph RCA (gradient-based structure learning) claims AC@3 0.719 on Sock-Shop; only abstract and intro read | causalrca, pp.1-2 | measured per abstract, not verified | unrated |
 
 ## B. Evidence our specific gap is already addressed (con)
 | # | What exists | Source (key, page) | How close to our contribution | Consequence for us |
