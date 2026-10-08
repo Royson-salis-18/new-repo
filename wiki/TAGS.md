@@ -62,7 +62,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [CHASE: A Causal Hypergraph based Framework for Root Cause Analysis in Multimodal](pages/lab/litdb/papers/zimingzhaozhenweiwangtiehuazhangzhishushenhaidongzhenleixingjunmagaoweixuzhijundingyunyang2024chase.md) · Literature · 2026-10-07
 - [Microservice Mapper | Comprehensive Technical Specification](pages/mapper/PROJECT_REFERENCE.html) · Microservice Mapper · 2026-09-17
 - [Microservice Mapper](pages/mapper/README.md) · Microservice Mapper · 2026-09-18
-- [RCA Engine — Root Cause Analysis](pages/mapper/wiki/08-rca-engine.md) · Microservice Mapper · 2026-09-18
+- [RCA Engine — Root Cause Analysis](pages/mapper/wiki/08-rca-engine.md) · Microservice Mapper · 2026-10-08
 - [17 — Findings vs Incidents: two detectors, deliberately separate](pages/mapper/wiki/17-findings-vs-incidents.md) · Microservice Mapper · 2026-09-18
 - [Microservice Mapper — Wiki](pages/mapper/wiki/README.md) · Microservice Mapper · 2026-09-24
 - [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) · Reports and findings · 2026-10-07
@@ -180,7 +180,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Chain-of-Event: Interpretable Root Cause Analysis for Microservices through Auto](pages/lab/litdb/papers/yao2024chain.md) · Literature · 2026-10-07
 - [STMformer (Xu et al., arXiv 2024)](pages/lab/litdb/papers/yifeixujingguogehainatangshuaidingtonglihuili2024system.md) · Literature · 2026-10-08
 - [Seer (Gan et al., arXiv 2018 short version)](pages/lab/litdb/papers/yuganmeghnapancholidailunchengsiyuanhuyuanhechristinadelimitrou2018seer.md) · Literature · 2026-10-08
-- [RCA Engine — Root Cause Analysis](pages/mapper/wiki/08-rca-engine.md) · Microservice Mapper · 2026-09-18
+- [RCA Engine — Root Cause Analysis](pages/mapper/wiki/08-rca-engine.md) · Microservice Mapper · 2026-10-08
 - [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) · Reports and findings · 2026-10-07
 - [RCA and cascade logic: what it does, why it is not on par, what to change](pages/lab/docs/RCA_AND_CASCADE_SIMPLE.md) · Reports and findings · 2026-10-08
 - [Honest review of the project: RCA + cascading-failure risk for microservices](pages/lab/docs/REVIEW_REPORT.md) · Reports and findings · 2026-10-07
@@ -267,7 +267,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Anomaly detection pipeline](pages/mapper/ml/README.md) · Microservice Mapper · 2026-09-17
 - [Microservice Mapper — Complete System Wiki & Operational Reference](pages/mapper/WIKI.md) · Microservice Mapper · 2026-09-18
 - [GraphStore — The Central Nervous System](pages/mapper/wiki/03-graphstore.md) · Microservice Mapper · 2026-09-18
-- [RCA Engine — Root Cause Analysis](pages/mapper/wiki/08-rca-engine.md) · Microservice Mapper · 2026-09-18
+- [RCA Engine — Root Cause Analysis](pages/mapper/wiki/08-rca-engine.md) · Microservice Mapper · 2026-10-08
 - [ML Anomaly Detection Pipeline](pages/mapper/wiki/11-ml-pipeline.md) · Microservice Mapper · 2026-09-18
 - [Data Models — TypeScript Interfaces Reference](pages/mapper/wiki/12-data-models.md) · Microservice Mapper · 2026-09-18
 - [17 — Findings vs Incidents: two detectors, deliberately separate](pages/mapper/wiki/17-findings-vs-incidents.md) · Microservice Mapper · 2026-09-18
@@ -349,7 +349,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Frontend — Architecture, Hooks & Design Decisions](pages/mapper/wiki/09-frontend.md) · Microservice Mapper · 2026-09-18
 - [API Reference](pages/mapper/wiki/13-api-reference.md) · Microservice Mapper · 2026-09-18
 - [Troubleshooting & Known Issues](pages/mapper/wiki/15-troubleshooting.md) · Microservice Mapper · 2026-09-18
-- [Change Log and Rationale](pages/mapper/wiki/16-change-log-and-rationale.md) · Microservice Mapper · 2026-09-18
+- [Change Log and Rationale](pages/mapper/wiki/16-change-log-and-rationale.md) · Microservice Mapper · 2026-10-08
 - [18 — Telemetry tiers: the plan](pages/mapper/wiki/18-telemetry-tiers-plan.md) · Microservice Mapper · 2026-09-19
 - [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) · Reports and findings · 2026-10-07
 - [Honest review of the project: RCA + cascading-failure risk for microservices](pages/lab/docs/REVIEW_REPORT.md) · Reports and findings · 2026-10-07
@@ -535,7 +535,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [ML Anomaly Detection Pipeline](pages/mapper/wiki/11-ml-pipeline.md) · Microservice Mapper · 2026-09-18
 - [Data Models — TypeScript Interfaces Reference](pages/mapper/wiki/12-data-models.md) · Microservice Mapper · 2026-09-18
 - [Troubleshooting & Known Issues](pages/mapper/wiki/15-troubleshooting.md) · Microservice Mapper · 2026-09-18
-- [Change Log and Rationale](pages/mapper/wiki/16-change-log-and-rationale.md) · Microservice Mapper · 2026-09-18
+- [Change Log and Rationale](pages/mapper/wiki/16-change-log-and-rationale.md) · Microservice Mapper · 2026-10-08
 - [18 — Telemetry tiers: the plan](pages/mapper/wiki/18-telemetry-tiers-plan.md) · Microservice Mapper · 2026-09-19
 - [19 — How it all works](pages/mapper/wiki/19-how-it-all-works.md) · Microservice Mapper · 2026-09-24
 - [Microservice Mapper — Wiki](pages/mapper/wiki/README.md) · Microservice Mapper · 2026-09-24
@@ -565,7 +565,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Microservice Mapper — Wiki](pages/lab/microservice-mapper/wiki/README.md) · rca-lab · 2026-10-08
 - [rca-lab](pages/lab/README.md) · rca-lab · 2026-10-08
 
-## SSH / EC2 / Docker (50)
+## SSH / EC2 / Docker (51)
 
 - [Batch 05: 2026-10-07](pages/lab/litdb/batches/batch-05.md) · Literature · 2026-10-07
 - [Microservice Mapper | Comprehensive Technical Specification](pages/mapper/PROJECT_REFERENCE.html) · Microservice Mapper · 2026-09-17
@@ -580,12 +580,13 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Telemetry Ingestion — `ingestRemote()` Deep Dive](pages/mapper/wiki/05-telemetry-ingestion.md) · Microservice Mapper · 2026-09-18
 - [Node & Edge Lifecycle — Pruning, Status, Staleness](pages/mapper/wiki/06-node-edge-lifecycle.md) · Microservice Mapper · 2026-09-18
 - [Remote Collector — Telemetry Sources & Design](pages/mapper/wiki/07-remote-collector.md) · Microservice Mapper · 2026-09-18
+- [RCA Engine — Root Cause Analysis](pages/mapper/wiki/08-rca-engine.md) · Microservice Mapper · 2026-10-08
 - [WebSocket — Broadcast Hub & Terminal Multiplexer](pages/mapper/wiki/10-websocket.md) · Microservice Mapper · 2026-09-18
 - [Data Models — TypeScript Interfaces Reference](pages/mapper/wiki/12-data-models.md) · Microservice Mapper · 2026-09-18
 - [API Reference](pages/mapper/wiki/13-api-reference.md) · Microservice Mapper · 2026-09-18
 - [Configuration Reference](pages/mapper/wiki/14-configuration.md) · Microservice Mapper · 2026-09-18
 - [Troubleshooting & Known Issues](pages/mapper/wiki/15-troubleshooting.md) · Microservice Mapper · 2026-09-18
-- [Change Log and Rationale](pages/mapper/wiki/16-change-log-and-rationale.md) · Microservice Mapper · 2026-09-18
+- [Change Log and Rationale](pages/mapper/wiki/16-change-log-and-rationale.md) · Microservice Mapper · 2026-10-08
 - [18 — Telemetry tiers: the plan](pages/mapper/wiki/18-telemetry-tiers-plan.md) · Microservice Mapper · 2026-09-19
 - [19 — How it all works](pages/mapper/wiki/19-how-it-all-works.md) · Microservice Mapper · 2026-09-24
 - [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) · Reports and findings · 2026-10-07
@@ -629,7 +630,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Frontend — Architecture, Hooks & Design Decisions](pages/mapper/wiki/09-frontend.md) · Microservice Mapper · 2026-09-18
 - [WebSocket — Broadcast Hub & Terminal Multiplexer](pages/mapper/wiki/10-websocket.md) · Microservice Mapper · 2026-09-18
 - [Configuration Reference](pages/mapper/wiki/14-configuration.md) · Microservice Mapper · 2026-09-18
-- [Change Log and Rationale](pages/mapper/wiki/16-change-log-and-rationale.md) · Microservice Mapper · 2026-09-18
+- [Change Log and Rationale](pages/mapper/wiki/16-change-log-and-rationale.md) · Microservice Mapper · 2026-10-08
 - [19 — How it all works](pages/mapper/wiki/19-how-it-all-works.md) · Microservice Mapper · 2026-09-24
 - [Microservice Mapper — Wiki](pages/mapper/wiki/README.md) · Microservice Mapper · 2026-09-24
 - [research-paper-context](pages/lab/history/memory/microservice-mapper/research-paper-context.md) · rca-lab · 2026-10-08
@@ -1091,7 +1092,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [API Reference](pages/mapper/wiki/13-api-reference.md) · Microservice Mapper · 2026-09-18
 - [Configuration Reference](pages/mapper/wiki/14-configuration.md) · Microservice Mapper · 2026-09-18
 - [Troubleshooting & Known Issues](pages/mapper/wiki/15-troubleshooting.md) · Microservice Mapper · 2026-09-18
-- [Change Log and Rationale](pages/mapper/wiki/16-change-log-and-rationale.md) · Microservice Mapper · 2026-09-18
+- [Change Log and Rationale](pages/mapper/wiki/16-change-log-and-rationale.md) · Microservice Mapper · 2026-10-08
 - [17 — Findings vs Incidents: two detectors, deliberately separate](pages/mapper/wiki/17-findings-vs-incidents.md) · Microservice Mapper · 2026-09-18
 - [19 — How it all works](pages/mapper/wiki/19-how-it-all-works.md) · Microservice Mapper · 2026-09-24
 - [Microservice Mapper — Wiki](pages/mapper/wiki/README.md) · Microservice Mapper · 2026-09-24
@@ -1131,7 +1132,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Node & Edge Lifecycle — Pruning, Status, Staleness](pages/mapper/wiki/06-node-edge-lifecycle.md) · Microservice Mapper · 2026-09-18
 - [Data Models — TypeScript Interfaces Reference](pages/mapper/wiki/12-data-models.md) · Microservice Mapper · 2026-09-18
 - [Troubleshooting & Known Issues](pages/mapper/wiki/15-troubleshooting.md) · Microservice Mapper · 2026-09-18
-- [Change Log and Rationale](pages/mapper/wiki/16-change-log-and-rationale.md) · Microservice Mapper · 2026-09-18
+- [Change Log and Rationale](pages/mapper/wiki/16-change-log-and-rationale.md) · Microservice Mapper · 2026-10-08
 - [18 — Telemetry tiers: the plan](pages/mapper/wiki/18-telemetry-tiers-plan.md) · Microservice Mapper · 2026-09-19
 - [RCA and cascade logic: what it does, why it is not on par, what to change](pages/lab/docs/RCA_AND_CASCADE_SIMPLE.md) · Reports and findings · 2026-10-08
 - [What we are, where we help, and why it matters (scope and value)](pages/lab/docs/SCOPE_AND_VALUE.md) · Reports and findings · 2026-10-08

@@ -20,7 +20,7 @@
 | Simple live notebook (buttons, fault injector) | [`ipynb/rca_live_colab.ipynb`](../ipynb/rca_live_colab.ipynb) | older two-part UI; same core |
 | Core library used by the notebooks (sampler, injector) | [`colab/rca_lite.py`](../colab/rca_lite.py) | read-only SSH allowlist; injector limited to docker stop/start/pause/unpause |
 | Full research harness (CLI + dashboard) | [`rcalab/`](../rcalab), [`README.md`](../README.md) | tools/ssh/both data modes, experiments in `experiments/` |
-| microservice-mapper (the product) | separate repo `Royson-salis-18/microservice-mapper` | discovery, graph, traffic |
+| microservice-mapper (the product) | separate repo [github.com/Royson-salis-18/microservice-mapper](https://github.com/Royson-salis-18/microservice-mapper); its wiki is `wiki/` there | discovery, graph, traffic, incidents. RCA and status bugs fixed 2026-10-08 (victims were rewarded, paused containers invisible, LIVE with no data): see its `wiki/08-rca-engine.md` and `wiki/16-change-log-and-rationale.md` |
 
 ### How the notebook is organised
 
@@ -40,7 +40,7 @@
 |---|---|
 | [Fixes and tests on larger apps](../docs/FIXES_AND_TESTS.md) | false alarms, detection, ranking on 17-200 services, cascade, DeathStar crash |
 | [Hostile review report](../docs/REVIEW_REPORT.md) | reviewer-2 critique (M1-M16), how to pre-empt each point, data sources, 7-day plan |
-| `docs/experiments/` | raw result files (JSON/NPZ) used by every table |
+| `docs/experiments/` | raw result files (JSON/NPZ/CSV) used by every table, including the live pause test (`live_pause_results.json`, `live_pause_samples.csv`) and the 3-seed bench (`bench_ablation_3seeds.csv`) |
 
 ## 4. Literature
 

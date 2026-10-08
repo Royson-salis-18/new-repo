@@ -1,6 +1,6 @@
 # Wiki index by topic
 
-267 pages from 2 repositories, generated 2026-10-08 16:21. Use `TIMELINE.md` for time order and `TAGS.md` for what the pages talk about.
+267 pages from 2 repositories, generated 2026-10-08 16:22. Use `TIMELINE.md` for time order and `TAGS.md` for what the pages talk about.
 
 **Start here:** [`pages/lab/docs/REVIEW_REPORT.md`](pages/lab/docs/REVIEW_REPORT.md) (honest review) · [`pages/lab/docs/FIXES_AND_TESTS.md`](pages/lab/docs/FIXES_AND_TESTS.md) (latest tests) · [`pages/lab/RESEARCH.md`](pages/lab/RESEARCH.md) (protocol) · [`pages/mapper/WIKI.md`](pages/mapper/WIKI.md) (the product's own wiki)
 
@@ -23,7 +23,7 @@
 | [Telemetry Ingestion — `ingestRemote()` Deep Dive](pages/mapper/wiki/05-telemetry-ingestion.md) | File: server/graph/GraphStore.ts, method ingestRemote(payload, clientIp?) | 2026-09-18 | 2026-09-18 | 1233 | metrics / Prometheus, troubleshooting, traces / Jaeger / OpenTelemetry |
 | [Node & Edge Lifecycle — Pruning, Status, Staleness](pages/mapper/wiki/06-node-edge-lifecycle.md) | Targets move through states based on lastSeen — the ISO timestamp updated by any successful telemetry ingestion or HTTP ping. | 2026-09-18 | 2026-09-18 | 864 | troubleshooting, configuration / API, SSH / EC2 / Docker |
 | [Remote Collector — Telemetry Sources & Design](pages/mapper/wiki/07-remote-collector.md) | The remote collector is a standalone Node.js process deployed on each EC2 instance. It runs alongside the target application and r | 2026-09-18 | 2026-09-18 | 1139 | SSH / EC2 / Docker, logs |
-| [RCA Engine — Root Cause Analysis](pages/mapper/wiki/08-rca-engine.md) | Files: server/rca/RCAEngine.ts, IncidentManager.ts, TemporalAnalyzer.ts, ExplanationEngine.ts, AnomalyDetector.ts | 2026-09-18 | 2026-09-18 | 897 | anomaly detection, cascading failure / propagation, root cause analysis (RCA) |
+| [RCA Engine — Root Cause Analysis](pages/mapper/wiki/08-rca-engine.md) | Files: server/rca/RCAEngine.ts, IncidentManager.ts, TemporalAnalyzer.ts, ExplanationEngine.ts, AnomalyDetector.ts | 2026-09-18 | 2026-10-08 | 1185 | anomaly detection, root cause analysis (RCA), cascading failure / propagation |
 | [Frontend — Architecture, Hooks & Design Decisions](pages/mapper/wiki/09-frontend.md) | App.tsx owns all UI state and consumes the useGraphData hook. It does not fetch data directly — all data flows through the hook. | 2026-09-18 | 2026-09-18 | 1257 | dashboard / UI, architecture / data flow, traces / Jaeger / OpenTelemetry |
 | [WebSocket — Broadcast Hub & Terminal Multiplexer](pages/mapper/wiki/10-websocket.md) | Both the REST API and WebSocket live on the same HTTP server on port 3001. The WebSocketServer is attached with { server } — it in | 2026-09-18 | 2026-09-18 | 803 | dashboard / UI, configuration / API, SSH / EC2 / Docker |
 | [ML Anomaly Detection Pipeline](pages/mapper/wiki/11-ml-pipeline.md) | A standalone Python sidecar that trains a per-service IsolationForest on historical metrics collected from the mapper's API, then  | 2026-09-18 | 2026-09-18 | 1383 | anomaly detection, machine learning / GNN, configuration / API |
@@ -31,7 +31,7 @@
 | [API Reference](pages/mapper/wiki/13-api-reference.md) | Every route below is verified against server/api/routes.ts and | 2026-09-18 | 2026-09-18 | 1213 | configuration / API, machine learning / GNN, traces / Jaeger / OpenTelemetry |
 | [Configuration Reference](pages/mapper/wiki/14-configuration.md) | Override any value with an environment variable: | 2026-09-18 | 2026-09-18 | 964 | configuration / API, machine learning / GNN, SSH / EC2 / Docker |
 | [Troubleshooting & Known Issues](pages/mapper/wiki/15-troubleshooting.md) | Symptom: Target card shows NO DATA status immediately after being added. | 2026-09-18 | 2026-09-18 | 1179 | SSH / EC2 / Docker, troubleshooting, logs |
-| [Change Log and Rationale](pages/mapper/wiki/16-change-log-and-rationale.md) | A record of what was changed, why it was changed, and where it lives. | 2026-09-18 | 2026-09-18 | 3697 | configuration / API, troubleshooting, SSH / EC2 / Docker |
+| [Change Log and Rationale](pages/mapper/wiki/16-change-log-and-rationale.md) | A record of what was changed, why it was changed, and where it lives. | 2026-09-18 | 2026-10-08 | 3988 | configuration / API, troubleshooting, SSH / EC2 / Docker |
 | [17 — Findings vs Incidents: two detectors, deliberately separate](pages/mapper/wiki/17-findings-vs-incidents.md) | This page explains why the app has two places that both say "something is | 2026-09-18 | 2026-09-18 | 1218 | anomaly detection, architecture / data flow, configuration / API |
 | [18 — Telemetry tiers: the plan](pages/mapper/wiki/18-telemetry-tiers-plan.md) | Status: in progress. Each phase lists what "done" means so progress is | 2026-09-19 | 2026-09-19 | 1341 | metrics / Prometheus, SSH / EC2 / Docker, traces / Jaeger / OpenTelemetry |
 | [19 — How it all works](pages/mapper/wiki/19-how-it-all-works.md) | Two passes over the same system. Part 1 is the plain-language version — | 2026-09-24 | 2026-09-24 | 2036 | SSH / EC2 / Docker, configuration / API, metrics / Prometheus |
