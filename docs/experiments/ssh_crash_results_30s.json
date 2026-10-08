@@ -1,0 +1,93 @@
+{
+ "SSH metrics only (before fix)": {
+  "4.0": {
+   "baseline_false_flags": 0,
+   "root_flagged": false,
+   "root_delay_s": null,
+   "n_flagged_during_fault": 3,
+   "top4": [
+    "nginx-thrift",
+    "user-timeline-service",
+    "home-timeline-service"
+   ],
+   "root_rank": null
+  },
+  "6.0": {
+   "baseline_false_flags": 0,
+   "root_flagged": false,
+   "root_delay_s": null,
+   "n_flagged_during_fault": 3,
+   "top4": [
+    "nginx-thrift",
+    "user-timeline-service",
+    "home-timeline-service"
+   ],
+   "root_rank": null
+  },
+  "8.0": {
+   "baseline_false_flags": 0,
+   "root_flagged": false,
+   "root_delay_s": null,
+   "n_flagged_during_fault": 3,
+   "top4": [
+    "nginx-thrift",
+    "user-timeline-service",
+    "home-timeline-service"
+   ],
+   "root_rank": null
+  }
+ },
+ "SSH metrics + container_up (after fix)": {
+  "4.0": {
+   "baseline_false_flags": 0,
+   "root_flagged": true,
+   "root_delay_s": 30,
+   "n_flagged_during_fault": 4,
+   "top4": [
+    "post-storage-service",
+    "nginx-thrift",
+    "user-timeline-service",
+    "home-timeline-service"
+   ],
+   "root_rank": 1
+  },
+  "6.0": {
+   "baseline_false_flags": 0,
+   "root_flagged": true,
+   "root_delay_s": 30,
+   "n_flagged_during_fault": 4,
+   "top4": [
+    "post-storage-service",
+    "nginx-thrift",
+    "user-timeline-service",
+    "home-timeline-service"
+   ],
+   "root_rank": 1
+  },
+  "8.0": {
+   "baseline_false_flags": 0,
+   "root_flagged": true,
+   "root_delay_s": 30,
+   "n_flagged_during_fault": 4,
+   "top4": [
+    "post-storage-service",
+    "nginx-thrift",
+    "user-timeline-service",
+    "home-timeline-service"
+   ],
+   "root_rank": 1
+  }
+ },
+ "client": {
+  "error_rate_baseline": 0.0,
+  "error_rate_fault": 0.8703703703703703,
+  "latency_ms_baseline": 80.36071062088013,
+  "latency_ms_fault": 63.52388858795166
+ },
+ "windows": {
+  "T": 22,
+  "stop": 12,
+  "start": 16,
+  "step_s": 30
+ }
+}

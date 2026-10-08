@@ -118,12 +118,12 @@ class Sampler(threading.Thread):
         while not self._halt.is_set():
             t0 = time.time()
             try:
-                errs = {}
-                if t0 - last_logs >= self.log_every_s:
+                errs, scanned = {}, t0 - last_logs >= self.log_every_s
+                if scanned:
                     errs = self.src.log_errors(int(t0 - last_logs) + 2)
                     last_logs = t0
                 row = {"t": t0, "svc": {r["name"]: {"cpu": r["cpu"], "mem": r["mem"], "rx": r["rx"], "tx": r["tx"],
-                                                    "err": errs.get(r["name"], 0)} for r in self.src.stats()}}
+                                                    "err": (errs.get(r["name"], 0) if scanned else None)} for r in self.src.stats()}}
                 with open(self.path, "a", encoding="utf-8") as f:
                     f.write(json.dumps(row) + "\n")
                 self.last_error = None
@@ -167,7 +167,9 @@ def load_windows(path: Path, start: float, end: float, step: int, names: list[st
             present[w, j] = True
             X[w, j, features.index("cpu")] = v["cpu"]
             X[w, j, features.index("memory")] = v["mem"]
-            X[w, j, features.index("log_errors")] = v["err"]
+            if v.get("err") is not None:       # None = no log scan in this cycle (unknown), not zero errors
+                k_e = features.index("log_errors")
+                X[w, j, k_e] = (0.0 if np.isnan(X[w, j, k_e]) else X[w, j, k_e]) + v["err"]   # scans add up inside a window
             if before and t > before[0]:
                 X[w, j, features.index("net_rx")] = max(v["rx"] - before[1], 0) / (t - before[0])
                 X[w, j, features.index("net_tx")] = max(v["tx"] - before[2], 0) / (t - before[0])

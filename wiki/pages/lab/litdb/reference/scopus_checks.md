@@ -42,3 +42,16 @@ Notes: a Scopus-indexed venue is not a quality guarantee; the "not found" journa
 | realtimeobse | IEEE Access | 2169-3536 | indexed (see batch 5 row) |
 | costsensitiv | Transactions on Computational and Scientific Methods (Pinnacle Science Press) | 2998-8780 | not found (0 results) |
 | sheriffadepoju2023cascading | Int. J. Sci. Res. Civil Eng. | 2456-6667 | not found (as before) |
+
+## Additions (batch 7)
+- 2178-7727 (printed on bridgingtheg): Scopus preview = Acta Scientiae (science and maths education; CiteScore 1.0, SJR 0.243). Venue mismatch for a microservices paper; article not found in Crossref under it.
+- theysayitsre: no ISSN printed; not checkable. DOI in PDF is a placeholder.
+- causalrca: J. Syst. Softw., ISSN 0164-1212 (Crossref confirms); Scopus preview not yet checked (unverified).
+
+## Additions (batch 8)
+- AID and STMformer: arXiv preprints (not Scopus-indexed); published versions not checked.
+- unyi2025explainable: IEEE TNSM, ISSN 1932-4537 / 2373-7379; Scopus preview check not yet done (unverified).
+
+## Additions (batch 9)
+- Seer and MicroHECL: arXiv preprints (not Scopus-indexed); published versions not checked.
+- CIRCA: KDD '22 proceedings; Scopus preview check not done (unverified).

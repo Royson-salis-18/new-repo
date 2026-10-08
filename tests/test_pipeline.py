@@ -111,3 +111,19 @@ def test_edge_learner_learns_shielded_edges_across_incidents():
         learner.update(tel, flags)         # b never does
     p = learner.probs(tel.edges)
     assert p[("c", "a")] > 0.7 > 0.3 > p[("c", "b")]
+
+
+def test_log_error_counts_are_unknown_between_scans_and_add_up_inside_a_window(tmp_path):
+    import json
+    import numpy as np
+    from rcalab.sources.ssh import load_windows
+    from rcalab.telemetry import FEATURES
+    rows = [{"t": 100.0 + 10 * i, "svc": {"c": {"cpu": 1.0, "mem": 1.0, "rx": 0.0, "tx": 0.0, "err": e}}}
+            for i, e in enumerate([5, None, None, 7, None, None])]
+    f = tmp_path / "s.jsonl"
+    f.write_text(chr(10).join(json.dumps(r) for r in rows), encoding="utf-8")
+    X = load_windows(f, 100.0, 160.0, 10, ["c"], FEATURES)
+    le = X[:, 0, FEATURES.index("log_errors")]
+    assert le[0] == 5 and np.isnan(le[1]) and np.isnan(le[2]) and le[3] == 7          # unknown stays NaN, not 0
+    X30 = load_windows(f, 100.0, 160.0, 30, ["c"], FEATURES)
+    assert X30[0, 0, FEATURES.index("log_errors")] == 5 and X30[1, 0, FEATURES.index("log_errors")] == 7

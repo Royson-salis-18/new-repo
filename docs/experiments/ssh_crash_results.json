@@ -1,0 +1,72 @@
+{
+ "SSH metrics only (before fix)": {
+  "4.0": {
+   "baseline_false_flags": 0,
+   "root_flagged": false,
+   "root_delay_s": null,
+   "n_flagged_during_fault": 0,
+   "top4": [],
+   "root_rank": null
+  },
+  "6.0": {
+   "baseline_false_flags": 0,
+   "root_flagged": false,
+   "root_delay_s": null,
+   "n_flagged_during_fault": 0,
+   "top4": [],
+   "root_rank": null
+  },
+  "8.0": {
+   "baseline_false_flags": 0,
+   "root_flagged": false,
+   "root_delay_s": null,
+   "n_flagged_during_fault": 0,
+   "top4": [],
+   "root_rank": null
+  }
+ },
+ "SSH metrics + container_up (after fix)": {
+  "4.0": {
+   "baseline_false_flags": 0,
+   "root_flagged": true,
+   "root_delay_s": 0,
+   "n_flagged_during_fault": 1,
+   "top4": [
+    "post-storage-service"
+   ],
+   "root_rank": 1
+  },
+  "6.0": {
+   "baseline_false_flags": 0,
+   "root_flagged": true,
+   "root_delay_s": 0,
+   "n_flagged_during_fault": 1,
+   "top4": [
+    "post-storage-service"
+   ],
+   "root_rank": 1
+  },
+  "8.0": {
+   "baseline_false_flags": 0,
+   "root_flagged": true,
+   "root_delay_s": 0,
+   "n_flagged_during_fault": 1,
+   "top4": [
+    "post-storage-service"
+   ],
+   "root_rank": 1
+  }
+ },
+ "client": {
+  "error_rate_baseline": 0.0,
+  "error_rate_fault": 0.9537037037037037,
+  "latency_ms_baseline": 80.33549785614014,
+  "latency_ms_fault": 62.23553419113159
+ },
+ "windows": {
+  "T": 66,
+  "stop": 36,
+  "start": 48,
+  "step_s": 10
+ }
+}

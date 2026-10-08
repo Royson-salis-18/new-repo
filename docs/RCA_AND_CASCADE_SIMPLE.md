@@ -60,6 +60,18 @@ Simpler methods we compare against: **most abnormal service**, **largest self-ti
 
 ---
 
-## 5. Notes on the Death Star crash test
-- Done on the host you approved: one container (`post-storage-service`) stopped for ~110 s under light load, then restarted (the log confirms the restart). A later error in my script (SSH banner timeout) prevented the events file and client-side log from being saved, and both hosts are unreachable now, so this test is **partial**: only the raw samples survived.
-- To redo: bring the host back, rerun `experiments/run_ssh_crash.py` (about 11 minutes), then `experiments/analyze_ssh_crash.py`.
+## 5. Death Star crash test (real fault on a real 27-container app, SSH data only)
+One container (`post-storage-service`) was stopped for about 2 minutes under light client load, then restarted (confirmed: "Up 3 minutes" afterwards). Impact measured independently by the client: **95% of requests failed during the stop, 0% before and after.** One run, easiest fault type (a crash), SSH data only (no traces, no latency).
+
+| What the model saw | Flagged during the fault | Root cause ranked |
+|---|---|---|
+| SSH metrics only, **before** the fixes | nothing (error logs alternated 106, 0, 0, 125, 0, 0 because my sampler wrote 0 between log scans, so nothing looked persistent) | none |
+| SSH metrics, log bug fixed, no `container_up` | the 3 **callers** (nginx-thrift, user-timeline, home-timeline) at +30 s | **root not in the ranking: the callers are blamed** |
+| SSH metrics + `container_up` | root + the 3 callers at +30 s (+0 s with 10 s windows; root alone) | **root ranked #1**, 0 false flags in the baseline |
+
+What this shows:
+- Two real bugs found and fixed by this test: (1) a stopped container just vanishes from `docker stats`, which looked like "no evidence"; (2) the log scan ran every 3rd sample and recorded 0 in between, which broke persistence.
+- It is the root-versus-victim problem on real data: the callers' error logs jump (about 0.6 -> 19-36 per sample, z about 32) while the root only disappears. Ranking by "most abnormal" blames the callers unless the data has a crash signal. For a fault that keeps the container running (slow, erroring), `container_up` stays 1 and the victims would still win. That case is **not tested**.
+- Not evidence of general accuracy: one run, one fault, an easy one.
+
+Redo or extend: `experiments/run_ssh_crash.py`, then `ANALYSIS_STEP=30 experiments/analyze_ssh_crash.py`. Next faults to try: a slow container (`docker pause`/CPU limit), and a fault in a leaf database.

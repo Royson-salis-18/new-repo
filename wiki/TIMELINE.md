@@ -1,6 +1,6 @@
 # Wiki timeline
 
-Generated 2026-10-08 06:45. Dates come from git history (created = first commit of the file, updated = latest commit).
+Generated 2026-10-08 07:00. Dates come from git history (created = first commit of the file, updated = latest commit).
 
 
 ## 1. When each page was created (oldest first)
@@ -62,14 +62,14 @@ Generated 2026-10-08 06:45. Dates come from git history (created = first commit 
 - 15:12 [Experiments behind docs/REVIEW_REPORT.md](pages/lab/experiments/README.md) (lab) · Experiments
 - 15:17 [Comparison with our work (reviewed papers only)](pages/lab/litdb/COMPARISON_MATRIX.md) (lab) · Literature
 - 15:17 [Is the problem real? Evidence ledger](pages/lab/litdb/PROBLEM_EVIDENCE.md) (lab) · Literature
-- 15:17 [Reading queue (1 not yet reviewed, 20 reviewed)](pages/lab/litdb/QUEUE.md) (lab) · Literature
+- 15:17 [Reading queue (0 not yet reviewed, 27 reviewed)](pages/lab/litdb/QUEUE.md) (lab) · Literature
 - 15:17 [litdb: the reading database](pages/lab/litdb/README.md) (lab) · Literature
-- 15:17 [Literature survey table (21 papers)](pages/lab/litdb/SURVEY_TABLE.md) (lab) · Literature
+- 15:17 [Literature survey table (27 papers)](pages/lab/litdb/SURVEY_TABLE.md) (lab) · Literature
 - 15:17 [{{TITLE}}](pages/lab/litdb/tools/note_template.md) (lab) · Literature
 - 15:17 [Batch NN: <date>](pages/lab/litdb/batches/_batch_template.md) (lab) · Literature
 - 15:17 [Anomaly detection and root-cause identification in microservices: a survey](pages/lab/litdb/papers/barata2026anomaly.md) (lab) · Literature
 - 15:17 [Bridging the Gap: A Systematic Framework for Agentic AI Root Cause Analysis in H](pages/lab/litdb/papers/bridgingtheg.md) (lab) · Literature
-- 15:17 [> Reading notes written from the **full text** (`litdb/texts/causalrca.txt`). Pa](pages/lab/litdb/papers/causalrca.md) (lab) · Literature
+- 15:17 [CausalRCA (Xin, Chen, Zhao, JSS 2023)](pages/lab/litdb/papers/causalrca.md) (lab) · Literature
 - 15:17 [Cost-Sensitive Mamba Sequence Modeling for Fault Detection in Cloud-Native Micro](pages/lab/litdb/papers/costsensitiv.md) (lab) · Literature
 - 15:17 [Hybrid Root Cause Analysis for Partially Observable Microservices Based on Archi](pages/lab/litdb/papers/erakovic2025hybrid.md) (lab) · Literature
 - 15:17 [Intelligent Root Cause Localization in MicroService Systems: A Survey and New Pe](pages/lab/litdb/papers/fu2025intelligent.md) (lab) · Literature
@@ -120,34 +120,53 @@ Generated 2026-10-08 06:45. Dates come from git history (created = first commit 
 ### 2026-10-08
 
 - 06:45 [RCA and cascade logic: what it does, why it is not on par, what to change](pages/lab/docs/RCA_AND_CASCADE_SIMPLE.md) (lab) · Reports and findings
+- 06:46 [Batch 07: 2026-10-08](pages/lab/litdb/batches/batch-07.md) (lab) · Literature
+- 06:46 [Report: Xin, Chen, Zhao (2023), CausalRCA](pages/lab/litdb/reports/causalrca.md) (lab) · Literature
+- 06:56 [Batch 08: 2026-10-08](pages/lab/litdb/batches/batch-08.md) (lab) · Literature
+- 06:56 [Report: Yang et al. (2021), AID: Aggregated Intensity of Dependency](pages/lab/litdb/reports/tianyiyangjiachengshenyuxinsuxiaolingyongqiangyangmichaelrlyu2021efficient.md) (lab) · Literature
+- 06:56 [Report: Unyi et al. (2025), Explainable GNN-Based Fault Forecasting](pages/lab/litdb/reports/unyi2025explainable.md) (lab) · Literature
+- 06:56 [Report: Xu et al. (2024), STMformer](pages/lab/litdb/reports/yifeixujingguogehainatangshuaidingtonglihuili2024system.md) (lab) · Literature
+- 06:56 [AID: Aggregated Intensity of Dependency (Yang et al., 2021, arXiv)](pages/lab/litdb/papers/tianyiyangjiachengshenyuxinsuxiaolingyongqiangyangmichaelrlyu2021efficient.md) (lab) · Literature
+- 06:56 [Explainable GNN-Based Approach to Fault Forecasting (Unyi et al., TNSM 2025)](pages/lab/litdb/papers/unyi2025explainable.md) (lab) · Literature
+- 06:56 [STMformer (Xu et al., arXiv 2024)](pages/lab/litdb/papers/yifeixujingguogehainatangshuaidingtonglihuili2024system.md) (lab) · Literature
+- 06:59 [Batch 09: 2026-10-08](pages/lab/litdb/batches/batch-09.md) (lab) · Literature
+- 06:59 [Report: Liu et al. (2021), MicroHECL](pages/lab/litdb/reports/deweiliuchuanhexinpengfanlinchenxizhangshengfanggongzianglijiayuouzheshunwu2021microhecl.md) (lab) · Literature
+- 06:59 [Report: Li et al. (2022), CIRCA (KDD '22)](pages/lab/litdb/reports/li2022causal.md) (lab) · Literature
+- 06:59 [Report: Gan et al. (2018), Seer (arXiv short version)](pages/lab/litdb/reports/yuganmeghnapancholidailunchengsiyuanhuyuanhechristinadelimitrou2018seer.md) (lab) · Literature
+- 06:59 [MicroHECL (Liu et al., arXiv 2021)](pages/lab/litdb/papers/deweiliuchuanhexinpengfanlinchenxizhangshengfanggongzianglijiayuouzheshunwu2021microhecl.md) (lab) · Literature
+- 06:59 [CIRCA (Li et al., KDD 2022)](pages/lab/litdb/papers/li2022causal.md) (lab) · Literature
+- 06:59 [Seer (Gan et al., arXiv 2018 short version)](pages/lab/litdb/papers/yuganmeghnapancholidailunchengsiyuanhuyuanhechristinadelimitrou2018seer.md) (lab) · Literature
+- 06:59 [Rethinking the Evaluation of Microservice RCA with a Fault Propagation-Aware Ben](pages/lab/litdb/papers/aoyangfangsonghanzhangyifanyanghaotongwujunjielongxuxuyangwangruiwangmanyiwangqishenglupinjiahe2025rethinking.md) (lab) · Literature
+- 06:59 [Actionable and interpretable fault localization for recurring failures in online](pages/lab/litdb/papers/li2022actionable.md) (lab) · Literature
+- 06:59 [RCAgent: Cloud Root Cause Analysis by Autonomous Agents with Tool-Augmented Larg](pages/lab/litdb/papers/wang2024rcagent.md) (lab) · Literature
 
 ## 2. Most recently updated (newest first, top 25)
 
-- 2026-10-08 06:45 [RCA and cascade logic: what it does, why it is not on par, what to change](pages/lab/docs/RCA_AND_CASCADE_SIMPLE.md) (lab)
-- 2026-10-07 16:09 [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) (lab)
-- 2026-10-07 16:08 [Comparison with our work (reviewed papers only)](pages/lab/litdb/COMPARISON_MATRIX.md) (lab)
-- 2026-10-07 16:08 [Reading queue (1 not yet reviewed, 20 reviewed)](pages/lab/litdb/QUEUE.md) (lab)
-- 2026-10-07 16:08 [Literature survey table (21 papers)](pages/lab/litdb/SURVEY_TABLE.md) (lab)
-- 2026-10-07 16:08 [Report: Maheshkar (2025), Bridging the Gap: Agentic AI Root Cause Analysis in Hy](pages/lab/litdb/reports/bridgingtheg.md) (lab)
-- 2026-10-07 16:08 [Bridging the Gap: A Systematic Framework for Agentic AI Root Cause Analysis in H](pages/lab/litdb/papers/bridgingtheg.md) (lab)
-- 2026-10-07 16:05 [Report: Vangapelli (2026), AI-Driven Root Cause Analysis In Real-Time Distribute](pages/lab/litdb/reports/theysayitsre.md) (lab)
-- 2026-10-07 16:05 [AI-Driven Root Cause Analysis In Real-Time Distributed Systems](pages/lab/litdb/papers/theysayitsre.md) (lab)
-- 2026-10-07 16:02 [Is the problem real? Evidence ledger](pages/lab/litdb/PROBLEM_EVIDENCE.md) (lab)
-- 2026-10-07 16:02 [Batch 06: 2026-10-07](pages/lab/litdb/batches/batch-06.md) (lab)
-- 2026-10-07 16:02 [Report: Liu et al. (2024), Cost-Sensitive Mamba Sequence Modeling for Fault Dete](pages/lab/litdb/reports/costsensitiv.md) (lab)
-- 2026-10-07 16:02 [Report: Faseeha et al. (2025), Observability in Microservices (IEEE Access)](pages/lab/litdb/reports/realtimeobse.md) (lab)
-- 2026-10-07 16:02 [Report: Adepoju (2023), Cascading Failure Modes in Model-as-a-Service Architectu](pages/lab/litdb/reports/sheriffadepoju2023cascading.md) (lab)
-- 2026-10-07 16:02 [Cost-Sensitive Mamba Sequence Modeling for Fault Detection in Cloud-Native Micro](pages/lab/litdb/papers/costsensitiv.md) (lab)
-- 2026-10-07 16:02 [Observability in Microservices: An In-Depth Exploration of Frameworks, Challenge](pages/lab/litdb/papers/realtimeobse.md) (lab)
-- 2026-10-07 16:02 [Cascading Failure Modes in Model-as-a-Service Architectures: When Your Dependenc](pages/lab/litdb/papers/sheriffadepoju2023cascading.md) (lab)
-- 2026-10-07 16:02 [Scopus venue checks (manual, via the public Scopus "Sources" preview, https://ww](pages/lab/litdb/reference/scopus_checks.md) (lab)
-- 2026-10-07 15:57 [Batch 05: 2026-10-07](pages/lab/litdb/batches/batch-05.md) (lab)
-- 2026-10-07 15:57 [Report: Podduturi (2025), AI for Microservice Monitoring and Anomaly Detection](pages/lab/litdb/reports/podduturi2025microservice.md) (lab)
-- 2026-10-07 15:57 [Report: Ortiz et al. (2019), Real-Time Context-Aware Microservice Architecture f](pages/lab/litdb/reports/realtimecont.md) (lab)
-- 2026-10-07 15:57 [Report: Xie, He, Wang, Li (2025), CCLH hypergraph RCA](pages/lab/litdb/reports/shuaiyuxiehanbinhejianwangbingli2025root.md) (lab)
-- 2026-10-07 15:57 [AI for Microservice Monitoring & Anomaly Detection](pages/lab/litdb/papers/podduturi2025microservice.md) (lab)
-- 2026-10-07 15:57 [Real-Time Context-Aware Microservice Architecture for Predictive Analytics and S](pages/lab/litdb/papers/realtimecont.md) (lab)
-- 2026-10-07 15:57 [Root Cause Analysis for Microservice Systems via Cascaded Conditional Learning w](pages/lab/litdb/papers/shuaiyuxiehanbinhejianwangbingli2025root.md) (lab)
+- 2026-10-08 06:59 [RCAgent: Cloud Root Cause Analysis by Autonomous Agents with Tool-Augmented Larg](pages/lab/litdb/papers/wang2024rcagent.md) (lab)
+- 2026-10-08 06:59 [Actionable and interpretable fault localization for recurring failures in online](pages/lab/litdb/papers/li2022actionable.md) (lab)
+- 2026-10-08 06:59 [Rethinking the Evaluation of Microservice RCA with a Fault Propagation-Aware Ben](pages/lab/litdb/papers/aoyangfangsonghanzhangyifanyanghaotongwujunjielongxuxuyangwangruiwangmanyiwangqishenglupinjiahe2025rethinking.md) (lab)
+- 2026-10-08 06:59 [Comparison with our work (reviewed papers only)](pages/lab/litdb/COMPARISON_MATRIX.md) (lab)
+- 2026-10-08 06:59 [Is the problem real? Evidence ledger](pages/lab/litdb/PROBLEM_EVIDENCE.md) (lab)
+- 2026-10-08 06:59 [Reading queue (0 not yet reviewed, 27 reviewed)](pages/lab/litdb/QUEUE.md) (lab)
+- 2026-10-08 06:59 [Literature survey table (27 papers)](pages/lab/litdb/SURVEY_TABLE.md) (lab)
+- 2026-10-08 06:59 [Batch 09: 2026-10-08](pages/lab/litdb/batches/batch-09.md) (lab)
+- 2026-10-08 06:59 [Report: Liu et al. (2021), MicroHECL](pages/lab/litdb/reports/deweiliuchuanhexinpengfanlinchenxizhangshengfanggongzianglijiayuouzheshunwu2021microhecl.md) (lab)
+- 2026-10-08 06:59 [Report: Li et al. (2022), CIRCA (KDD '22)](pages/lab/litdb/reports/li2022causal.md) (lab)
+- 2026-10-08 06:59 [Report: Gan et al. (2018), Seer (arXiv short version)](pages/lab/litdb/reports/yuganmeghnapancholidailunchengsiyuanhuyuanhechristinadelimitrou2018seer.md) (lab)
+- 2026-10-08 06:59 [MicroHECL (Liu et al., arXiv 2021)](pages/lab/litdb/papers/deweiliuchuanhexinpengfanlinchenxizhangshengfanggongzianglijiayuouzheshunwu2021microhecl.md) (lab)
+- 2026-10-08 06:59 [CIRCA (Li et al., KDD 2022)](pages/lab/litdb/papers/li2022causal.md) (lab)
+- 2026-10-08 06:59 [Seer (Gan et al., arXiv 2018 short version)](pages/lab/litdb/papers/yuganmeghnapancholidailunchengsiyuanhuyuanhechristinadelimitrou2018seer.md) (lab)
+- 2026-10-08 06:59 [Scopus venue checks (manual, via the public Scopus "Sources" preview, https://ww](pages/lab/litdb/reference/scopus_checks.md) (lab)
+- 2026-10-08 06:56 [Batch 08: 2026-10-08](pages/lab/litdb/batches/batch-08.md) (lab)
+- 2026-10-08 06:56 [Report: Yang et al. (2021), AID: Aggregated Intensity of Dependency](pages/lab/litdb/reports/tianyiyangjiachengshenyuxinsuxiaolingyongqiangyangmichaelrlyu2021efficient.md) (lab)
+- 2026-10-08 06:56 [Report: Unyi et al. (2025), Explainable GNN-Based Fault Forecasting](pages/lab/litdb/reports/unyi2025explainable.md) (lab)
+- 2026-10-08 06:56 [Report: Xu et al. (2024), STMformer](pages/lab/litdb/reports/yifeixujingguogehainatangshuaidingtonglihuili2024system.md) (lab)
+- 2026-10-08 06:56 [AID: Aggregated Intensity of Dependency (Yang et al., 2021, arXiv)](pages/lab/litdb/papers/tianyiyangjiachengshenyuxinsuxiaolingyongqiangyangmichaelrlyu2021efficient.md) (lab)
+- 2026-10-08 06:56 [Explainable GNN-Based Approach to Fault Forecasting (Unyi et al., TNSM 2025)](pages/lab/litdb/papers/unyi2025explainable.md) (lab)
+- 2026-10-08 06:56 [STMformer (Xu et al., arXiv 2024)](pages/lab/litdb/papers/yifeixujingguogehainatangshuaidingtonglihuili2024system.md) (lab)
+- 2026-10-08 06:49 [Batch 07: 2026-10-08](pages/lab/litdb/batches/batch-07.md) (lab)
+- 2026-10-08 06:49 [Report: Xin, Chen, Zhao (2023), CausalRCA](pages/lab/litdb/reports/causalrca.md) (lab)
+- 2026-10-08 06:49 [CausalRCA (Xin, Chen, Zhao, JSS 2023)](pages/lab/litdb/papers/causalrca.md) (lab)
 
 ## 3. Work history (commits of both repositories, newest first)
 
@@ -204,6 +223,12 @@ Generated 2026-10-08 06:45. Dates come from git history (created = first commit 
 
 ### lab
 
+- 2026-10-08 06:59 `575245e` litdb batch 9: full reads of Seer (short), CIRCA, MicroHECL; reports, batch doc, evidence rows
+- 2026-10-08 06:56 `4670c88` litdb batch 8: full reads of AID, Unyi et al. (TNSM 2025), STMformer; reports, batch doc, evidence rows; OA PD
+- 2026-10-08 06:49 `b66fdd9` litdb batch 7: table cell fixes
+- 2026-10-08 06:49 `487fc5d` litdb batch 7: full read of CausalRCA (pages 1-12) via pypdfium2 rendering; note, report, batch doc, evidence 
+- 2026-10-08 06:46 `df5dddc` litdb batch 7: Vangapelli, Maheshkar (AURORA), CausalRCA (partial read); batch doc, evidence rows, Scopus addi
+- 2026-10-08 06:45 `5355700` Simple explainer: what RCA/cascade logic does, why not on par, what to change; container_up feature; ssh crash
 - 2026-10-07 16:09 `ad8b532` Record mapper larger-app test; rebuild wiki
 - 2026-10-07 16:08 `157db89` litdb batch 7 (partial): full reads of Vangapelli and Maheshkar (AURORA); notes and reports
 - 2026-10-07 16:05 `f14c021` Calibrated detector, self-time feature, cross-incident edge learner, replay/topology tests, wiki hub, fixes re

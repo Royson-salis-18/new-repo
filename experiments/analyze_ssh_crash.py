@@ -16,7 +16,7 @@ from rcalab.detector import Detection, _calibrated_fz, _persist  # noqa: E402
 from rcalab.rca import rank  # noqa: E402
 
 ev = json.loads((ROOT / "docs/experiments/ssh_crash_events.json").read_text())
-STEP = ev["step_s"]
+STEP = int(os.environ.get("ANALYSIS_STEP", ev["step_s"]))      # window size for the analysis (10 s sampling; 30 s windows hold a full log scan)
 cfg = config.load("config.example.yaml")
 cfg["system"]["name"] = "death-star-crash"
 cfg["source"]["mode"] = "ssh"
@@ -40,7 +40,7 @@ lat = np.array([np.median(cl[bins == w, 2]) * 1000 if (bins == w).any() else np.
 print(f"client-visible error rate: baseline {np.nanmean(err_rate[:w_stop]):.2f} | during fault {np.nanmean(err_rate[w_stop:w_start]):.2f} | after restart {np.nanmean(err_rate[w_start + 2:]):.2f}")
 print(f"client median latency ms:  baseline {np.nanmedian(lat[:w_stop]):.0f} | during fault {np.nanmedian(lat[w_stop:w_start]):.0f} | after restart {np.nanmedian(lat[w_start + 2:]):.0f}")
 
-BASE_K, MIN_VALID = 30, 20            # baseline = first 30 valid samples (300 s), judged after 20: all before the fault at window ~36
+BASE_K, MIN_VALID = max(int(300 / STEP), 8), max(int(200 / STEP), 6)   # baseline = first ~300 s, judged after ~200 s: all before the fault
 
 
 def detection(tel_, thr, persistence=3):
@@ -71,7 +71,7 @@ for label, t_ in (("SSH metrics only (before fix)", tel_noup), ("SSH metrics + c
 results["client"] = {"error_rate_baseline": float(np.nanmean(err_rate[:w_stop])), "error_rate_fault": float(np.nanmean(err_rate[w_stop:w_start])),
                      "latency_ms_baseline": float(np.nanmedian(lat[:w_stop])), "latency_ms_fault": float(np.nanmedian(lat[w_stop:w_start]))}
 results["windows"] = {"T": T, "stop": w_stop, "start": w_start, "step_s": STEP}
-(ROOT / "docs/experiments/ssh_crash_results.json").write_text(json.dumps(results, indent=1, default=float))
+(ROOT / "docs/experiments" / f"ssh_crash_results_{STEP}s.json").write_text(json.dumps(results, indent=1, default=float))
 print("\nwhich features of OTHER containers moved during the fault (max one-sided z in fault window, no container_up):")
 fz, _ = _calibrated_fz(tel_noup, None, base_k=BASE_K, min_valid=MIN_VALID, return_evidence=True)
 seg = fz[w_stop:w_start + 1]
