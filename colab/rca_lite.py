@@ -369,6 +369,18 @@ class HostSampler:
                     edges.add((svc, str(d).split(":")[0]))
         return sorted(edges)
 
+    def trace_edges(self, port: int = 16686, prefix: str = "", lookback_h: int = 24):
+        """REAL call edges (caller, callee) from the host's own Jaeger dependencies API (read-only `curl` to localhost).
+        Empty if the app has no traced traffic. prefix e.g. "/jaeger/ui" for the OTel demo."""
+        if not re.fullmatch(r"(/[A-Za-z0-9_-]+)*", prefix) or not 0 < int(port) < 65536:
+            raise ValueError("refusing jaeger address")
+        end = int(time.time() * 1000)
+        out = self._run(f"curl -s -m 10 'http://localhost:{int(port)}{prefix}/api/dependencies?endTs={end}&lookback={int(lookback_h) * 3600000}'", 30)
+        try:
+            return sorted({(d["parent"], d["child"]) for d in json.loads(out).get("data") or [] if d["parent"] != d["child"]})
+        except (ValueError, KeyError, TypeError):
+            return []
+
     def sample_once(self) -> list[dict]:
         now = time.time()
         scan = now - self._last_logs >= self.log_every_s

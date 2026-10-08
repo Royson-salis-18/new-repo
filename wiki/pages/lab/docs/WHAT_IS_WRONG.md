@@ -13,7 +13,7 @@
 | Claim we wanted to make | Status | One-line reason |
 |---|---|---|
 | "We detect faults with few false alarms on live traffic" | **Partly true** | 0.1 false alarms/hour on real healthy traffic, but only **42%** of injected faults are caught at that setting |
-| "We find the root cause better than existing approaches" | **False on our evidence** | our ranking (A@1 0.44) is slightly below plain "most abnormal service" (0.46) and equal to the original notebook's ranking (0.46); random is 0.04 |
+| "We find the root cause better than existing approaches" | **False on our evidence** (but see the UPDATE section: A@1 0.75 after the silence fix, equal to "most abnormal" with the same signals) | our ranking (A@1 0.44) is slightly below plain "most abnormal service" (0.46) and equal to the original notebook's ranking (0.46); random is 0.04 |
 | "Our propagation reasoning (explain-away, precedence, cascade) helps" | **False on our evidence** | switching each term off changes nothing or improves results, in every test since 2026-10-06 |
 | "We predict cascading failures" | **Not shown** | cascade risk was never better than the trivial rule "callers of a failing service" |
 | "It works on real faults" | **One real fault** | a container stop on DeathStarBench, ranked #1, but only because the container disappeared (easiest possible fault) |
@@ -27,6 +27,38 @@
 3. **honest negative results**: we can show *when* propagation reasoning does not help, which matches what Pham et al. (ASE'24) and Fang et al. (2025) found on public data.
 
 A paper framed as "an operating-point-aware evaluation of label-free RCA" (GAPS.md section 4) is publishable with what we have plus about a week of runs. A paper claiming "a new RCA method that beats the state of the art" is not.
+
+---
+
+## UPDATE 2026-10-08 (afternoon): what we fixed in the logic, measured honestly
+
+**Rule used:** every change was tuned on bench seeds 0-2 and then judged on seeds 3-5, which were never used for tuning. Numbers below are from the seeds never used for tuning unless marked.
+
+| Change | Why | Measured effect |
+|---|---|---|
+| **Silence signal** (a service that usually reports went quiet) | a frozen or crashed service sends nothing, so it had nothing to score (P3) | frozen-service A@1 **0.06 -> 1.00**; overall A@1 **0.52 -> 0.75**, A@3 **0.63 -> 0.85**; false alarms unchanged (0.15/h) |
+| **Activity-drop signal** for SSH data (network in+out) | a paused container stays in `docker stats` but stops talking | needed for the rule below; live `pause` still untested |
+| **"Quiet is inherited" rule**: a service's silence counts only if its callers did not go quiet/down and none of its callees broke loudly; a stopped container is never explained away | on the real crash, the stopped service's cache (nobody calling it) and the entry point (traffic fell because requests failed) were blamed | real DeathStar crash **without** the crash signal: root rank **21-26 -> 1** (with the call graph), **-> 3** with only compose edges |
+| **Real call graph** for DeathStar (hand-written from its source) and a read-only reader for real trace edges (`trace_edges`) | compose `depends_on` is start order, not calls (P7) | see the row above; DeathStar's own Jaeger has no traces yet because the app gets no traffic |
+| **Threshold floor live**: tau >= 4 until 30 healthy minutes exist | a per-hour false-alarm budget cannot be calibrated from 2 minutes (tau had fallen to 1.5) | prevents early false alarms; not a measured gain |
+| Window evidence (`win_k`), own-only explain-away | aimed at slow faults and noisy callees | +0.03 A@1, within noise, at 0.39 false alarms/h; left as switches, not default |
+
+**Bench after the fixes (6 seeds):**
+
+| Method | seeds 0-2: A@1 / A@3 | seeds 3-5 (judge): A@1 / A@3 | slow A@1 | false alarms/h |
+|---|---|---|---|---|
+| **ours, new default** | 0.70 / 0.76 | **0.75 / 0.85** | 0.04 / 0.23 | 0.10 / 0.15 |
+| ours before the fixes | 0.44 / 0.50 | 0.52 / 0.63 | 0.04 / 0.23 | 0.10 / 0.15 |
+| most abnormal (same new signals) | 0.73 / 0.80 | 0.76 / 0.83 | 0.14 / 0.29 | 0.10 / 0.15 |
+| original notebook | 0.46 / 0.50 | 0.49 / 0.56 | 0.14 / 0.23 | 78.7 / 79.7 |
+| random | 0.04 / 0.11 | 0.06 / 0.20 | | |
+
+**What this does and does not change:**
+* P3 (frozen services) is **fixed on the bench**; the live `docker pause` test is still to do (notebook 11d).
+* On the bench, the gain comes from the new *signal*, not from the source-vs-victim reasoning: plain "most abnormal" with the same signals scores the same. The reasoning pays off on the **real** crash (root #1 instead of a victim), because real faults have knock-on effects (callees go quiet, callers' traffic drops) that the bench does not simulate. That bench limitation is now a stated threat to validity.
+* P2 (slow faults) is **still open**.
+* The DeathStar call graph was written by hand **after** seeing this crash (from the DeathStarBench source, not tuned to the answer); confirm it with real traces once the app has load.
+* Still one real fault in total (P9).
 
 ---
 

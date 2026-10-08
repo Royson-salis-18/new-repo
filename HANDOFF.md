@@ -42,3 +42,9 @@ sock-shop 15.207.109.141 | death-star 13.233.8.32 (DeathStarBench socialNetwork,
 - Local test of the whole notebook incl. live: `RCA_KEY=<path to pem> RCA_LIVE_MINUTES=3` and exec the src with matplotlib Agg.
 - Method changes today (all measured on the bench, 3 seeds): tail-aware spread, binomial error spread, per-series noise normalisation (tau 18.5 -> 3.25, false alarms 0.1/h). Ranking = "most abnormal" (A@1 0.45 vs 0.46); original notebook approach 78.7 false alarms/h. Slow and hang faults fail for every method. Best next task: a "silence" signal for frozen services (P3).
 - User preferences: wants everything in GitHub `Royson-salis-18/new-repo` (public is OK for them; never commit .pem). Will not upload CSV or pem to Colab; the key is in the Colab secret.
+
+## Update 2026-10-08 afternoon (logic fixes)
+- Added to `colab/rca_research_src.py`: silence signal (`silence_k=6`, default on bench and live), SSH activity-drop feature, "quiet is inherited" attribution rule (callers quiet/down or a loud broken callee explain my silence; container_up never explained away), optional `win_k` window evidence and `explain="own"`, DeathStar hand-written call graph `DS_CALL_GRAPH`, `HostSampler.trace_edges()` in `rca_lite.py` (read-only curl to local Jaeger dependencies API), live tau floor 4.0 until 30 healthy minutes.
+- Protocol: tune on bench seeds 0-2, judge on 3-5. Judge seeds: A@1 0.52 -> 0.75, A@3 0.63 -> 0.85, hang 0.06 -> 1.00, false alarms 0.15/h. "Most abnormal" with the same signals is equal on the bench; the attribution rule matters on the real crash (root #1 without container_up).
+- Live check 2026-10-08 ~11:30: death-star and shopflowbench OK; sock-shop SSH gives no banner, open-telemetry web 503 (both look overloaded).
+- Still open: slow faults (P2), live pause test, more real faults (P9), confirm DS call graph with traces (needs load on DeathStar).

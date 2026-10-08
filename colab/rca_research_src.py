@@ -85,7 +85,20 @@ meta = json.loads(str(zf["meta"]))
 OTEL = dict(times=zf["times"], X=zf["X"], services=meta["services"], features=meta["features"], edges=[tuple(e) for e in meta["edges"]])
 
 ev = json.load(open(fetch("docs/experiments/ssh_crash_events.json")))
-DS_EDGES = [tuple(e) for e in json.load(open(fetch("docs/experiments/deathstar_edges.json")))]
+DS_COMPOSE_EDGES = [tuple(e) for e in json.load(open(fetch("docs/experiments/deathstar_edges.json")))]   # docker-compose depends_on
+# The compose file only says what STARTS before what (mostly "-> jaeger-agent"), not who CALLS whom. The real call graph of the
+# DeathStarBench social network, written by hand from its source (nginx-thrift Lua scripts and C++ handlers). Not from traces:
+# DeathStar's own Jaeger had no traces (no load), so verify it with trace_edges() once the app has traffic.
+DS_CALL_GRAPH = [("nginx-thrift", x) for x in ("compose-post-service", "home-timeline-service", "user-timeline-service", "user-service", "social-graph-service")] +     [("compose-post-service", x) for x in ("text-service", "media-service", "unique-id-service", "user-service", "post-storage-service", "user-timeline-service", "home-timeline-service")] +     [("text-service", "url-shorten-service"), ("text-service", "user-mention-service"),
+     ("url-shorten-service", "url-shorten-memcached"), ("url-shorten-service", "url-shorten-mongodb"),
+     ("user-mention-service", "user-memcached"), ("user-mention-service", "user-mongodb"),
+     ("user-service", "user-memcached"), ("user-service", "user-mongodb"), ("user-service", "social-graph-service"),
+     ("social-graph-service", "social-graph-redis"), ("social-graph-service", "social-graph-mongodb"), ("social-graph-service", "user-service"),
+     ("home-timeline-service", "home-timeline-redis"), ("home-timeline-service", "post-storage-service"), ("home-timeline-service", "social-graph-service"),
+     ("user-timeline-service", "user-timeline-redis"), ("user-timeline-service", "user-timeline-mongodb"), ("user-timeline-service", "post-storage-service"),
+     ("post-storage-service", "post-storage-memcached"), ("post-storage-service", "post-storage-mongodb"),
+     ("media-service", "media-memcached"), ("media-service", "media-mongodb"), ("media-frontend", "media-mongodb")]
+DS_EDGES = DS_CALL_GRAPH
 rows = []
 for line in open(fetch("samples/death-star-crash.jsonl")):
     r = json.loads(line)
@@ -133,6 +146,8 @@ SPEC = {   # feature: (direction that means trouble, scale, evidence group)
     "log_count": (+1, "log", "sym"), "error_count": (+1, "log", "sym"), "warning_count": (+1, "log", "sym"),
     "latency_p95": (+1, "log", "sym"), "trace_errors": (+1, "lin", "sym"), "span_rate": (-1, "log", "sym"),
     "self_latency": (+1, "log", "own"), "container_up": (-1, "lin", "own"),
+    "silence": (+1, "lin", "own"),
+    "activity": (-1, "log", "own"),  # network in+out rate (SSH data): a paused container stays listed but stops talking   # computed in score(): a normally chatty service that went quiet
 }
 # "own"  = evidence about the service ITSELF (its CPU, memory, its own processing time, whether it is running)
 # "sym"  = symptoms that can be INHERITED from a broken dependency (errors, end-to-end latency, traffic, log errors)
@@ -179,8 +194,12 @@ def prepare(df, step=None, track_presence=True, gap_factor=5.0, drop_first=True,
             row[f] = v
         if drop_first:
             row.loc[new_session, feats] = np.nan
+        if "network_rx_bytes" in feats and "network_tx_bytes" in feats:
+            row["activity"] = row["network_rx_bytes"] + row["network_tx_bytes"]
         parts.append(row)
     long = pd.concat(parts, ignore_index=True)
+    if "activity" in long.columns:
+        feats = feats + ["activity"]
     if step is None:
         step = float(max(5, round(np.nanmedian([np.nanmedian(np.diff(p["t"])) for p in parts if len(p) > 2]))))
     long["tick"] = np.floor(long["t"] / step).astype(np.int64)
@@ -240,6 +259,10 @@ axs[1].set_title(f"container_up of {ev['container'].replace('socialnetwork-','')
 #
 # * **spread** = the larger of 1.4826 x MAD, the 90% deviation / 1.645 (`tail_q`, for heavy-tailed or mostly-zero series where MAD collapses to 0), and a floor. For the **error rate** we also use the binomial spread sqrt(p(1-p)/n) with n = requests in this tick (`binomial`): one error out of 4 requests is weak evidence, 40 out of 100 is strong.
 #
+# * **silence** (`silence_k`, default 6 on the bench and live): for a service that usually reports in most ticks, how far below its usual activity it fell over the last `silence_k` ticks (binomial z). A frozen or crashed service sends nothing, and before this signal it simply had nothing to score. **Measured:** frozen-service A@1 rose from 0.06 to 1.00 on the bench (seeds never used for tuning), false alarms unchanged.
+# * **activity** (SSH data): network in + out per second; a paused container stays in `docker stats` but stops talking. Scored as a drop (direction -1).
+# * **window evidence** (`win_k`, off by default): the median of the last `win_k` ticks judged with the smaller spread of a median. Meant for slow faults; measured gain is within noise, so it stays a switch.
+#
 # **What if:** `window` small = adapts fast but forgets normal; large = stable but slow to follow drift. `self_heal=False` lets faults leak into the baseline. `log_scale=False` makes big services dominate. Test each in section 8.
 
 # %%
@@ -253,6 +276,7 @@ class Scores:
     zs: np.ndarray       # (T,S) max(own, sym) = the service's anomaly score
     judged: np.ndarray   # (T,S) at least one feature could be judged
     common: np.ndarray   # (T,F) share of services moving together (before removal)
+    features: list = None  # names of the columns of z (p.features, plus "silence" if computed)
 
 def sorted_q(A, n, q):
     """q-quantile along axis 0 of an array already sorted along axis 0 (NaN sort last); n = valid count per column."""
@@ -260,7 +284,7 @@ def sorted_q(A, n, q):
     out = np.take_along_axis(A, idx[None], axis=0)[0]
     return np.where(n > 0, out, np.nan)
 
-def score(p, window=60, min_base=12, guard=2, exclude_z=4.0, common_frac=0.5, log_scale=True, self_heal=True, tail_q=0.9, binomial=True, smooth=1):
+def score(p, window=60, min_base=12, guard=2, exclude_z=4.0, common_frac=0.5, log_scale=True, self_heal=True, tail_q=0.9, binomial=True, smooth=1, win_k=0, silence_k=0):
     T, S, F = p.X.shape
     X = p.X.copy()
     direction = np.array([SPEC[f][0] for f in p.features], float)
@@ -304,19 +328,44 @@ def score(p, window=60, min_base=12, guard=2, exclude_z=4.0, common_frac=0.5, lo
             Z[t] = np.where(ok, np.clip(z, 0, 50), 0.0); J[t] = ok; MED[t] = med; SC[t] = spread
             if self_heal:
                 usable[t] &= ~(Z[t] >= exclude_z)                       # an anomaly never becomes the baseline
-    common = np.zeros((T, F))
-    for j, f in enumerate(p.features):                                  # STEP 4 lives here: common-mode removal
+    if win_k > 1:                                                       # WINDOW EVIDENCE: median of the last win_k ticks, judged with
+        for j in range(F):                                              # the spread of a median of n values (spread x 1.25 / sqrt(n)):
+            if p.features[j] == "container_up":                        # a sustained shift adds up, a one-tick spike does not
+                continue
+            D = pd.DataFrame(X[:, :, j])
+            xm = D.rolling(win_k, min_periods=max(2, win_k // 2)).median().to_numpy()
+            nv = D.notna().rolling(win_k, min_periods=1).sum().to_numpy()
+            zw = direction[j] * (xm - MED[:, :, j]) / (SC[:, :, j] * 1.25 / np.sqrt(np.maximum(nv, 1)))
+            okw = J.any(axis=2) & ~np.isnan(zw) & ~np.isnan(MED[:, :, j])
+            Z[:, :, j] = np.where(okw, np.maximum(Z[:, :, j], np.clip(zw, 0, 50)), Z[:, :, j])
+            J[:, :, j] |= okw
+    feats = list(p.features)
+    if silence_k > 0:                                                   # SILENCE: share of ticks with any symptom data, recent vs usual
+        sym_cols = [j for j, f in enumerate(p.features) if SPEC[f][2] == "sym"]
+        act = (~np.isnan(p.X[:, :, sym_cols])).any(axis=2).astype(float) if sym_cols else np.zeros((T, S))
+        A = pd.DataFrame(act)
+        q = A.shift(guard + silence_k).rolling(window, min_periods=min_base).mean().to_numpy()   # usual activity rate
+        obs = A.rolling(silence_k, min_periods=silence_k).sum().to_numpy()                      # recent activity count
+        exp_ = silence_k * q
+        zs_ = (exp_ - obs) / np.sqrt(np.maximum(exp_ * (1 - q), 1e-6))
+        oks = ~np.isnan(zs_) & (exp_ >= 2.0)                            # only for services that usually report
+        Zs = np.where(oks, np.clip(zs_, 0, 50), 0.0)
+        Z = np.concatenate([Z, Zs[:, :, None]], axis=2); J = np.concatenate([J, oks[:, :, None]], axis=2)
+        MED = np.concatenate([MED, np.full((T, S, 1), np.nan)], axis=2); SC = np.concatenate([SC, np.full((T, S, 1), np.nan)], axis=2)
+        feats.append("silence")
+    common = np.zeros((T, len(feats)))
+    for j, f in enumerate(feats):                                       # STEP 4 lives here: common-mode removal
         for t in range(T):
             col, ok = Z[t, :, j], J[t, :, j]
             if ok.sum() >= 4:
                 common[t, j] = np.mean(col[ok] > 3.0)
-                if common_frac is not None and SPEC[f][2] == "sym" and common[t, j] > common_frac:
+                if common_frac is not None and (SPEC[f][2] == "sym" or f == "activity") and common[t, j] > common_frac:
                     Z[t, :, j] = np.where(ok, np.maximum(col - np.median(col[ok]), 0.0), 0.0)
-    own_i = [i for i, f in enumerate(p.features) if SPEC[f][2] == "own"]
-    sym_i = [i for i, f in enumerate(p.features) if SPEC[f][2] == "sym"]
+    own_i = [i for i, f in enumerate(feats) if SPEC[f][2] == "own"]
+    sym_i = [i for i, f in enumerate(feats) if SPEC[f][2] == "sym"]
     own = Z[:, :, own_i].max(axis=2) if own_i else np.zeros((T, S))
     sym = Z[:, :, sym_i].max(axis=2) if sym_i else np.zeros((T, S))
-    return Scores(Z, MED, SC, own, sym, np.maximum(own, sym), J.any(axis=2), common)
+    return Scores(Z, MED, SC, own, sym, np.maximum(own, sym), J.any(axis=2), common, feats)
 
 S_DS = score(P_DS, window=30, min_base=8)
 
@@ -372,10 +421,10 @@ def normalise(sc, ref, q=0.995, features=None):
         warnings.simplefilter("ignore", RuntimeWarning)
         Q = np.nan_to_num(np.nanquantile(Zr, q, axis=0), nan=0.0)          # (S, F) healthy extreme per series
     Z = sc.z / np.maximum(Q / 3.0, 1.0)
-    fs = features
+    fs = sc.features or features
     own_i = [i for i, f in enumerate(fs) if SPEC[f][2] == "own"]; sym_i = [i for i, f in enumerate(fs) if SPEC[f][2] == "sym"]
     own = Z[:, :, own_i].max(axis=2); sym = Z[:, :, sym_i].max(axis=2)
-    return Scores(Z, sc.med, sc.scale, own, sym, np.maximum(own, sym), sc.judged, sc.common)
+    return Scores(Z, sc.med, sc.scale, own, sym, np.maximum(own, sym), sc.judged, sc.common, fs)
 
 def calibrate(sc, step, budget=2.0, persistence=2, grid=np.arange(1.5, 40.0, 0.25)):
     for tau in grid:
@@ -418,12 +467,14 @@ plt.show()
 # * **explained** = the strongest evidence of any service it **calls** (a broken callee explains its callers' symptoms), times `gamma`;
 # * **unexplained = max(0, symptoms - explained)**;
 # * **score = max(own, unexplained)**, plus a large bonus for a stopped container (`hard`: a stopped process is a fact, not a degree);
-# * a service with **no data at all** whose callers have unexplained symptoms gets 0.9 x that (blind-spot inference).
+# * a service with **no data at all** whose callers have unexplained symptoms gets 0.9 x that (blind-spot inference);
+# * **quiet is inherited, with two innocent explanations.** A service's *silence/activity drop* counts as its own evidence only if (a) its callers did not go quiet or down (otherwise nobody is calling it) and (b) none of its callees broke loudly (otherwise its requests just fail fast). A callee's silence never explains anything (no circular reasoning), and a stopped container (`container_up`) is a fact that is never explained away.
+#   *Found on the real crash:* without this rule the stopped service's own cache (`post-storage-memcached`, nobody calling it) and the entry point (`nginx-thrift`, traffic fell because requests failed) were blamed.
 #
-# **Why:** victims only echo their callee, so their unexplained part is small; the source has its own evidence or symptoms that nothing downstream explains. **What if:** `gamma=0` = plain "most abnormal service"; `hard=False` = no crash bonus; missing wiring edges = nothing gets explained away (the method silently becomes "most abnormal").
+# **Why:** victims only echo their callee, so their unexplained part is small; the source has its own evidence or symptoms that nothing downstream explains. **What if:** `gamma=0` = plain "most abnormal service"; `hard=False` = no crash bonus; missing wiring edges = nothing gets explained away (the method silently becomes "most abnormal"); `explain="own"` = only a callee's own evidence (CPU, self time, down, silent) explains its callers.
 
 # %%
-def attribute(p, sc, window, gamma=1.0, hard=True, infer=True, agg="max"):
+def attribute(p, sc, window, gamma=1.0, hard=True, infer=True, agg="max", explain="all"):
     a, b = window
     if agg == "max":                                    # strongest single tick in the window
         own = sc.own[a:b].max(axis=0); sym = sc.sym[a:b].max(axis=0)
@@ -437,13 +488,34 @@ def attribute(p, sc, window, gamma=1.0, hard=True, infer=True, agg="max"):
     for c, e in p.edges:
         if c in idx and e in idx:
             callees.setdefault(idx[c], []).append(idx[e]); callers.setdefault(idx[e], []).append(idx[c])
-    evidence = np.maximum(own, sym)
+    fs = sc.features or p.features
+    soft_cols = [k for k, f in enumerate(fs) if f in ("silence", "activity")]               # quiet signals that CAN be inherited
+    quiet_cols = soft_cols + [k for k, f in enumerate(fs) if f == "container_up"]          # what makes a caller "quiet or down"
+    if soft_cols:                                       # QUIET IS INHERITED DOWNSTREAM: if my callers went quiet or down, my own
+        soft = sc.z[a:b][:, :, soft_cols].max(axis=(0, 2))         # quietness is theirs, not mine (nobody is calling me).
+        quiet = sc.z[a:b][:, :, quiet_cols].max(axis=(0, 2))       # A stopped container (container_up) is a fact and is never
+        loud_own = [k for k, f in enumerate(fs) if SPEC[f][2] == "own" and k not in soft_cols]   # explained away.
+        rest = sc.z[a:b][:, :, loud_own].max(axis=(0, 2)) if loud_own else np.zeros(len(p.services))
+        idx0 = {s_: i for i, s_ in enumerate(p.services)}; ups = {}
+        for c_, e_ in p.edges:
+            if c_ in idx0 and e_ in idx0:
+                ups.setdefault(idx0[e_], []).append(idx0[c_])
+        downs = {}
+        for c_, e_ in p.edges:
+            if c_ in idx0 and e_ in idx0:
+                downs.setdefault(idx0[c_], []).append(idx0[e_])
+        loud = np.maximum(rest, sc.sym[a:b].max(axis=0))           # a callee's LOUD evidence (never its silence: no circles)
+        q_expl = np.array([max(max((quiet[c_] for c_ in ups.get(i, [])), default=0.0),          # my callers went quiet or down
+                               max((loud[e_] for e_ in downs.get(i, [])), default=0.0))         # or a callee broke, so my
+                           for i in range(len(p.services))])                                    # requests fail fast
+        own = np.maximum(rest, np.maximum(0.0, soft - gamma * q_expl))
+    evidence = np.maximum(own, sym) if explain == "all" else own    # "own": only a callee's OWN evidence explains its callers
     explained = np.array([gamma * max((evidence[w] for w in callees.get(i, [])), default=0.0) for i in range(len(p.services))])
     unexpl = np.maximum(0.0, sym - explained)
     final = np.maximum(own, unexpl)
     note = [""] * len(p.services)
-    if hard and "container_up" in p.features:
-        k = p.features.index("container_up")
+    if hard and "container_up" in fs:
+        k = fs.index("container_up")
         for i in np.flatnonzero(sc.z[a:b, :, k].max(axis=0) >= 5.0):
             final[i] += 100.0; note[i] = "STOPPED (hard evidence)"
     judged = sc.judged[a:b].any(axis=0)
@@ -453,7 +525,7 @@ def attribute(p, sc, window, gamma=1.0, hard=True, infer=True, agg="max"):
                 guess = 0.9 * max(unexpl[c] for c in callers[i])
                 if guess > final[i]:
                     final[i], note[i] = guess, "inferred: silent, callers have unexplained symptoms"
-    top = [p.features[int(np.argmax(sc.z[a:b, i].max(axis=0)))] if sc.z[a:b, i].max() > 0 else "" for i in range(len(p.services))]
+    top = [fs[int(np.argmax(sc.z[a:b, i].max(axis=0)))] if sc.z[a:b, i].max() > 0 else "" for i in range(len(p.services))]
     out = pd.DataFrame({"service": p.services, "score": final, "own": own, "symptoms": sym, "explained": explained,
                         "unexplained": unexpl, "top_feature": top, "note": note})
     return out.sort_values("score", ascending=False).reset_index(drop=True)
@@ -606,7 +678,7 @@ def original_method(p, a=None, b=None):
 
 def rank_window(method, p, sc, fl, a, b, cfg, rng):
     if method == "ours":
-        return list(attribute(p, sc, (a, b), cfg["gamma"], cfg["hard"], cfg["infer"], cfg["agg"]).service)
+        return list(attribute(p, sc, (a, b), cfg["gamma"], cfg["hard"], cfg["infer"], cfg["agg"], cfg["explain"]).service)
     if method == "most_abnormal":
         return [p.services[i] for i in np.argsort(-sc.zs[a:b].max(axis=0))]
     if method == "earliest":
@@ -618,7 +690,7 @@ def rank_window(method, p, sc, fl, a, b, cfg, rng):
         return [p.services[i] for i in np.argsort(-fl[a:b].sum(axis=0), kind="stable")]
 
 DEFAULT = dict(window=60, min_base=12, persistence=2, budget=2.0, common_frac=0.5, gamma=1.0, hard=True, infer=True,
-               log_scale=True, self_heal=True, tail_q=0.9, binomial=True, per_series=True, smooth=1, agg="max", method="ours", seed=0)
+               log_scale=True, self_heal=True, tail_q=0.9, binomial=True, per_series=True, smooth=1, agg="max", win_k=0, silence_k=6, explain="all", method="ours", seed=0)
 _BENCH, _SCORES = {}, {}
 
 def run(cfg=None, verbose=False, **over):
@@ -627,13 +699,13 @@ def run(cfg=None, verbose=False, **over):
         _BENCH[cfg["seed"]] = make_bench(cfg["seed"])
     clean, p, ledger = _BENCH[cfg["seed"]]
     rng = np.random.default_rng(cfg["seed"])
-    kw = dict(window=cfg["window"], min_base=cfg["min_base"], common_frac=cfg["common_frac"], log_scale=cfg["log_scale"], self_heal=cfg["self_heal"], tail_q=cfg["tail_q"], binomial=cfg["binomial"], smooth=cfg["smooth"])
+    kw = dict(window=cfg["window"], min_base=cfg["min_base"], common_frac=cfg["common_frac"], log_scale=cfg["log_scale"], self_heal=cfg["self_heal"], tail_q=cfg["tail_q"], binomial=cfg["binomial"], smooth=cfg["smooth"], win_k=cfg["win_k"], silence_k=cfg["silence_k"])
     key = (cfg["seed"], tuple(sorted(kw.items())))
     if key not in _SCORES:
         _SCORES[key] = (score(p, **kw), score(clean, **kw))
     sc, sc_clean = _SCORES[key]
     if cfg["per_series"]:
-        sc, sc_clean = normalise(sc, sc_clean, features=p.features), normalise(sc_clean, sc_clean, features=p.features)
+        sc, sc_clean = normalise(sc, sc_clean), normalise(sc_clean, sc_clean)
     if cfg["method"] == "original":
         fl = original_method(p); tau = float("nan")
     else:
@@ -667,7 +739,7 @@ print({k: round(v, 3) if isinstance(v, float) else v for k, v in BASE.items()})
 VARIANTS = {
     "ours (default)": {}, "no self-healing baseline": dict(self_heal=False), "no log scale": dict(log_scale=False),
     "no common-mode": dict(common_frac=None), "no tail-aware spread": dict(tail_q=None), "no binomial errors": dict(binomial=False), "no per-series normalisation": dict(per_series=False), "no explain-away (gamma=0)": dict(gamma=0.0), "no crash bonus": dict(hard=False),
-    "no blind-spot inference": dict(infer=False), "persistence 1": dict(persistence=1), "persistence 3": dict(persistence=3),
+    "no blind-spot inference": dict(infer=False), "no silence signal": dict(silence_k=0), "+ window evidence": dict(win_k=4), "explain own only": dict(explain="own"), "persistence 1": dict(persistence=1), "persistence 3": dict(persistence=3),
     "BASELINE most_abnormal": dict(method="most_abnormal"), "BASELINE earliest": dict(method="earliest"),
     "BASELINE random": dict(method="random"), "BASELINE original notebook": dict(method="original"),
 }
@@ -706,7 +778,8 @@ display(sweep("window", [20, 40, 60, 100, 160]))
 # %% [markdown]
 # ### YOUR experiment
 # Change anything in `MY` (or edit any function above and re-run its cell), then run this cell. It prints your numbers next to the default. Ideas worth testing for the paper:
-# * the **hang** row is the weak spot: a frozen service has no data, so only *silence* points at it. Idea: add a "went silent while its callers are calling it" feature in `prepare`/`score` and see if `A1_hang` rises without hurting the rest.
+# * the **slow** row is now the weak spot (A@1 about 0.04-0.23): p95 latency per tick from a handful of spans is too noisy. Ideas: `win_k=4`, `smooth=3`, or a per-request test on span durations. Check any gain on `seed=3,4,5` too (never tune and judge on the same seeds).
+# * the bench does not model knock-on effects (callees going quiet, callers' traffic dropping); the real crash in section 9 does, so check both.
 # * use `seed=1, 2, 3` to check a gain is not luck (different fault times/targets).
 # * try `gamma=0.7` (partial explain-away) or `common_frac=0.7`.
 
@@ -735,9 +808,9 @@ draw_incident(p_, attribute(p_, sc_, (a_, b_)), truth=f_["root"], title=f"bench:
 # One real run only, the easy fault type (a crash). It shows what each component does on real data; it is **not** a general accuracy number.
 
 # %%
-def ds_case(track_presence=True, edges=True, hard=True, common_frac=0.5, gamma=1.0):
-    p = prepare(DS, step=10, track_presence=track_presence, edges=DS_EDGES if edges else None)
-    sc = score(p, window=30, min_base=8, common_frac=common_frac)
+def ds_case(track_presence=True, edges=True, hard=True, common_frac=0.5, gamma=1.0, edge_set=None):
+    p = prepare(DS, step=10, track_presence=track_presence, edges=(edge_set or DS_EDGES) if edges else None)
+    sc = score(p, window=30, min_base=8, common_frac=common_frac, silence_k=6)
     a = int(np.searchsorted(p.times, ev["t_stop"])) - 2; b = int(np.searchsorted(p.times, ev["t_start"])) + 1
     att = attribute(p, sc, (a, b), gamma=gamma, hard=hard)
     fl = flags_for(sc, 6.0, 2)
@@ -746,7 +819,8 @@ def ds_case(track_presence=True, edges=True, hard=True, common_frac=0.5, gamma=1
 
 display(pd.DataFrame({
     "full method": ds_case(), "no crash signal (container_up)": ds_case(track_presence=False), "no crash bonus": ds_case(hard=False),
-    "no wiring edges": ds_case(edges=False), "no crash bonus + no common-mode": ds_case(hard=False, common_frac=None),
+    "no wiring edges": ds_case(edges=False), "compose edges instead of call graph": ds_case(edge_set=DS_COMPOSE_EDGES),
+    "no crash signal, compose edges": ds_case(track_presence=False, edge_set=DS_COMPOSE_EDGES), "no crash bonus + no common-mode": ds_case(hard=False, common_frac=None),
     "no crash bonus + no edges": ds_case(hard=False, edges=False)}).T)
 
 # %% [markdown]
@@ -786,8 +860,9 @@ else:
 
 # %%
 # 11a. key + host check
-HOSTS = {"death-star": ["13.233.8.32", "/home/ubuntu/DeathStarBench/socialNetwork/docker-compose.yml"],
-         "sock-shop": ["15.207.109.141", None], "open-telemetry": ["13.201.89.80", None], "shopflowbench": ["13.203.200.52", None]}
+HOSTS = {   # name: [ip, compose file or None, optional Jaeger on the host as [port, path prefix] for REAL call edges]
+    "death-star": ["13.233.8.32", "/home/ubuntu/DeathStarBench/socialNetwork/docker-compose.yml", [16686, ""]],
+    "sock-shop": ["15.207.109.141", None], "open-telemetry": ["13.201.89.80", None, [8080, "/jaeger/ui"]], "shopflowbench": ["13.203.200.52", None]}
 KEY = os.environ.get("RCA_KEY", "/content/key.pem")
 LIVE = {}
 
@@ -800,7 +875,8 @@ def _secret(name):
 
 def live_setup():
     """Install deps, load rca_lite (sampler + injector), write the key from the secret, return the module."""
-    import importlib, sys, subprocess
+    import importlib, sys, subprocess, logging
+    logging.getLogger("paramiko").setLevel(logging.CRITICAL)       # a busy host drops the SSH banner now and then; we retry quietly
     if IN_COLAB:
         subprocess.run([sys.executable, "-m", "pip", "-q", "install", "paramiko", "pyyaml"], check=False)
     sys.path.insert(0, os.path.dirname(os.path.abspath(fetch("colab/rca_lite.py"))))
@@ -821,7 +897,7 @@ def live_setup():
 
 def check_hosts():
     L = live_setup(); ok = {}
-    for n, (ip, compose) in HOSTS.items():
+    for n, (ip, compose, *_) in HOSTS.items():
         try:
             names = L.HostSampler(ip, KEY, "ubuntu", name=n).containers()
             ok[n] = f"OK: {len(names)} containers"
@@ -842,14 +918,23 @@ def watch(*names, every_s=10):
     for n in names:
         if n in LIVE:
             continue
-        ip, compose = HOSTS[n]
+        ip, compose, *jg = HOSTS[n]
         s = L.HostSampler(ip, KEY, "ubuntu", name=n)
+        edges, how = [], "none"
         try:
-            edges = s.compose_edges(compose) if compose else []
+            if jg and jg[0]:
+                edges = s.trace_edges(*jg[0]); how = "traces" if edges else how       # real call edges first
         except Exception:
-            edges = []
+            pass
+        if not edges and n == "death-star":
+            edges, how = DS_CALL_GRAPH, "hand-written DeathStar call graph"
+        try:
+            if not edges and compose:
+                edges = s.compose_edges(compose); how = "compose (start order, incomplete)"
+        except Exception:
+            pass
         LIVE[n] = dict(sampler=s.start(every_s), chaos=L.Chaos(s), edges=edges)
-        print(f"{n}: sampling every {every_s}s, {len(edges)} wiring edges")
+        print(f"{n}: sampling every {every_s}s, {len(edges)} wiring edges from {how}")
 
 def stop_watching():
     for v in LIVE.values():
@@ -884,14 +969,19 @@ def analyse_live(minutes=60, step=10, budget=2.0, persistence=2, show=True):
     if df.empty:
         print("no live data yet"); return None
     p = prepare(df, step=step, track_presence=True, edges=[e for v in LIVE.values() for e in v["edges"]])
-    sc = score(p, window=60, min_base=12)
+    sc = score(p, window=60, min_base=12, silence_k=6)
     led = [r for v in LIVE.values() for r in v["chaos"].ledger]
     healthy = np.ones(len(p.times), bool)
     for r in led:
         healthy[max(int(np.searchsorted(p.times, r["start"])) - 2, 0):int(np.searchsorted(p.times, r["end"])) + 8] = False
-    ref = Scores(sc.z[healthy], sc.med[healthy], sc.scale[healthy], sc.own[healthy], sc.sym[healthy], sc.zs[healthy], sc.judged[healthy], sc.common[healthy])
+    ref = Scores(sc.z[healthy], sc.med[healthy], sc.scale[healthy], sc.own[healthy], sc.sym[healthy], sc.zs[healthy], sc.judged[healthy], sc.common[healthy], sc.features)
     scn = normalise(sc, ref, features=p.features); refn = normalise(ref, ref, features=p.features)
-    tau = calibrate(refn, p.step, budget, persistence); fl = flags_for(scn, tau, persistence)
+    tau = calibrate(refn, p.step, budget, persistence)
+    healthy_min = healthy.sum() * p.step / 60
+    if healthy_min < 30:                                # a per-hour budget cannot be calibrated from a few minutes
+        tau = max(tau, 4.0)
+        print(f"note: only {healthy_min:.0f} healthy minutes, so tau is held at >= 4.0 until 30 minutes exist")
+    fl = flags_for(scn, tau, persistence)
     print(f"{len(p.times)} ticks ({len(p.times) * step / 60:.0f} min) x {len(p.services)} containers | tau={tau} | "
           f"false alarms on healthy ticks: {episodes_per_hour(fl[healthy], p.step):.1f}/h")
     if show:

@@ -61,11 +61,11 @@ We are **not**:
 
 | Scenario | Real-world example of the type | Can we detect it? | Can we name the source? | Our evidence |
 |---|---|---|---|---|
-| **Container crash, OOM kill, restart loop** | a pod dies, callers start failing | yes | **yes**, ranked first because the container vanishes | 1 real crash (DeathStar): rank 1, 0 false flags; bench crash A@1 1.00 |
+| **Container crash, OOM kill, restart loop** | a pod dies, callers start failing | yes | **yes**: ranked first, and since 2026-10-08 also without the "container vanished" signal (silence + quiet-inheritance rule, with the call graph) | 1 real crash (DeathStar): rank 1, 0 false flags; bench crash A@1 1.00 |
 | **Error burst in one service** (bad deploy, bad config, broken dependency client) | errors start right after a release | often (bench recall 0.4-0.6) | **often** (bench A@1 0.58) | semi-synthetic bench only |
 | **Overload cascade / retry storm** | Google SRE ch. 22; metastable failures; AWS 2021 | yes: many services light up | **unclear**: everything is loud at once; common-mode removal may even hide it | not tested |
 | **Slow service (latency degradation)** | a slow database query, a GC pause | **rarely** with 15 s trace aggregates (bench slow A@1 0.04) | rarely | bench |
-| **Frozen / hung service** (deadlock, `docker pause`) | a service stops answering but stays "up" | rarely | **no**: callers get blamed (bench hang A@1 0.06, same as random) | bench; live test not done |
+| **Frozen / hung service** (deadlock, `docker pause`) | a service stops answering but stays "up" | **yes on the bench** (silence signal, added 2026-10-08) | **yes on the bench** (A@1 1.00; was 0.06) | bench only; live `pause` test not done |
 | **Shared infrastructure failure** (network, DNS, service discovery, cloud region) | AWS 2021 network devices; Roblox Consul | the symptoms, yes | **no**: the culprit is not one of the services we watch | none (out of scope) |
 | **Silent data or logic bugs** (wrong results, no errors) | | no | no | out of scope |
 | **Slow resource leak** (memory creeping over hours) | | maybe (memory feature), late | maybe | not tested |
@@ -91,7 +91,7 @@ We are **not**:
 | R1 | Finding *where* a fault is takes a large share of incident time, often with wrong theories first | Roblox (2 days of diagnosis), Microsoft triage reassignments (4-92%), Ghosh et al. | yes as motivation; **we have not measured time saved** |
 | R2 | Alert noise is costly, so a detector must state its false-alarm rate | alert storms (Zhao et al.); PetShop: all methods invent root causes on normal data | **yes**: 0.1 false alarms/h vs 78.7/h for the original approach, measured |
 | R3 | Labels and history are often missing (new systems, constant change), so label-free matters | judgement plus the literature split: supervised methods need labelled incidents | yes, by design |
-| R4 | Victims are louder than the source, so plain "most abnormal" blames the wrong service | our real crash (victims' error logs about 30x); Fang et al. Type III cases | **partly**: solved for crashes only (presence signal); not for slow or frozen services |
+| R4 | Victims are louder than the source, so plain "most abnormal" blames the wrong service | our real crash (victims' error logs about 30x); Fang et al. Type III cases | **partly**: crashes (real, n = 1) and frozen services (bench) now handled; slow services not |
 | R5 | Cascades turn short faults into long outages, so early warning has value | SRE book ch. 22; metastable failures (4 of 15 major AWS outages) | **not yet**: our risk score equals the structural rule; slow overload cascades are the only kind with time to warn |
 | R6 | Monitoring itself fails during big incidents, so a simple, independent watcher is useful | AWS 2021 (incident tooling affected); Roblox (telemetry depended on Consul) | yes as an argument for the SSH mode (independent of the app's own telemetry), but it **adds load** (`WHAT_IS_WRONG.md` P14) |
 
