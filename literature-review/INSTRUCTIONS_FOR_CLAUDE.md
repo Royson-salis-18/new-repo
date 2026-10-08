@@ -51,3 +51,8 @@ Read this whole file before doing anything. It records how the work was done, th
 
 ## 7. Claims the project must not make (from the evidence)
 "Label-free RCA is new", "early warning is new", "cascade prediction is unexplored", "first to use co-location", "propagation modelling improves localization" (unless shown per symptom stratum against SimpleRCA/NSigma/BARO and a no-telemetry prior), "LLM agent" without a faithfulness check.
+
+## 8. Repository layout note (2026-10-08)
+- This GitHub repo (`Royson-salis-18/new-repo`) also holds the whole project at the root (`rcalab/`, `docs/`, `litdb/`, `ipynb/`, ...), pushed separately by the user. `litdb/` at the root is the live reading database with the long auto-generated keys; `literature-review/` is the curated copy with short keys (`KEY_MAP.md`), `PAPERS.md` and these instructions.
+- When you update the review, change `litdb/` first, then regenerate `literature-review/` from it (copy, apply `KEY_MAP.md`, regenerate `PAPERS.md`).
+- The root `litdb/incoming/` contains 16 open-access PDFs pushed with the project. The repo is public: check each PDF's licence before keeping it public, or ask the user to remove them (do not delete without the user's say-so).
