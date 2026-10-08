@@ -25,9 +25,10 @@ def make(root: str, n: int = 120, baseline: int = 40, onset: int = 60, seed: int
     services = sorted({s for c, es in CALLS.items() for s in [c, *es]})
     edges = [(c, e) for c, es in CALLS.items() for e in es]
     S, F = len(services), len(FEATURES)
-    level = np.array([100.0, 5e8, 2e4, 2e4, 0.5, 40.0, 0.01, 60.0, 15.0])  # typical magnitudes
+    level = np.array([100.0, 5e8, 2e4, 2e4, 0.5, 40.0, 0.01, 60.0, 15.0, 1.0])  # typical magnitudes
     X = level * (1 + 0.04 * noise * rng.standard_normal((n, S, F)))
     X[:, :, FEATURES.index("log_errors")] = rng.poisson(0.4 * noise, (n, S))
+    X[:, :, FEATURES.index("container_up")] = np.nan          # host-level signal; not simulated
     X[:, :, FEATURES.index("trace_errors")] = np.abs(rng.normal(0.01, 0.005 * noise, (n, S)))
     idx = {s: i for i, s in enumerate(services)}
 

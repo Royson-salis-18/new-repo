@@ -53,7 +53,7 @@ def test_explanation_names_root_cause_and_roundtrip(tmp_path):
     assert "queue" in explain(tel, det, res, w).splitlines()[0]
     store.save(tmp_path / "t.npz", tel)
     again = store.load(tmp_path / "t.npz")
-    assert again.services == tel.services and np.allclose(again.X, tel.X)
+    assert again.services == tel.services and np.allclose(again.X, tel.X, equal_nan=True)
 
 
 def test_missing_config_values_detected():
@@ -102,7 +102,7 @@ def test_edge_learner_learns_shielded_edges_across_incidents():
     from rcalab.cascade import EdgeLearner
     from rcalab.telemetry import Telemetry
     services = ["a", "b", "c"]
-    tel = Telemetry(np.arange(60.0), services, np.zeros((60, 3, 9)), edges=[("a", "c"), ("b", "c")])   # a and b both call c
+    tel = Telemetry(np.arange(60.0), services, np.zeros((60, 3, len(__import__('rcalab.telemetry', fromlist=['FEATURES']).FEATURES))), edges=[("a", "c"), ("b", "c")])   # a and b both call c
     learner = EdgeLearner(max_lag=1)
     for k in range(10):
         flags = np.zeros((60, 3), bool)

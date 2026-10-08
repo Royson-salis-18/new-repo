@@ -3,7 +3,7 @@
 Tags are derived from what is written inside each page (keyword counts), not from file names. A page appears under a tag when the topic is mentioned at least 4 times or in its title.
 
 
-## root cause analysis (RCA) (43)
+## root cause analysis (RCA) (44)
 
 - [Batch 01: 2026-10-07](pages/lab/litdb/batches/batch-01.md) · Literature · 2026-10-07
 - [Batch 02: 2026-10-07](pages/lab/litdb/batches/batch-02.md) · Literature · 2026-10-07
@@ -47,9 +47,10 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [17 — Findings vs Incidents: two detectors, deliberately separate](pages/mapper/wiki/17-findings-vs-incidents.md) · Microservice Mapper · 2026-09-18
 - [Microservice Mapper — Wiki](pages/mapper/wiki/README.md) · Microservice Mapper · 2026-09-24
 - [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) · Reports and findings · 2026-10-07
+- [RCA and cascade logic: what it does, why it is not on par, what to change](pages/lab/docs/RCA_AND_CASCADE_SIMPLE.md) · Reports and findings · 2026-10-08
 - [Honest review of the project: RCA + cascading-failure risk for microservices](pages/lab/docs/REVIEW_REPORT.md) · Reports and findings · 2026-10-07
 
-## cascading failure / propagation (29)
+## cascading failure / propagation (30)
 
 - [Batch 01: 2026-10-07](pages/lab/litdb/batches/batch-01.md) · Literature · 2026-10-07
 - [Batch 03: 2026-10-07](pages/lab/litdb/batches/batch-03.md) · Literature · 2026-10-07
@@ -77,6 +78,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Chain-of-Event: Interpretable Root Cause Analysis for Microservices through Auto](pages/lab/litdb/papers/yao2024chain.md) · Literature · 2026-10-07
 - [RCA Engine — Root Cause Analysis](pages/mapper/wiki/08-rca-engine.md) · Microservice Mapper · 2026-09-18
 - [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) · Reports and findings · 2026-10-07
+- [RCA and cascade logic: what it does, why it is not on par, what to change](pages/lab/docs/RCA_AND_CASCADE_SIMPLE.md) · Reports and findings · 2026-10-08
 - [Honest review of the project: RCA + cascading-failure risk for microservices](pages/lab/docs/REVIEW_REPORT.md) · Reports and findings · 2026-10-07
 - [rca-lab](pages/lab/README.md) · rca-lab · 2026-10-07
 - [Research protocol](pages/lab/RESEARCH.md) · rca-lab · 2026-10-06
@@ -108,7 +110,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) · Reports and findings · 2026-10-07
 - [Research protocol](pages/lab/RESEARCH.md) · rca-lab · 2026-10-06
 
-## traces / Jaeger / OpenTelemetry (33)
+## traces / Jaeger / OpenTelemetry (34)
 
 - [Batch 01: 2026-10-07](pages/lab/litdb/batches/batch-01.md) · Literature · 2026-10-07
 - [Batch 04: 2026-10-07](pages/lab/litdb/batches/batch-04.md) · Literature · 2026-10-07
@@ -140,6 +142,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Change Log and Rationale](pages/mapper/wiki/16-change-log-and-rationale.md) · Microservice Mapper · 2026-09-18
 - [18 — Telemetry tiers: the plan](pages/mapper/wiki/18-telemetry-tiers-plan.md) · Microservice Mapper · 2026-09-19
 - [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) · Reports and findings · 2026-10-07
+- [RCA and cascade logic: what it does, why it is not on par, what to change](pages/lab/docs/RCA_AND_CASCADE_SIMPLE.md) · Reports and findings · 2026-10-08
 - [Honest review of the project: RCA + cascading-failure risk for microservices](pages/lab/docs/REVIEW_REPORT.md) · Reports and findings · 2026-10-07
 - [rca-lab](pages/lab/README.md) · rca-lab · 2026-10-07
 - [Research protocol](pages/lab/RESEARCH.md) · rca-lab · 2026-10-06
@@ -183,7 +186,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [rca-lab](pages/lab/README.md) · rca-lab · 2026-10-07
 - [Research protocol](pages/lab/RESEARCH.md) · rca-lab · 2026-10-06
 
-## logs (22)
+## logs (23)
 
 - [Comparison with our work (reviewed papers only)](pages/lab/litdb/COMPARISON_MATRIX.md) · Literature · 2026-10-07
 - [Report: Maheshkar (2025), Bridging the Gap: Agentic AI Root Cause Analysis in Hy](pages/lab/litdb/reports/bridgingtheg.md) · Literature · 2026-10-07
@@ -206,6 +209,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [18 — Telemetry tiers: the plan](pages/mapper/wiki/18-telemetry-tiers-plan.md) · Microservice Mapper · 2026-09-19
 - [19 — How it all works](pages/mapper/wiki/19-how-it-all-works.md) · Microservice Mapper · 2026-09-24
 - [Microservice Mapper — Wiki](pages/mapper/wiki/README.md) · Microservice Mapper · 2026-09-24
+- [RCA and cascade logic: what it does, why it is not on par, what to change](pages/lab/docs/RCA_AND_CASCADE_SIMPLE.md) · Reports and findings · 2026-10-08
 - [rca-lab](pages/lab/README.md) · rca-lab · 2026-10-07
 
 ## SSH / EC2 / Docker (23)
@@ -279,7 +283,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [MicroRCA-Agent: Microservice Root Cause Analysis Method Based on Large Language ](pages/lab/litdb/papers/pantangshixiangtanghuanqipuzhiqingmiaozhixingwang2025microrca.md) · Literature · 2026-10-07
 - [A Comprehensive Survey on Root Cause Analysis in (Micro) Services: Methodologies](pages/lab/litdb/papers/tingtingwangguilinqi2024comprehensive.md) · Literature · 2026-10-07
 
-## benchmark / dataset (33)
+## benchmark / dataset (34)
 
 - [Batch 01: 2026-10-07](pages/lab/litdb/batches/batch-01.md) · Literature · 2026-10-07
 - [Batch 02: 2026-10-07](pages/lab/litdb/batches/batch-02.md) · Literature · 2026-10-07
@@ -313,6 +317,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Chain-of-Event: Interpretable Root Cause Analysis for Microservices through Auto](pages/lab/litdb/papers/yao2024chain.md) · Literature · 2026-10-07
 - [Few-Shot Cross-System Anomaly Trace Classification for Microservice-based system](pages/lab/litdb/papers/yuqingwangmikavmntylsergedemeyermutlubeyazitjoannakisaakyejessenyyssl2024cross.md) · Literature · 2026-10-07
 - [CHASE: A Causal Hypergraph based Framework for Root Cause Analysis in Multimodal](pages/lab/litdb/papers/zimingzhaozhenweiwangtiehuazhangzhishushenhaidongzhenleixingjunmagaoweixuzhijundingyunyang2024chase.md) · Literature · 2026-10-07
+- [RCA and cascade logic: what it does, why it is not on par, what to change](pages/lab/docs/RCA_AND_CASCADE_SIMPLE.md) · Reports and findings · 2026-10-08
 - [Honest review of the project: RCA + cascading-failure risk for microservices](pages/lab/docs/REVIEW_REPORT.md) · Reports and findings · 2026-10-07
 
 ## evaluation / statistics (11)
@@ -434,7 +439,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Microservice Mapper — Wiki](pages/mapper/wiki/README.md) · Microservice Mapper · 2026-09-24
 - [rca-lab](pages/lab/README.md) · rca-lab · 2026-10-07
 
-## troubleshooting (13)
+## troubleshooting (14)
 
 - [Report: Li (2026), GNN service dependency modeling and failure propagation predi](pages/lab/litdb/reports/li2026service.md) · Literature · 2026-10-07
 - [Report: Sun et al. (2025), DeepHunt: interpretable failure localization with a g](pages/lab/litdb/reports/sun2025interpretable.md) · Literature · 2026-10-07
@@ -449,3 +454,4 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Troubleshooting & Known Issues](pages/mapper/wiki/15-troubleshooting.md) · Microservice Mapper · 2026-09-18
 - [Change Log and Rationale](pages/mapper/wiki/16-change-log-and-rationale.md) · Microservice Mapper · 2026-09-18
 - [18 — Telemetry tiers: the plan](pages/mapper/wiki/18-telemetry-tiers-plan.md) · Microservice Mapper · 2026-09-19
+- [RCA and cascade logic: what it does, why it is not on par, what to change](pages/lab/docs/RCA_AND_CASCADE_SIMPLE.md) · Reports and findings · 2026-10-08

@@ -136,9 +136,16 @@ class Sampler(threading.Thread):
 
 
 def load_windows(path: Path, start: float, end: float, step: int, names: list[str], features: list[str]) -> np.ndarray:
-    """Aligned (windows, services, features) array from a sampler file. Counters become per-second rates."""
+    """Aligned (windows, services, features) array from a sampler file. Counters become per-second rates.
+
+    container_up: 1 while a container appears in the samples of a window, 0 in a window that WAS sampled but no longer lists a
+    container seen earlier (it stopped or crashed: `docker stats` shows only running containers), NaN before it was first seen and
+    in windows with no sample at all. Without this feature a crash looks like "no evidence" instead of a failure.
+    """
     n = int((end - start) // step) + 1
     X = np.full((n, len(names), len(features)), np.nan)
+    covered = np.zeros(n, dtype=bool)
+    present = np.zeros((n, len(names)), dtype=bool)
     prev: dict[str, tuple[float, float, float]] = {}
     if not Path(path).exists():
         return X
@@ -148,17 +155,29 @@ def load_windows(path: Path, start: float, end: float, step: int, names: list[st
         except json.JSONDecodeError:
             continue
         t = row["t"]
+        w = int((t - start) // step)
+        if 0 <= w < n:
+            covered[w] = True
         for cname, v in row["svc"].items():
             before = prev.get(cname)
             prev[cname] = (t, v["rx"], v["tx"])
-            w = int((t - start) // step)
             if not 0 <= w < n or cname not in names:
                 continue
             j = names.index(cname)
+            present[w, j] = True
             X[w, j, features.index("cpu")] = v["cpu"]
             X[w, j, features.index("memory")] = v["mem"]
             X[w, j, features.index("log_errors")] = v["err"]
             if before and t > before[0]:
                 X[w, j, features.index("net_rx")] = max(v["rx"] - before[1], 0) / (t - before[0])
                 X[w, j, features.index("net_tx")] = max(v["tx"] - before[2], 0) / (t - before[0])
+    if "container_up" in features:
+        k = features.index("container_up")
+        for j in range(len(names)):
+            seen = np.flatnonzero(present[:, j])
+            if len(seen) == 0:
+                continue
+            for w in range(seen[0], n):
+                if covered[w]:
+                    X[w, j, k] = 1.0 if present[w, j] else 0.0
     return X

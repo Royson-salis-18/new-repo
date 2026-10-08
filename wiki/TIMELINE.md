@@ -1,6 +1,6 @@
 # Wiki timeline
 
-Generated 2026-10-07 16:09. Dates come from git history (created = first commit of the file, updated = latest commit).
+Generated 2026-10-08 06:45. Dates come from git history (created = first commit of the file, updated = latest commit).
 
 
 ## 1. When each page was created (oldest first)
@@ -117,14 +117,19 @@ Generated 2026-10-07 16:09. Dates come from git history (created = first commit 
 - 16:05 [Report: Vangapelli (2026), AI-Driven Root Cause Analysis In Real-Time Distribute](pages/lab/litdb/reports/theysayitsre.md) (lab) · Literature
 - 16:08 [Report: Maheshkar (2025), Bridging the Gap: Agentic AI Root Cause Analysis in Hy](pages/lab/litdb/reports/bridgingtheg.md) (lab) · Literature
 
+### 2026-10-08
+
+- 06:45 [RCA and cascade logic: what it does, why it is not on par, what to change](pages/lab/docs/RCA_AND_CASCADE_SIMPLE.md) (lab) · Reports and findings
+
 ## 2. Most recently updated (newest first, top 25)
 
+- 2026-10-08 06:45 [RCA and cascade logic: what it does, why it is not on par, what to change](pages/lab/docs/RCA_AND_CASCADE_SIMPLE.md) (lab)
+- 2026-10-07 16:09 [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) (lab)
 - 2026-10-07 16:08 [Comparison with our work (reviewed papers only)](pages/lab/litdb/COMPARISON_MATRIX.md) (lab)
 - 2026-10-07 16:08 [Reading queue (1 not yet reviewed, 20 reviewed)](pages/lab/litdb/QUEUE.md) (lab)
 - 2026-10-07 16:08 [Literature survey table (21 papers)](pages/lab/litdb/SURVEY_TABLE.md) (lab)
 - 2026-10-07 16:08 [Report: Maheshkar (2025), Bridging the Gap: Agentic AI Root Cause Analysis in Hy](pages/lab/litdb/reports/bridgingtheg.md) (lab)
 - 2026-10-07 16:08 [Bridging the Gap: A Systematic Framework for Agentic AI Root Cause Analysis in H](pages/lab/litdb/papers/bridgingtheg.md) (lab)
-- 2026-10-07 16:05 [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) (lab)
 - 2026-10-07 16:05 [Report: Vangapelli (2026), AI-Driven Root Cause Analysis In Real-Time Distribute](pages/lab/litdb/reports/theysayitsre.md) (lab)
 - 2026-10-07 16:05 [AI-Driven Root Cause Analysis In Real-Time Distributed Systems](pages/lab/litdb/papers/theysayitsre.md) (lab)
 - 2026-10-07 16:02 [Is the problem real? Evidence ledger](pages/lab/litdb/PROBLEM_EVIDENCE.md) (lab)
@@ -143,13 +148,13 @@ Generated 2026-10-07 16:09. Dates come from git history (created = first commit 
 - 2026-10-07 15:57 [AI for Microservice Monitoring & Anomaly Detection](pages/lab/litdb/papers/podduturi2025microservice.md) (lab)
 - 2026-10-07 15:57 [Real-Time Context-Aware Microservice Architecture for Predictive Analytics and S](pages/lab/litdb/papers/realtimecont.md) (lab)
 - 2026-10-07 15:57 [Root Cause Analysis for Microservice Systems via Cascaded Conditional Learning w](pages/lab/litdb/papers/shuaiyuxiehanbinhejianwangbingli2025root.md) (lab)
-- 2026-10-07 15:52 [Batch 04: 2026-10-07](pages/lab/litdb/batches/batch-04.md) (lab)
 
 ## 3. Work history (commits of both repositories, newest first)
 
 
 ### mapper
 
+- 2026-10-07 23:47 `4cde7bb` auto-commit: 6 file(s) 2026-10-07 23:47
 - 2026-10-07 16:07 `8971b9b` auto-commit: 1 file(s) 2026-10-07 16:07
 - 2026-10-07 15:37 `81eb2ca` auto-commit: 10 file(s) 2026-10-07 15:37
 - 2026-09-29 22:11 `b051d03` latest update with all the docs
@@ -199,6 +204,7 @@ Generated 2026-10-07 16:09. Dates come from git history (created = first commit 
 
 ### lab
 
+- 2026-10-07 16:09 `ad8b532` Record mapper larger-app test; rebuild wiki
 - 2026-10-07 16:08 `157db89` litdb batch 7 (partial): full reads of Vangapelli and Maheshkar (AURORA); notes and reports
 - 2026-10-07 16:05 `f14c021` Calibrated detector, self-time feature, cross-incident edge learner, replay/topology tests, wiki hub, fixes re
 - 2026-10-07 16:02 `987a2ac` litdb batch 6: full reads of Faseeha observability survey, cost-sensitive Mamba, MaaS cascading failures; repo

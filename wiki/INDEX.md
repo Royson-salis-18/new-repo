@@ -1,6 +1,6 @@
 # Wiki index by topic
 
-87 pages from 2 repositories, generated 2026-10-07 16:09. Use `TIMELINE.md` for time order and `TAGS.md` for what the pages talk about.
+88 pages from 2 repositories, generated 2026-10-08 06:45. Use `TIMELINE.md` for time order and `TAGS.md` for what the pages talk about.
 
 **Start here:** [`pages/lab/docs/REVIEW_REPORT.md`](pages/lab/docs/REVIEW_REPORT.md) (honest review) · [`pages/lab/docs/FIXES_AND_TESTS.md`](pages/lab/docs/FIXES_AND_TESTS.md) (latest tests) · [`pages/lab/RESEARCH.md`](pages/lab/RESEARCH.md) (protocol) · [`pages/mapper/WIKI.md`](pages/mapper/WIKI.md) (the product's own wiki)
 
@@ -59,6 +59,7 @@
 | Page | What it says | Created | Updated | Words | Tags |
 |---|---|---|---|---|---|
 | [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) | Scope: the problems found in REVIEWREPORT.md, what we fixed, what we tested on larger applications, and what is still not solved. | 2026-10-07 | 2026-10-07 | 1917 | cascading failure / propagation, traces / Jaeger / OpenTelemetry, evaluation / statistics |
+| [RCA and cascade logic: what it does, why it is not on par, what to cha](pages/lab/docs/RCA_AND_CASCADE_SIMPLE.md) | Plain-language summary. Numbers come from our tests (FIXESANDTESTS.md) and from papers we read in full (litdb/). Paper numbers are | 2026-10-08 | 2026-10-08 | 1245 | benchmark / dataset, cascading failure / propagation, logs |
 | [Honest review of the project: RCA + cascading-failure risk for microse](pages/lab/docs/REVIEW_REPORT.md) | Prepared 2026-10-07 for Royson Salis and team (Bharath, Dhanush, Anish). | 2026-10-07 | 2026-10-07 | 5975 | cascading failure / propagation, benchmark / dataset, literature / papers |
 
 ## Experiments

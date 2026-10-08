@@ -15,7 +15,7 @@ from .telemetry import Telemetry
 
 # Absolute scale floors so a flat-zero baseline (e.g. error counts) does not give infinite z.
 _ABS_FLOOR = {"cpu": 0.01, "memory": 1e6, "net_rx": 1e3, "net_tx": 1e3,
-              "log_errors": 1.0, "latency_p95": 1.0, "trace_errors": 0.05, "span_rate": 2.0, "self_latency": 1.0}
+              "log_errors": 1.0, "latency_p95": 1.0, "trace_errors": 0.05, "span_rate": 2.0, "self_latency": 1.0, "container_up": 0.1}
 
 
 @dataclass
@@ -39,8 +39,8 @@ def _calibrate(base: np.ndarray, features: list[str]):
 
 # Direction in which a feature indicates trouble: +1 = increase, -1 = decrease. Only that side counts.
 _DIRECTION = {"cpu": 1, "memory": 1, "net_rx": 1, "net_tx": 1, "log_errors": 1, "latency_p95": 1,
-              "trace_errors": 1, "span_rate": -1, "self_latency": 1}
-_LINEAR = {"trace_errors"}          # a rate in [0,1]; everything else is positive and heavy-tailed -> log scale
+              "trace_errors": 1, "span_rate": -1, "self_latency": 1, "container_up": -1}
+_LINEAR = {"trace_errors", "container_up"}          # a rate in [0,1]; everything else is positive and heavy-tailed -> log scale
 
 
 def _calibrated_fz(tel: Telemetry, fit_windows: int | None = None, min_scale: float = 0.15, min_valid: int = 20,

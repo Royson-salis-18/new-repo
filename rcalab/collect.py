@@ -130,7 +130,7 @@ def collect(cfg: dict, start: float, end: float, trim_leading: bool = True,
                 c = _match(svc, containers, ssh_cfg.get("name_map") or {})
                 if hx is not None and c in containers:
                     ci = containers.index(c)
-                    for f in ("cpu", "memory", "net_rx", "net_tx", "log_errors"):
+                    for f in ("cpu", "memory", "net_rx", "net_tx", "log_errors", "container_up"):
                         col = hx[:, ci, FEATURES.index(f)]
                         if not np.isnan(col).all():
                             X[:, j, FEATURES.index(f)] = col
