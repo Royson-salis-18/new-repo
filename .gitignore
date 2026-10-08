@@ -19,3 +19,5 @@ litdb/reference/*.csv
 # Paper PDFs and extracted texts stay local (copyright; public repo)
 litdb/incoming/
 *.pdf
+litdb/pdfs/
+litdb/texts/
