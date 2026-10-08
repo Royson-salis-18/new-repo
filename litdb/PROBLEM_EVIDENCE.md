@@ -58,6 +58,10 @@ this lengthens debugging time for operators.
 | A46 | 74.38% of 576 failure tickets at a bank over 12 months were recurring; average diagnosis time 28.98 min over 20,000 tickets | DéjàVu (li2022actionable), pp.2-3 | measured, one bank | medium |
 | A47 | Graph aggregation over call and deployment edges lowers mean average rank by 3% to 31% on four datasets | DéjàVu, Table 3 p.8 | measured, 10 repeated trainings, supervised | medium (supports co-location channel) |
 | A48 | LLM-agent RCA for Flink jobs reaches human helpfulness 2.92 of 5 on online out-of-domain jobs | RCAgent (wang2024rcagent), Table 5 p.7 | measured, proprietary, LLM-judged | very weak |
+| A49 | In one year of a Microsoft email service, 24.96% of 653 incidents had a new root cause category; 93.80% of recurring incidents reappeared within 20 days | RCACopilot (chen2024automatic), pp.4-6 | measured, one service | medium-weak |
+| A50 | An LLM few-shot classifier reaches micro-F1 0.766 / macro-F1 0.533 on about 160 held-out incidents; baselines score near zero | chen2024automatic, Table 2 p.11 | measured, proprietary, baselines implausibly weak | very weak |
+| A51 | On 68 injected issues (PetShop) ranked correlation is competitive with or better than graph/SCM-learning methods; all methods fabricate root causes on normal data | PetShop (michaelahardt...2023petshop), Tables 3, 8, p.12 | measured, 8-14 issues per cell, untuned methods | medium |
+| A52 | On synthetic SCM data matched to the method's assumptions, hypothesis testing reaches recall 1.00 with a true graph and 0.95 with a PC graph | PyRCA (chenghaoliu...2023pyrca), Table 1 p.10 | simulated | very weak |
 
 ## B. Evidence our specific gap is already addressed (con)
 | # | What exists | Source (key, page) | How close to our contribution | Consequence for us |

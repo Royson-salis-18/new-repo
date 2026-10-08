@@ -58,4 +58,8 @@ Notes: a Scopus-indexed venue is not a quality guarantee; the "not found" journa
 
 ## Additions (batch 10)
 - Fang et al. 2025: arXiv preprint (not Scopus-indexed); ACM DOI 10.1145/3797100 from the literature matrix not verified.
-- DeepVu/DéjàVu (FSE '22) and RCAgent (CIKM '24): proceedings, Scopus preview check not done (unverified).
+- DéjàVu (FSE '22) and RCAgent (CIKM '24): proceedings, Scopus preview check not done (unverified).
+
+## Additions (batch 11)
+- PyRCA: arXiv technical report (not Scopus-indexed).
+- RCACopilot (EuroSys '24) and PetShop (PMLR vol. 236, CLeaR 2024): not checked in the Scopus preview (unverified).

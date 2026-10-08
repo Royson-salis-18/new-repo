@@ -16,6 +16,7 @@
 | shuaiyuxiehanbinhejian | supervised (cr | no (per- | metrics, traces, logs  | heterogeneous hypergraph | no | no | A public (GAIA-DataSet r (A yes) | HR@1 0.875 / 0.923 / 0.918 and Avg@3 0.920 / 0.938 | partial  | low |
 | sun2025interpretable | label-free at  | partly:  | traces, logs (Drain te | GNN (GraphSAGE-style GAE | no | no | D1 (210 failures, 3,714  (partl) | 30% labels: D1 A@1 0.803, A@5 0.966, Avg@5 0.898;  | high (la | high for |
 | unyi2025explainable | supervised on  | no | none (no traces, metri | GNN (4 message-passing b | no in  | no (LLM  | generated with PRISM; ov (state) | tree meshes test MAE 0.009 +/- 0.001, R2 0.992 +/- | low (pro | low |
+| chen2024automatic | few-shot LLM ( | collecti | logs, exception stacks | none | no | yes (GPT | 653 incidents labelled b (no) | RCACopilot (GPT-4) micro-F1 0.766, macro-F1 0.533  | low (inc | low |
 | costsensitiv | supervised (la | no (offl | metrics only (CPU, mem | none | no | no | RS-Anomic: 100,464 norma (yes () | precision 0.93, recall 0.89, F1 0.91, AUROC 0.98,  | none (su | low |
 | pham2024root | mixed: causal- | no (offl | metrics only (Promethe | causal discovery (PC, FC | no | no | synthetic (CIRCA, RCD, C (yes () | no method best everywhere (abstract p.1); PC/FCI/G | partial  | low (it  |
 | tingtingwangguilinqi20 | n/a (survey) | n/a | metrics, traces, logs, | n/a (surveys dependency, | no (no | no (surv | benchmarks named: TrainT (n/a) | classifies RCA into metric-, trace-, log-, multimo | partial  | low |
@@ -25,6 +26,8 @@
 | yuqingwangmikavmntylse | supervised few | no | traces (spans) and log | none | no | no (BERT | DeepTraLog (TrainTicket, (yes () | E1 TrainTicket->TrainTicket 5-shot 92.91, 10-shot  | low (sup | low |
 | zimingzhaozhenweiwangt | supervised (cr | no (offl | traces (topology), log | GNN (HGT) + hypergraph c | no | no (LLM  | GAIA: 1099 static traces (yes () | GAIA A@1 0.6135, A@3 0.8823, Avg@5 0.8276 vs best  | partial | low |
 | causalrca | label-free (tr | no live  | metrics (service laten | learned weighted DAG (DA | no | no | own injected faults: CPU (yes () | service task average Avg@5 0.5815 vs LiNGAM 0.5143 | partial  | low-medi |
+| chenghaoliuwenzhuoyang | label-free met | no | metrics only | causal graph by PC/GES + | no | no | synthetic from the libra (gener) | simulation: HT with true graph Recall@1 1.00; HT-p | low (too | low |
+| michaelahardtwilliamro | n/a (benchmark | no | latency, requests and  | service map given; metho | no | no | 68 injected issues at 5  (yes: ) | ranked-correlation baseline top-3 0.57-0.92 and th | medium ( | low |
 | sheriffadepoju2023casc | n/a | n/a | none (conceptual) | none (taxonomy of cascad | no (ca | no (mach | none (n/a) | none (taxonomy of five cascade types and resilienc | none (co | low |
 | li2022actionable | supervised (tr | no (offl | metrics only (traces a | failure dependency graph | no | no | 601 failures; A, B, D in (state) | MAR 1.66 to 5.03; A@1 61.84% to 77.18%, A@5 79.24% | medium ( | low-medi |
 | li2022causal | label-free (un | no live  | metrics (1-minute samp | causal Bayesian network  | no | no | D_O: 99 cases, 197 metri (no (r) | D_O: CIRCA AC@1 0.404, AC@5 0.763, Avg@5 0.603 vs  | high for | medium |
