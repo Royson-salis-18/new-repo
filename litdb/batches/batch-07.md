@@ -8,10 +8,10 @@ Scopus: bridgingtheg ISSN 2178-7727 = Acta Scientiae (education; mismatch); they
 | | Vangapelli | Maheshkar (AURORA) | Xin et al. (CausalRCA) | Ours |
 |---|---|---|---|---|
 | Type | position paper | LLM multi-agent framework | causal metric RCA method | RCA + untested risk |
-| Labels | n/a | mixed | likely none (unverified) | none |
+| Labels | n/a | mixed | none | none |
 | Propagation | none | causal discovery, Granger, PageRank | weighted causal graph | edge probabilities |
 | Forecasting | no | no | no | claimed, untested |
-| Open | no | code repo, no data | stated, unchecked | yes |
+| Open | no | code repo, no data | code + data (no license) | yes |
 | Headline | none of its own | top-5 94.3% Sock-Shop (internally inconsistent) | Avg@5 0.6681 vs 0.5738 (+9.43%), one Sock-Shop | none on real faults |
 | Evidence quality | 1 | 1 | 2 | 1 |
 

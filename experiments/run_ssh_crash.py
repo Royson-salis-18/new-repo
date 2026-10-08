@@ -20,7 +20,7 @@ sys.path.insert(0, str(ROOT))
 os.chdir(ROOT)
 from rcalab.sources.ssh import Sampler, SSHSource  # noqa: E402
 
-HOST, KEY = "13.201.168.222", r"C:\Users\MITE\Downloads\sock-shop-key.pem"
+HOST, KEY = "13.233.8.32", r"C:\Users\MITE\Downloads\sock-shop-key.pem"
 TARGET = "socialnetwork-post-storage-service-1"
 BASE, FAULT, RECOVER = 360, 120, 180                  # seconds
 STEP = 10
@@ -46,15 +46,22 @@ def load_worker(i):
         time.sleep(1.0)                                # 4 workers -> about 4 requests per second
 
 
-def ssh_exec(cmd):
-    c = paramiko.SSHClient()
-    c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    c.connect(HOST, username="ubuntu", key_filename=KEY, timeout=15, look_for_keys=False, allow_agent=False)
-    try:
-        _, o, _ = c.exec_command(cmd, timeout=60)
-        return o.read().decode().strip()
-    finally:
-        c.close()
+def ssh_exec(cmd, tries=4):
+    """Run one command on the host; retries because a busy host can drop the SSH banner (that crashed the first attempt)."""
+    last = None
+    for i in range(tries):
+        c = paramiko.SSHClient()
+        c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        try:
+            c.connect(HOST, username="ubuntu", key_filename=KEY, timeout=20, banner_timeout=40, auth_timeout=30, look_for_keys=False, allow_agent=False)
+            _, o, _ = c.exec_command(cmd, timeout=60)
+            return o.read().decode().strip()
+        except Exception as e:
+            last = e
+            time.sleep(5)
+        finally:
+            c.close()
+    raise last
 
 
 events = {"host": HOST, "container": TARGET, "baseline_s": BASE, "fault_s": FAULT, "recover_s": RECOVER, "step_s": STEP}
@@ -73,13 +80,17 @@ try:
 finally:
     events["t_start"] = time.time()
     print("START", TARGET, ssh_exec(f"docker start {TARGET}"), flush=True)
+(ROOT / "docs" / "experiments" / "ssh_crash_events.json").write_text(json.dumps({**events, "partial": True}))   # keep the timing even if something later fails
 time.sleep(RECOVER)
 stop_load.set()
 sampler.stop()
 time.sleep(2)
 events["t_end"] = time.time()
 events["t_begin"] = t_begin
-events["status_after"] = ssh_exec(f"docker ps --filter name={TARGET} --format '{{{{.Names}}}} {{{{.Status}}}}'")
+try:
+    events["status_after"] = ssh_exec(f"docker ps --filter name={TARGET} --format '{{{{.Names}}}} {{{{.Status}}}}'")
+except Exception as e:
+    events["status_after"] = f"unknown ({type(e).__name__})"
 events["client"] = client_log
 (ROOT / "docs" / "experiments" / "ssh_crash_events.json").write_text(json.dumps(events))
 n = len(client_log)
