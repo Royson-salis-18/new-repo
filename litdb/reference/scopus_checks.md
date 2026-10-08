@@ -55,3 +55,7 @@ Notes: a Scopus-indexed venue is not a quality guarantee; the "not found" journa
 ## Additions (batch 9)
 - Seer and MicroHECL: arXiv preprints (not Scopus-indexed); published versions not checked.
 - CIRCA: KDD '22 proceedings; Scopus preview check not done (unverified).
+
+## Additions (batch 10)
+- Fang et al. 2025: arXiv preprint (not Scopus-indexed); ACM DOI 10.1145/3797100 from the literature matrix not verified.
+- DeepVu/DéjàVu (FSE '22) and RCAgent (CIKM '24): proceedings, Scopus preview check not done (unverified).

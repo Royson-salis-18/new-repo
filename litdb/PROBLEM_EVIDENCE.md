@@ -53,6 +53,11 @@ this lengthens debugging time for operators.
 | A41 | A supervised network on queue-depth traces anticipates QoS violations 91% of the time and names the culprit 89% (GCE, authors' own apps, no external baseline) | Seer (yugan...2018seer), p.2 | measured, unreproducible, supervised | weak |
 | A42 | On 99 real Oracle failures at a bank, the strongest baseline for RCA is plain NSigma (AC@1 0.323); the best method reaches AC@1 0.404 | CIRCA (li2022causal), Table 3 p.7 | measured, proprietary, tuned on test | medium |
 | A43 | On 75 Alibaba availability issues, a call-graph RCA reaches HR@3 0.67 vs 0.49 for Microscope; in deployment HR@3 68%, localization from 30 to 5 minutes | MicroHECL (deweiliu...2021microhecl), Table IV p.7, p.9 | measured, proprietary, supervised detectors | weak-medium |
+| A44 | A rule-based alert counter matches or beats SOTA RCA on public benchmarks; 68% of cases have symptoms only in the injected service; 99% of cases lack some telemetry type | Fang et al. (aoyangfang...2025rethinking), Tables 2-3 pp.6-7 | measured across 11 public datasets | medium-strong for 'benchmarks are easy' |
+| A45 | 84.4% of 9,152 injected faults produced no user-visible anomaly; on the new benchmark 11 SOTA methods average Top@1 0.21 (best 0.37) | Fang et al., p.13, Table 5 p.14 | measured, one system, re-implemented methods | medium |
+| A46 | 74.38% of 576 failure tickets at a bank over 12 months were recurring; average diagnosis time 28.98 min over 20,000 tickets | DéjàVu (li2022actionable), pp.2-3 | measured, one bank | medium |
+| A47 | Graph aggregation over call and deployment edges lowers mean average rank by 3% to 31% on four datasets | DéjàVu, Table 3 p.8 | measured, 10 repeated trainings, supervised | medium (supports co-location channel) |
+| A48 | LLM-agent RCA for Flink jobs reaches human helpfulness 2.92 of 5 on online out-of-domain jobs | RCAgent (wang2024rcagent), Table 5 p.7 | measured, proprietary, LLM-judged | very weak |
 
 ## B. Evidence our specific gap is already addressed (con)
 | # | What exists | Source (key, page) | How close to our contribution | Consequence for us |
@@ -65,6 +70,8 @@ this lengthens debugging time for operators.
 | 3 | Li 2026 (read in full): supervised GNN predicting propagation probability P(f_i->f_j|t), path ranking, risk score; noisy-OR cascade formula (Eq.21 p.10) identical in form to ours | li2026service, pp.3, 10-11 | high on task, low on credibility (proprietary, inconsistent numbers) | cannot claim cascade-risk prediction or noisy-OR as novel; can claim label-free + open + honest evaluation |
 | 7 | Seer (read in full, short arXiv version): supervised early warning of QoS violations plus culprit microservice from queue-depth traces; 91% / 89% on own apps | Seer (yugan...2018seer), p.2 | high for 'early warning with culprit exists' | cannot claim early warning with culprit as new; our difference must be label-free, explicit propagation, calibration |
 | 8 | CIRCA (read in full): label-free, architecture-aware causal metric RCA, in RCAEval | li2022causal, pp.3-7 | very high for 'label-free RCA' | must run as baseline; NSigma is its strongest simple baseline |
+| 9 | DéjàVu (read in full): supervised graph-attention RCA with call and deployment edges; A@5 79-96% on four datasets | li2022actionable, Table 3 p.8 | medium for 'graph RCA with co-location edges' | cite; our call-edge model omits deployment edges |
+| 10 | Fang et al. (read in full): rule-based SimpleRCA is a necessary baseline; benchmarks mostly Type I | aoyangfang...2025rethinking, Tables 2-5 | very high for evaluation design | must run SimpleRCA and stratify by Type I/II/III |
 
 ## C. Open questions about the problem
 - Do operators actually lack early warning, or do they lack *trust in* and *actionability of* alerts? (look for incident studies)
