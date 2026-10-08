@@ -1,8 +1,8 @@
 # Batch 07: 2026-10-08
 
 Papers: 1) theysayitsre (Vangapelli 2026, position paper), 2) bridgingtheg (Maheshkar 2025, AURORA), 3) causalrca (Xin, Chen, Zhao, JSS 2023).
-Read in full: 1 and 2 yes (figures not inspected). **3 NO: partial.** Scanned PDF with no text layer; only pages 1-2 read from screenshots; pages 3-13 unread (browser viewer unreliable; ScienceDirect bot check not bypassed; no PDF renderer installed, PyMuPDF install needs your permission).
-Scopus: bridgingtheg ISSN 2178-7727 = Acta Scientiae (education; mismatch); theysayitsre no ISSN; causalrca ISSN 0164-1212 unchecked. SJR quartiles unknown (no list supplied; please add a Scopus or Scimago file to `litdb/reference/`).
+Read: all three. 1 and 2 in full (figures not inspected). 3 (scanned PDF) as rendered images, pages 1-12 (page 13 references unread), after you granted permission to install a renderer (pypdfium2; PyMuPDF was blocked by the Windows Application Control policy).
+Scopus: bridgingtheg ISSN 2178-7727 = Acta Scientiae (education; mismatch); theysayitsre no ISSN; causalrca ISSN 0164-1212 confirmed by Crossref, Scopus preview not yet checked. SJR quartiles unknown (no list supplied; please add a Scopus or Scimago file to `litdb/reference/`).
 
 ## 1. Side-by-side
 | | Vangapelli | Maheshkar (AURORA) | Xin et al. (CausalRCA) | Ours |
@@ -12,19 +12,19 @@ Scopus: bridgingtheg ISSN 2178-7727 = Acta Scientiae (education; mismatch); they
 | Propagation | none | causal discovery, Granger, PageRank | weighted causal graph | edge probabilities |
 | Forecasting | no | no | no | claimed, untested |
 | Open | no | code repo, no data | stated, unchecked | yes |
-| Headline | none of its own | top-5 94.3% Sock-Shop (internally inconsistent) | AC@3 0.719 (abstract) | none on real faults |
-| Evidence quality | 1 | 1 | unrated | 1 |
+| Headline | none of its own | top-5 94.3% Sock-Shop (internally inconsistent) | Avg@5 0.6681 vs 0.5738 (+9.43%), one Sock-Shop | none on real faults |
+| Evidence quality | 1 | 1 | 2 | 1 |
 
 ## 2. What each means for our claims
 - Vangapelli: nothing measured; do not cite as evidence. Its stale-context point is an opinion.
 - Maheshkar: unreliable (conflicting timing tables, impossible CI/fraction fit, venue mismatch, unverifiable production claims). Not usable as a baseline or as evidence.
-- CausalRCA: shows metric causal-graph RCA exists; not yet assessable.
+- CausalRCA: label-free causal-graph metric RCA exists; modest gains over PC/GES/LiNGAM+PageRank on one Sock-Shop, own-tuned, 10 runs; not citable as a general win. Code and data are open (no license).
 
 ## 3. Does this batch change the problem statement?
 No. It adds two weak-evidence papers; "LLM agent plus causal discovery RCA" claims exist but are not trustworthy.
 
 ## 4. Baselines and datasets to add
-Read CausalRCA pages 3-13 (needs a text-capable copy or a renderer); check its repository (needs permission to download).
+CausalRCA repo (github.com/AXinx/CausalRCA_code, data_collected folder) is a candidate extra baseline or dataset; not downloaded or run.
 
 ## 5. Claims in our draft this batch weakens
 None strongly. Avoid citing AURORA numbers.

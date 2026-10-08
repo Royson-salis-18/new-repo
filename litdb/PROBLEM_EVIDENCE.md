@@ -45,7 +45,7 @@ this lengthens debugging time for operators.
 | A33 | Metrics-only anomaly detection with class-weighted Mamba reaches F1 0.91, AUROC 0.98 on RS-Anomic (about 12% anomalous per the dataset README) | costsensitiv, Table 2 p.7 | measured, unverifiable baselines | very weak |
 | A34 | An LLM-agent RCA framework reports 94.3% top-5 on Sock-Shop and a 91% MTTR cut in production, but the same paper's two timing tables disagree and the CI width does not fit 50 scenarios | bridgingtheg, pp.10-13 | measured claims, internally inconsistent, unverifiable | very weak |
 | A35 | Position paper argues RCA quality is bounded by freshness of topology and change context; no data of its own | theysayitsre, pp.1-7 | assumed (copies others' numbers) | very weak |
-| A36 | Metric causal-graph RCA (gradient-based structure learning) claims AC@3 0.719 on Sock-Shop; only abstract and intro read | causalrca, pp.1-2 | measured per abstract, not verified | unrated |
+| A36 | A gradient-based causal-graph RCA gains only 6.72% (service) and 9.43% (metric, faulty service) relative Avg@5 over structure-learner baselines on one Sock-Shop with three injected faults; on all metrics the average rank is about 13 | causalrca, Tables 3-4 pp.8-9, Fig 10 p.10 | measured, one system, own tuning | weak-medium |
 
 ## B. Evidence our specific gap is already addressed (con)
 | # | What exists | Source (key, page) | How close to our contribution | Consequence for us |

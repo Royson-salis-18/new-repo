@@ -46,4 +46,4 @@ Notes: a Scopus-indexed venue is not a quality guarantee; the "not found" journa
 ## Additions (batch 7)
 - 2178-7727 (printed on bridgingtheg): Scopus preview = Acta Scientiae (science and maths education; CiteScore 1.0, SJR 0.243). Venue mismatch for a microservices paper; article not found in Crossref under it.
 - theysayitsre: no ISSN printed; not checkable. DOI in PDF is a placeholder.
-- causalrca: J. Syst. Softw., ISSN 0164-1212 printed; NOT yet checked in Scopus (unverified).
+- causalrca: J. Syst. Softw., ISSN 0164-1212 (Crossref confirms); Scopus preview not yet checked (unverified).

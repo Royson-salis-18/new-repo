@@ -20,5 +20,6 @@
 | yao2024chain | supervised (tr | no (inci | events derived from me | learned weighted event-c | no | no (BERT | Service dataset (170 inc (no) | Service: top-1 79.3%, top-3 98.8%; Business: top-1 | partial  | low (for |
 | yuqingwangmikavmntylse | supervised few | no | traces (spans) and log | none | no | no (BERT | DeepTraLog (TrainTicket, (yes () | E1 TrainTicket->TrainTicket 5-shot 92.91, 10-shot  | low (sup | low |
 | zimingzhaozhenweiwangt | supervised (cr | no (offl | traces (topology), log | GNN (HGT) + hypergraph c | no | no (LLM  | GAIA: 1099 static traces (yes () | GAIA A@1 0.6135, A@3 0.8823, Avg@5 0.8276 vs best  | partial | low |
+| causalrca | label-free (tr | no live  | metrics (service laten | learned weighted DAG (DA | no | no | own injected faults: CPU (yes () | service task average Avg@5 0.5815 vs LiNGAM 0.5143 | partial  | low-medi |
 | sheriffadepoju2023casc | n/a | n/a | none (conceptual) | none (taxonomy of cascad | no (ca | no (mach | none (n/a) | none (taxonomy of five cascade types and resilienc | none (co | low |
 | realtimecont | n/a (ARIMA tim | yes (str | IoT sensor measurement | none | no (fo | no | 118,370 air-quality reco (yes () | average processing time under 0.06 s per message a | none | low |
