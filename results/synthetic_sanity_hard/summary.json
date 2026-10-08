@@ -1,0 +1,319 @@
+{
+  "n_runs": 10,
+  "metrics": {
+    "full": {
+      "A@1": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "A@3": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "A@5": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "MRR": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "median_delay_s": 15.0,
+      "resolved": 1.0
+    },
+    "no_cascade": {
+      "A@1": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "A@3": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "A@5": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "MRR": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "median_delay_s": 15.0,
+      "resolved": 1.0
+    },
+    "no_precedence": {
+      "A@1": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "A@3": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "A@5": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "MRR": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "median_delay_s": 15.0,
+      "resolved": 1.0
+    },
+    "no_explained": {
+      "A@1": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "A@3": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "A@5": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "MRR": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "median_delay_s": 15.0,
+      "resolved": 1.0
+    },
+    "pagerank": {
+      "A@1": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "A@3": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "A@5": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "MRR": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "median_delay_s": 15.0,
+      "resolved": 1.0
+    },
+    "anomaly_only": {
+      "A@1": {
+        "mean": 0.1,
+        "ci95": [
+          0.0,
+          0.3
+        ]
+      },
+      "A@3": {
+        "mean": 0.8,
+        "ci95": [
+          0.5,
+          1.0
+        ]
+      },
+      "A@5": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "MRR": {
+        "mean": 0.4833333333333333,
+        "ci95": [
+          0.36666666666666664,
+          0.625
+        ]
+      },
+      "median_delay_s": 15.0,
+      "resolved": 0.1
+    },
+    "earliest": {
+      "A@1": {
+        "mean": 0.4,
+        "ci95": [
+          0.1,
+          0.7
+        ]
+      },
+      "A@3": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "A@5": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "MRR": {
+        "mean": 0.6833333333333333,
+        "ci95": [
+          0.5333333333333333,
+          0.85
+        ]
+      },
+      "median_delay_s": 15.0,
+      "resolved": 0.4
+    },
+    "random": {
+      "A@1": {
+        "mean": 0.6,
+        "ci95": [
+          0.3,
+          0.9
+        ]
+      },
+      "A@3": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "A@5": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "MRR": {
+        "mean": 0.7499999999999999,
+        "ci95": [
+          0.5499999999999999,
+          0.9333333333333332
+        ]
+      },
+      "median_delay_s": 15.0,
+      "resolved": 0.6
+    }
+  },
+  "proposed_vs_others": {
+    "no_cascade": {
+      "mean_diff_rr": 0.0,
+      "cliffs_delta": 0.0,
+      "p_raw": 1.0,
+      "p_holm": 1.0
+    },
+    "no_precedence": {
+      "mean_diff_rr": 0.0,
+      "cliffs_delta": 0.0,
+      "p_raw": 1.0,
+      "p_holm": 1.0
+    },
+    "no_explained": {
+      "mean_diff_rr": 0.0,
+      "cliffs_delta": 0.0,
+      "p_raw": 1.0,
+      "p_holm": 1.0
+    },
+    "pagerank": {
+      "mean_diff_rr": 0.0,
+      "cliffs_delta": 0.0,
+      "p_raw": 1.0,
+      "p_holm": 1.0
+    },
+    "anomaly_only": {
+      "mean_diff_rr": 0.5166666666666667,
+      "cliffs_delta": 0.9,
+      "p_raw": 0.00390625,
+      "p_holm": 0.02734375
+    },
+    "earliest": {
+      "mean_diff_rr": 0.3166666666666667,
+      "cliffs_delta": 0.6,
+      "p_raw": 0.03125,
+      "p_holm": 0.1875
+    },
+    "random": {
+      "mean_diff_rr": 0.25,
+      "cliffs_delta": 0.4,
+      "p_raw": 0.125,
+      "p_holm": 0.625
+    }
+  },
+  "provenance": {
+    "git_commit": "880bea87",
+    "python": "3.12.10",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "time": "2026-10-07 14:10:06",
+    "detector": {
+      "kind": "robust_z",
+      "z_threshold": 3.5
+    },
+    "cascade": {
+      "max_lag_windows": 4,
+      "max_hops": 3
+    }
+  }
+}

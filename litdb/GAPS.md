@@ -10,7 +10,7 @@ and that will **survive a hostile reviewer and the final grading**. Written 2026
 | Source | What it is | Weight |
 |---|---|---|
 | 37 papers read in full (`litdb/papers`, batches 1-13) | numbers copied with page references | primary evidence |
-| 28 papers with abstract only (no open PDF), via `docs/literature/raw_openalex.json` | used **only** to check whether a gap is already closed | threat check, marked **[abs]** |
+| 44 literature-matrix papers not read in full (abstract only; 28 had an abstract in `docs/literature/raw_openalex.json`, 16 had none) | used **only** to check whether a gap is already closed | threat check, marked **[abs]** |
 | Our own tests (`docs/FIXES_AND_TESTS.md`, `docs/RCA_AND_CASCADE_SIMPLE.md`, `docs/REVIEW_REPORT.md` section 4) | real OTel traffic with injected faults, Death Star crash test | shows we hit each gap ourselves |
 | Papers cited in `REVIEW_REPORT.md` but not in litdb ("Does graph structure earn its place?" 2026, Kintsugi 2026, OTel AIOps benchmark 2026) | abstract level, other session | marked **[rev]**, not verified here |
 

@@ -1,0 +1,21 @@
+./resarch paper/(REFER THIS )MicroRCA-Agent Microservice Root Cause Analysis Based on Large Language Model Agents.pdf
+./resarch paper/A Comprehensive Survey on Root Cause Analysis in Microservices Methodologies Challenges and Trends.pdf
+./resarch paper/AI for Microservice Monitoring & Anomaly Detection.pdf
+./resarch paper/CHASE A Causal Heterogeneous Graph-based Framework for Root Cause Analysi.pdf
+./resarch paper/Chain-of-Event Interpretable Root Cause Analysis.pdf
+./resarch paper/Few-shot cross-system.pdf
+./resarch paper/Graph Neural AI with Temporal Dynamics for Comprehensive Anomaly Detection in Microservices.pdf
+./resarch paper/Hybrid Causal and Machine Learning Framework for Microservice Root Cause Analysis.pdf
+./resarch paper/Real-Time Context-Aware Microservice.pdf
+./resarch paper/Real-Time Observability and Failure Prediction in Kubernetes-Based Microservices.pdf
+./resarch paper/Root Cause Analysis for Microservice Systems.pdf
+./royson-paper/3695999.pdf
+./royson-paper/CausalRCA.pdf
+./royson-paper/livedata and cascading.pdf
+./royson-paper/non-scopus paper/2511.17566v1.pdf
+./royson-paper/non-scopus paper/Bridging-the-gap_AgenticRCA_Final_Clean_Manuscript_JayM.pdf
+./royson-paper/non-scopus paper/Cascadingfailures circuit breaker and rest of the aproaches.pdf
+./royson-paper/non-scopus paper/Cost-Sensitive+Mamba+Sequence+Modeling+for+Fault+Detection+in+Cloud-Native+Microservice+Systems.pdf
+./royson-paper/non-scopus paper/they say its realtime.pdf
+./royson-paper/survey (2).pdf
+./royson-paper/survey.pdf
