@@ -62,6 +62,9 @@ this lengthens debugging time for operators.
 | A50 | An LLM few-shot classifier reaches micro-F1 0.766 / macro-F1 0.533 on about 160 held-out incidents; baselines score near zero | chen2024automatic, Table 2 p.11 | measured, proprietary, baselines implausibly weak | very weak |
 | A51 | On 68 injected issues (PetShop) ranked correlation is competitive with or better than graph/SCM-learning methods; all methods fabricate root causes on normal data | PetShop (michaelahardt...2023petshop), Tables 3, 8, p.12 | measured, 8-14 issues per cell, untuned methods | medium |
 | A52 | On synthetic SCM data matched to the method's assumptions, hypothesis testing reaches recall 1.00 with a true graph and 0.95 with a PC graph | PyRCA (chenghaoliu...2023pyrca), Table 1 p.10 | simulated | very weak |
+| A53 | A survey states that topology graphs modelling only service interactions can miss anomalies caused by co-hosted services; false positives/negatives are inherent to RCA; comparison across papers is unreliable | Soldani and Brogi (jacoposoldani...2021anomaly), pp.27-28, 30 | analytical survey remark | medium (supports co-location limitation) |
+| A54 | Public AIOps challenge dataset: 169 injected failures, 7 types, one distributed system with call and deployment dependencies | Li et al. 2022 (zeyanlin...2022constructing), Table 6 p.5 | dataset description | weak-medium (limited fault diversity) |
+| A55 | In two interdependent random networks a small initial failure can fragment both; critical mean degree 2.445 for ER | Buldyrev et al. (sergeyvbuldyrev...2009catastrophic), abstract p.1 | analytic theory, not calibrated to microservices | very weak for our problem |
 
 ## B. Evidence our specific gap is already addressed (con)
 | # | What exists | Source (key, page) | How close to our contribution | Consequence for us |

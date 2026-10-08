@@ -63,3 +63,8 @@ Notes: a Scopus-indexed venue is not a quality guarantee; the "not found" journa
 ## Additions (batch 11)
 - PyRCA: arXiv technical report (not Scopus-indexed).
 - RCACopilot (EuroSys '24) and PetShop (PMLR vol. 236, CLeaR 2024): not checked in the Scopus preview (unverified).
+
+## Additions (batch 12)
+- Soldani and Brogi: ACM Computing Surveys ISSN 0360-0300 (indexed per earlier check); article record not checked.
+- Buldyrev et al.: Nature ISSN 0028-0836 not checked (unverified).
+- AIOps benchmark datasets paper: arXiv preprint (not Scopus-indexed).

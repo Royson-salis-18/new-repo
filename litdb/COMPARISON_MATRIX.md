@@ -29,9 +29,12 @@
 | chenghaoliuwenzhuoyang | label-free met | no | metrics only | causal graph by PC/GES + | no | no | synthetic from the libra (gener) | simulation: HT with true graph Recall@1 1.00; HT-p | low (too | low |
 | michaelahardtwilliamro | n/a (benchmark | no | latency, requests and  | service map given; metho | no | no | 68 injected issues at 5  (yes: ) | ranked-correlation baseline top-3 0.57-0.92 and th | medium ( | low |
 | sheriffadepoju2023casc | n/a | n/a | none (conceptual) | none (taxonomy of cascad | no (ca | no (mach | none (n/a) | none (taxonomy of five cascade types and resilienc | none (co | low |
+| jacoposoldaniantoniobr | n/a (survey co | n/a | logs, distributed trac | classified: topology gra | no (li | no (2021 | n/a (n/a) | no quantitative result; states that accuracy canno | context  | low |
 | li2022actionable | supervised (tr | no (offl | metrics only (traces a | failure dependency graph | no | no | 601 failures; A, B, D in (state) | MAR 1.66 to 5.03; A@1 61.84% to 77.18%, A@5 79.24% | medium ( | low-medi |
 | li2022causal | label-free (un | no live  | metrics (1-minute samp | causal Bayesian network  | no | no | D_O: 99 cases, 197 metri (no (r) | D_O: CIRCA AC@1 0.404, AC@5 0.763, Avg@5 0.603 vs  | high for | medium |
+| zeyanlinengwenzhaoshen | n/a (datasets  | competit | KPIs, traces and 100+  | none; dataset C system h | no | no | A: 27 labelled KPIs; B:  (yes () | dataset C: 169 injected failures, 7 injection type | dataset  | low |
 | deweiliuchuanhexinpeng | label-light/su | deployed | service-call metrics ( | dynamic service call gra | no | no | proprietary; not release (no) | HR@1 0.48, HR@3 0.67, HR@5 0.72, MRR 0.58 vs Monit | partial  | low |
 | tianyiyangjiachengshen | label-free (un | claimed  | traces (spans aggregat | edge weight = normalised | no (it | no | TT (simulated users) and (state) | Industry: AID CE 0.3270, MAE 0.1751, RMSE 0.3044 v | partial  | medium |
 | realtimecont | n/a (ARIMA tim | yes (str | IoT sensor measurement | none | no (fo | no | 118,370 air-quality reco (yes () | average processing time under 0.06 s per message a | none | low |
 | yuganmeghnapancholidai | supervised (de | yes (str | RPC-level traces with  | none explicit: one input | yes (Q | no | own traces; not released (no (p) | abstract: anticipates QoS violations 91% of the ti | partial  | medium |
+| sergeyvbuldyrevronipar | n/a | n/a | none | analytic percolation cas | no (cr | no | none (n/a) | two interdependent ER networks collapse below mean | analogy  | low |

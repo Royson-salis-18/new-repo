@@ -1,4 +1,4 @@
-# Literature survey table (33 papers)
+# Literature survey table (36 papers)
 
 Generated from `litdb/papers/*.md`. `read_status`: extracted < read-in-full < reviewed. Scopus status is only as good as the list in `litdb/reference/`.
 
@@ -31,9 +31,12 @@ Generated from `litdb/papers/*.md`. `read_status`: extracted < read-in-full < re
 | chenghaoliuwenzhuoyanghi | 2023 | PyRCA: A Library for Metric-based Root Cause Analysis | arXiv technical report 2306.11417v | arXiv preprint: not Sc | unknown: no list supplied | reviewed | software library for | label-free met | genera/https: | 1 | low |
 | michaelahardtwilliamrorc | 2023 | The PetShop Dataset: Finding Causes of Performance Issues across Micro | Proceedings of Machine Learning Re | unverified: PMLR volum | unknown: no list supplied | reviewed | dataset for RCA benc | n/a (benchmark | yes: h/yes (e | 3 | low |
 | sheriffadepoju2023cascad | 2023 | Cascading Failure Modes in Model-as-a-Service Architectures: When Your | International Journal of Scientifi | not found (ISSN 2456-6 | unknown: no list supplied; venue not found in Scopus preview | reviewed | conceptual essay on  | n/a | n/a/n/a | 1 | low |
+| jacoposoldaniantoniobrog | 2022 | Anomaly Detection and Failure Root Cause Analysis in (Micro)Service-Ba | ACM Computing Surveys 55(3), artic | venue: ACM Computing S | unknown: no list supplied | reviewed | survey of anomaly de | n/a (survey co | n/a/n/a | 4 (as a survey; qualitative) | low |
 | li2022actionable | 2022 | Actionable and Interpretable Fault Localization for Recurring Failures | ESEC/FSE '22, Singapore (ACM); arX | unverified: FSE procee | unknown: no list supplied | reviewed | localize faulty fail | supervised (tr | stated/stated | 3 | low-medium |
 | li2022causal | 2022 | Causal Inference-Based Root Cause Analysis for Online Service Systems  | Proceedings of the 28th ACM SIGKDD | unverified: KDD procee | unknown: no list supplied | reviewed | root cause metric ra | label-free (un | no (re/stated | 3 | medium |
+| zeyanlinengwenzhaoshengl | 2022 | Constructing Large-Scale Real-World Benchmark Datasets for AIOps | arXiv 2208.03938v1 (cs.SE, 8 Aug 2 | arXiv preprint: not Sc | unknown: no list supplied | reviewed | dataset description: | n/a (datasets  | yes (l/evalua | 2 | low |
 | deweiliuchuanhexinpengfa | 2021 | MicroHECL: High-Efficient Root Cause Localization in Large-Scale Micro | arXiv preprint 2103.01782v1 (cs.SE | arXiv preprints are no | unknown: no list supplied | reviewed | root cause service a | label-light/su | no/no | 2 | low |
 | tianyiyangjiachengshenyu | 2021 | AID: Efficient Prediction of Aggregated Intensity of Dependency in Lar | arXiv preprint 2109.04893v1 (cs.SE | arXiv preprints are no | unknown: no list supplied | reviewed | estimate the strengt | label-free (un | stated/stated | 2 | medium |
 | realtimecont | 2019 | Real-Time Context-Aware Microservice Architecture for Predictive Analy | IEEE Access, vol. 7, pp. 183177-18 | indexed (manual check  | unknown: no list supplied (Scopus preview shows SJR 2025 = 0 | reviewed | not RCA: IoT streami | n/a (ARIMA tim | yes (d/no | 2 | low |
 | yuganmeghnapancholidailu | 2018 | Seer: Leveraging Big Data to Navigate The Increasing Complexity of Clo | arXiv preprint 1804.09136v1 (cs.DC | arXiv preprints are no | unknown: no list supplied | reviewed | anticipate QoS viola | supervised (de | no (pl/no | 1 | medium |
+| sergeyvbuldyrevroniparsh | 2010 | Catastrophic cascade of failures in interdependent networks | Nature 464, April 2010 (Crossref:  | unverified: ISSN 0028- | unknown: no list supplied | reviewed | theory of cascading  | n/a | n/a/n/a | analytic (theory) | low |
