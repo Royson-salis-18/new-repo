@@ -16,4 +16,4 @@ One place for all documentation of **microservice-mapper** (the product) and **r
 .venv\Scripts\python tools\build_wiki.py
 ```
 
-Last build: 2026-10-08 15:20; 267 pages.
+Last build: 2026-10-08 16:03; 267 pages.

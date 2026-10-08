@@ -30,6 +30,32 @@ A paper framed as "an operating-point-aware evaluation of label-free RCA" (GAPS.
 
 ---
 
+## UPDATE 2026-10-08 (evening): first LIVE frozen-service test, and what it showed
+
+**What we did.** DeathStarBench social network (27 containers), light user traffic (4 requests/s), 6 healthy minutes, then `docker pause` on `post-storage-service` for 91 s, 4 minutes later `docker pause` on `user-timeline-service` for 91 s, each written to the fault ledger and always unpaused. Users saw **88%** and **43%** failed requests during the two pauses (independent truth). Files: `experiments/run_live_pause.py`, `docs/experiments/live_pause_results.json`, `live_pause_samples.csv`, `live_pause/`.
+
+| | post-storage paused | user-timeline paused | false alarms (9 healthy min) |
+|---|---|---|---|
+| code before this test | **not flagged**, rank 8 of 27 | **not flagged**, rank 13 | 0 |
+| after the fixes below (same data, so not an independent test) | **flagged**, rank 7 | **flagged**, rank 8 | 0 |
+| "most abnormal" (before) | rank 9 | rank 16 | |
+
+**Why it failed, found in the data:** during a pause the frozen container's CPU and traffic go to exactly 0, but
+1. `docker stats` prints network bytes in kB steps, so healthy traffic already reads 0 in about a third of 10 s ticks: a drop to 0 scored only z = 1.6;
+2. my common-mode rule treated "many services went quiet together" as a load drop and erased it;
+3. a freeze stalls the whole chain above it (nginx-thrift, home-timeline, user-timeline all went silent too), so the frozen service's silence was "explained" by its silent callers.
+
+**Fixes kept** (bench re-checked on all 6 seeds: unchanged, A@1 0.70 / 0.75, frozen 1.00, false alarms 0.10-0.15/h; real crash: root #1 in **all 8** variants, also without the crash signal and with compose edges only):
+* SSH "silence" = a container that usually uses CPU or moves bytes had **neither** in a tick (a paused container shows exactly 0.00% CPU);
+* a meaningful unit per feature in the log scale (`log(x + 2000 B/s)` for byte rates), so a one-kB tick on an idle series can no longer score z = 46;
+* network activity used only as an input to "alive?", not scored on its own; thread count (`pids`) treated as an inherited symptom (threads pile up in services waiting on a slow callee).
+
+**Tried and reverted:** a "deepest silent service is the cause" rule. It did not fix the live ranking and lowered bench frozen-service A@1 from 1.00 to 0.80.
+
+**Honest conclusion.** With `docker stats` + logs only, a frozen service is now **detected** (flagged, no false alarms) but **not localised**: the whole call chain above it stalls at the same moment and looks identical from the outside. Localising it needs per-request traces (where requests wait), which DeathStar's Jaeger does not have yet (no traced traffic). The bench result (frozen A@1 1.00) does **not** transfer to real SSH data, and is now reported only with this caveat.
+
+---
+
 ## UPDATE 2026-10-08 (afternoon): what we fixed in the logic, measured honestly
 
 **Rule used:** every change was tuned on bench seeds 0-2 and then judged on seeds 3-5, which were never used for tuning. Numbers below are from the seeds never used for tuning unless marked.

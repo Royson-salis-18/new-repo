@@ -65,7 +65,7 @@ We are **not**:
 | **Error burst in one service** (bad deploy, bad config, broken dependency client) | errors start right after a release | often (bench recall 0.4-0.6) | **often** (bench A@1 0.58) | semi-synthetic bench only |
 | **Overload cascade / retry storm** | Google SRE ch. 22; metastable failures; AWS 2021 | yes: many services light up | **unclear**: everything is loud at once; common-mode removal may even hide it | not tested |
 | **Slow service (latency degradation)** | a slow database query, a GC pause | **rarely** with 15 s trace aggregates (bench slow A@1 0.04) | rarely | bench |
-| **Frozen / hung service** (deadlock, `docker pause`) | a service stops answering but stays "up" | **yes on the bench** (silence signal, added 2026-10-08) | **yes on the bench** (A@1 1.00; was 0.06) | bench only; live `pause` test not done |
+| **Frozen / hung service** (deadlock, `docker pause`) | a service stops answering but stays "up" | **yes**: bench, and live on DeathStar after a fix (silence = no CPU and no traffic) | bench **yes** (A@1 1.00); **live no** (rank 7-8 of 27: the stalled chain above it looks the same; needs traces) | bench + 2 live pauses (88% and 43% user errors) |
 | **Shared infrastructure failure** (network, DNS, service discovery, cloud region) | AWS 2021 network devices; Roblox Consul | the symptoms, yes | **no**: the culprit is not one of the services we watch | none (out of scope) |
 | **Silent data or logic bugs** (wrong results, no errors) | | no | no | out of scope |
 | **Slow resource leak** (memory creeping over hours) | | maybe (memory feature), late | maybe | not tested |

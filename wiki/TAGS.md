@@ -3,7 +3,7 @@
 Tags are derived from what is written inside each page (keyword counts), not from file names. A page appears under a tag when the topic is mentioned at least 4 times or in its title.
 
 
-## root cause analysis (RCA) (128)
+## root cause analysis (RCA) (129)
 
 - [Batch 01: 2026-10-07](pages/lab/litdb/batches/batch-01.md) · Literature · 2026-10-07
 - [Batch 02: 2026-10-07](pages/lab/litdb/batches/batch-02.md) · Literature · 2026-10-07
@@ -68,6 +68,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) · Reports and findings · 2026-10-07
 - [Honest review of the project: RCA + cascading-failure risk for microservices](pages/lab/docs/REVIEW_REPORT.md) · Reports and findings · 2026-10-07
 - [What we are, where we help, and why it matters (scope and value)](pages/lab/docs/SCOPE_AND_VALUE.md) · Reports and findings · 2026-10-08
+- [HANDOFF: read this first on a new laptop / new Claude session](pages/lab/HANDOFF.md) · rca-lab · 2026-10-08
 - [research-paper-context](pages/lab/history/memory/microservice-mapper/research-paper-context.md) · rca-lab · 2026-10-08
 - [Cross-paper research gaps (v2, thorough)](pages/lab/literature-review/GAPS.md) · rca-lab · 2026-10-08
 - [litdb: the reading database](pages/lab/literature-review/LITDB_WORKFLOW.md) · rca-lab · 2026-10-08
@@ -134,7 +135,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [17 — Findings vs Incidents: two detectors, deliberately separate](pages/lab/microservice-mapper/wiki/17-findings-vs-incidents.md) · rca-lab · 2026-10-08
 - [Microservice Mapper — Wiki](pages/lab/microservice-mapper/wiki/README.md) · rca-lab · 2026-10-08
 
-## cascading failure / propagation (103)
+## cascading failure / propagation (104)
 
 - [Batch 01: 2026-10-07](pages/lab/litdb/batches/batch-01.md) · Literature · 2026-10-07
 - [Batch 03: 2026-10-07](pages/lab/litdb/batches/batch-03.md) · Literature · 2026-10-07
@@ -185,6 +186,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Honest review of the project: RCA + cascading-failure risk for microservices](pages/lab/docs/REVIEW_REPORT.md) · Reports and findings · 2026-10-07
 - [What we are, where we help, and why it matters (scope and value)](pages/lab/docs/SCOPE_AND_VALUE.md) · Reports and findings · 2026-10-08
 - [What is wrong with our approach, why, and what we can still do](pages/lab/docs/WHAT_IS_WRONG.md) · Reports and findings · 2026-10-08
+- [HANDOFF: read this first on a new laptop / new Claude session](pages/lab/HANDOFF.md) · rca-lab · 2026-10-08
 - [research-paper-context](pages/lab/history/memory/microservice-mapper/research-paper-context.md) · rca-lab · 2026-10-08
 - [Cross-paper research gaps (v2, thorough)](pages/lab/literature-review/GAPS.md) · rca-lab · 2026-10-08
 - [Instructions for a future Claude session (continue the literature review)](pages/lab/literature-review/INSTRUCTIONS_FOR_CLAUDE.md) · rca-lab · 2026-10-08
@@ -829,7 +831,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Report: Yao et al. (2024), Chain-of-Event (CoE)](pages/lab/literature-review/reports/yao2024chain.md) · rca-lab · 2026-10-08
 - [Report: Zhao, Wang et al. (2024/2025), CHASE](pages/lab/literature-review/reports/zhao2024chase.md) · rca-lab · 2026-10-08
 
-## evaluation / statistics (30)
+## evaluation / statistics (29)
 
 - [Cross-paper research gaps (v2, thorough)](pages/lab/litdb/GAPS.md) · Literature · 2026-10-08
 - [Report: Li et al. (2022), DéjàVu (FSE '22)](pages/lab/litdb/reports/li2022actionable.md) · Literature · 2026-10-08
@@ -845,7 +847,6 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) · Reports and findings · 2026-10-07
 - [Honest review of the project: RCA + cascading-failure risk for microservices](pages/lab/docs/REVIEW_REPORT.md) · Reports and findings · 2026-10-07
 - [What is wrong with our approach, why, and what we can still do](pages/lab/docs/WHAT_IS_WRONG.md) · Reports and findings · 2026-10-08
-- [HANDOFF: read this first on a new laptop / new Claude session](pages/lab/HANDOFF.md) · rca-lab · 2026-10-08
 - [Cross-paper research gaps (v2, thorough)](pages/lab/literature-review/GAPS.md) · rca-lab · 2026-10-08
 - [Cost-Sensitive Mamba Sequence Modeling for Fault Detection in Cloud-Native Micro](pages/lab/literature-review/notes/costsensitiv.md) · rca-lab · 2026-10-08
 - [DéjàVu (Li et al., FSE 2022)](pages/lab/literature-review/notes/li2022actionable.md) · rca-lab · 2026-10-08
@@ -862,7 +863,7 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Report: Zhao, Wang et al. (2024/2025), CHASE](pages/lab/literature-review/reports/zhao2024chase.md) · rca-lab · 2026-10-08
 - [Research protocol](pages/lab/RESEARCH.md) · rca-lab · 2026-10-06
 
-## literature / papers (150)
+## literature / papers (149)
 
 - [Batch NN: <date>](pages/lab/litdb/batches/_batch_template.md) · Literature · 2026-10-07
 - [Batch 01: 2026-10-07](pages/lab/litdb/batches/batch-01.md) · Literature · 2026-10-07
@@ -937,7 +938,6 @@ Tags are derived from what is written inside each page (keyword counts), not fro
 - [Scopus venue checks (manual, via the public Scopus "Sources" preview, https://ww](pages/lab/litdb/reference/scopus_checks.md) · Literature · 2026-10-08
 - [Honest review of the project: RCA + cascading-failure risk for microservices](pages/lab/docs/REVIEW_REPORT.md) · Reports and findings · 2026-10-07
 - [What we are, where we help, and why it matters (scope and value)](pages/lab/docs/SCOPE_AND_VALUE.md) · Reports and findings · 2026-10-08
-- [HANDOFF: read this first on a new laptop / new Claude session](pages/lab/HANDOFF.md) · rca-lab · 2026-10-08
 - [research-paper-context](pages/lab/history/memory/microservice-mapper/research-paper-context.md) · rca-lab · 2026-10-08
 - [Comparison with our work (reviewed papers only)](pages/lab/literature-review/COMPARISON_MATRIX.md) · rca-lab · 2026-10-08
 - [Instructions for a future Claude session (continue the literature review)](pages/lab/literature-review/INSTRUCTIONS_FOR_CLAUDE.md) · rca-lab · 2026-10-08

@@ -140,19 +140,24 @@ plt.tight_layout(); plt.show()
 
 # %%
 SPEC = {   # feature: (direction that means trouble, scale, evidence group)
-    "cpu_percent": (+1, "log", "own"), "memory_usage_mb": (+1, "log", "own"), "pids": (+1, "log", "own"),
+    "cpu_percent": (+1, "log", "own"), "memory_usage_mb": (+1, "log", "own"), "pids": (+1, "log", "sym"),  # threads pile up in a service WAITING on a slow callee: inheritable
     "block_read_bytes": (+1, "log", "own"), "block_write_bytes": (+1, "log", "own"),
     "network_rx_bytes": (+1, "log", "sym"), "network_tx_bytes": (+1, "log", "sym"),
     "log_count": (+1, "log", "sym"), "error_count": (+1, "log", "sym"), "warning_count": (+1, "log", "sym"),
     "latency_p95": (+1, "log", "sym"), "trace_errors": (+1, "lin", "sym"), "span_rate": (-1, "log", "sym"),
     "self_latency": (+1, "log", "own"), "container_up": (-1, "lin", "own"),
     "silence": (+1, "lin", "own"),
-    "activity": (-1, "log", "own"),  # network in+out rate (SSH data): a paused container stays listed but stops talking   # computed in score(): a normally chatty service that went quiet
+    "activity": (-1, "log", "aux"),  # network in+out rate (SSH data): only an input to "alive?" in silence (its kB-quantised
+                                     # counters make it too noisy to score on its own)   # computed in score(): a normally chatty service that went quiet
 }
 # "own"  = evidence about the service ITSELF (its CPU, memory, its own processing time, whether it is running)
 # "sym"  = symptoms that can be INHERITED from a broken dependency (errors, end-to-end latency, traffic, log errors)
 CUMULATIVE = {"network_rx_bytes", "network_tx_bytes", "block_read_bytes", "block_write_bytes"}
-FLOOR = {"log": 0.15, "lin": 0.05}    # smallest allowed spread: a 15% change (log scale) or 0.05 absolute (0..1 quantities)
+FLOOR = {"log": 0.15, "lin": 0.05}
+# the smallest change worth noticing, per feature: log(x + UNIT) instead of log(1 + x), so a series that is usually 0 cannot
+# score z = 46 for one quantised kB tick (docker stats prints network bytes in kB steps)
+UNIT = {"network_rx_bytes": 2000.0, "network_tx_bytes": 2000.0, "activity": 2000.0, "block_read_bytes": 4096.0,
+        "block_write_bytes": 4096.0, "cpu_percent": 0.5, "memory_usage_mb": 1.0}    # smallest allowed spread: a 15% change (log scale) or 0.05 absolute (0..1 quantities)
 
 @dataclass
 class Panel:
@@ -291,7 +296,7 @@ def score(p, window=60, min_base=12, guard=2, exclude_z=4.0, common_frac=0.5, lo
     floor = np.array([FLOOR[SPEC[f][1]] for f in p.features], float)
     for j, f in enumerate(p.features):
         if log_scale and SPEC[f][1] == "log":
-            X[:, :, j] = np.log1p(np.maximum(X[:, :, j], 0))
+            X[:, :, j] = np.log(np.maximum(X[:, :, j], 0) + UNIT.get(f, 1.0))
         elif not log_scale and SPEC[f][1] == "log":
             floor[j] = 1e-6
     if smooth > 1:                                                      # rolling median of the last `smooth` VALID values per series:
@@ -342,7 +347,12 @@ def score(p, window=60, min_base=12, guard=2, exclude_z=4.0, common_frac=0.5, lo
     feats = list(p.features)
     if silence_k > 0:                                                   # SILENCE: share of ticks with any symptom data, recent vs usual
         sym_cols = [j for j, f in enumerate(p.features) if SPEC[f][2] == "sym"]
-        act = (~np.isnan(p.X[:, :, sym_cols])).any(axis=2).astype(float) if sym_cols else np.zeros((T, S))
+        act = (~np.isnan(p.X[:, :, sym_cols])).any(axis=2) if sym_cols else np.zeros((T, S), bool)
+        if "cpu_percent" in p.features:                                 # SSH/docker data: a row is always there (a paused container
+            cpu_ = np.nan_to_num(p.X[:, :, p.features.index("cpu_percent")])   # is still listed), so "alive" = it used CPU or
+            net_ = np.nan_to_num(p.X[:, :, p.features.index("activity")]) if "activity" in p.features else np.zeros((T, S))
+            act = act & ((cpu_ > 0) | (net_ > 0))                       # moved bytes in this tick; frozen = exactly 0 and 0
+        act = act.astype(float)
         A = pd.DataFrame(act)
         q = A.shift(guard + silence_k).rolling(window, min_periods=min_base).mean().to_numpy()   # usual activity rate
         obs = A.rolling(silence_k, min_periods=silence_k).sum().to_numpy()                      # recent activity count
@@ -359,7 +369,7 @@ def score(p, window=60, min_base=12, guard=2, exclude_z=4.0, common_frac=0.5, lo
             col, ok = Z[t, :, j], J[t, :, j]
             if ok.sum() >= 4:
                 common[t, j] = np.mean(col[ok] > 3.0)
-                if common_frac is not None and (SPEC[f][2] == "sym" or f == "activity") and common[t, j] > common_frac:
+                if common_frac is not None and SPEC[f][2] == "sym" and common[t, j] > common_frac:
                     Z[t, :, j] = np.where(ok, np.maximum(col - np.median(col[ok]), 0.0), 0.0)
     own_i = [i for i, f in enumerate(feats) if SPEC[f][2] == "own"]
     sym_i = [i for i, f in enumerate(feats) if SPEC[f][2] == "sym"]
@@ -489,6 +499,7 @@ def attribute(p, sc, window, gamma=1.0, hard=True, infer=True, agg="max", explai
         if c in idx and e in idx:
             callees.setdefault(idx[c], []).append(idx[e]); callers.setdefault(idx[e], []).append(idx[c])
     fs = sc.features or p.features
+    own_raw = own.copy()
     soft_cols = [k for k, f in enumerate(fs) if f in ("silence", "activity")]               # quiet signals that CAN be inherited
     quiet_cols = soft_cols + [k for k, f in enumerate(fs) if f == "container_up"]          # what makes a caller "quiet or down"
     if soft_cols:                                       # QUIET IS INHERITED DOWNSTREAM: if my callers went quiet or down, my own
@@ -504,13 +515,23 @@ def attribute(p, sc, window, gamma=1.0, hard=True, infer=True, agg="max", explai
         for c_, e_ in p.edges:
             if c_ in idx0 and e_ in idx0:
                 downs.setdefault(idx0[c_], []).append(idx0[e_])
-        loud = np.maximum(rest, sc.sym[a:b].max(axis=0))           # a callee's LOUD evidence (never its silence: no circles)
-        q_expl = np.array([max(max((quiet[c_] for c_ in ups.get(i, [])), default=0.0),          # my callers went quiet or down
-                               max((loud[e_] for e_ in downs.get(i, [])), default=0.0))         # or a callee broke, so my
+        sym_w = sc.sym[a:b].max(axis=0)
+        loud = np.maximum(rest, sym_w)                              # a callee's LOUD evidence
+        idle = np.where(sym_w < 3.0, quiet, 0.0)                    # a caller that is quiet AND error-free is idle; one that is quiet
+        q_expl = np.array([max(max((idle[c_] for c_ in ups.get(i, [])), default=0.0),           # but erroring is BLOCKED on me
+                               max((loud[e_] for e_ in downs.get(i, [])), default=0.0))         # or a callee broke loudly, so my
                            for i in range(len(p.services))])                                    # requests fail fast
+        # Measured limit (live docker pause on DeathStar, 2026-10-08): a freeze stalls the whole call chain above it, so callers
+        # go quiet without logging errors and look idle; with docker-stats data alone the frozen service is DETECTED (silence)
+        # but not LOCALISED (rank 6-8 of 27). A rule for "deepest silent service" was tried and reverted: it did not fix the
+        # live case and lowered bench accuracy (frozen-service A@1 1.00 -> 0.80). Per-request traces are needed here.
         own = np.maximum(rest, np.maximum(0.0, soft - gamma * q_expl))
     evidence = np.maximum(own, sym) if explain == "all" else own    # "own": only a callee's OWN evidence explains its callers
-    explained = np.array([gamma * max((evidence[w] for w in callees.get(i, [])), default=0.0) for i in range(len(p.services))])
+    if explain == "binary":                             # inherited if ANY callee is itself anomalous (raw evidence incl. silence,
+        raw = np.maximum(own_raw, sym)                  # before it was explained away), however the z-scales compare
+        explained = np.array([sym[i] if max((raw[w] for w in callees.get(i, [])), default=0.0) >= 3.0 else 0.0 for i in range(len(p.services))])
+    else:
+        explained = np.array([gamma * max((evidence[w] for w in callees.get(i, [])), default=0.0) for i in range(len(p.services))])
     unexpl = np.maximum(0.0, sym - explained)
     final = np.maximum(own, unexpl)
     note = [""] * len(p.services)
@@ -895,16 +916,23 @@ def live_setup():
         open(KEY, "w").write(k + chr(10)); os.chmod(KEY, 0o600)
     return rca_lite
 
-def check_hosts():
-    L = live_setup(); ok = {}
-    for n, (ip, compose, *_) in HOSTS.items():
+def check_hosts(limit_s=45):
+    """All hosts in parallel, each with a hard time limit: an overloaded host used to stall this cell for ~20 minutes."""
+    import threading
+    L = live_setup(); ok = {n: f"FAILED: no answer within {limit_s}s (host overloaded or down)" for n in HOSTS}
+    def one(n, ip):
         try:
-            names = L.HostSampler(ip, KEY, "ubuntu", name=n).containers()
-            ok[n] = f"OK: {len(names)} containers"
+            ok[n] = f"OK: {len(L.HostSampler(ip, KEY, 'ubuntu', name=n).containers())} containers"
         except Exception as e:
             ok[n] = f"FAILED: {type(e).__name__}: {str(e)[:90]}"
-    display(pd.Series(ok, name="ssh check"))
-    return ok
+    th = [threading.Thread(target=one, args=(n, v[0]), daemon=True) for n, v in HOSTS.items()]
+    for x in th:
+        x.start()
+    t_end = time.time() + limit_s
+    for x in th:
+        x.join(max(0.0, t_end - time.time()))
+    display(pd.Series(dict(ok), name="ssh check"))
+    return dict(ok)
 
 RUN_LIVE = IN_COLAB or bool(os.environ.get("RCA_KEY"))
 HOST_OK = check_hosts() if RUN_LIVE else {}
