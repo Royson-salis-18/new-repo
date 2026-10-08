@@ -1,4 +1,4 @@
-# Literature survey table (24 papers)
+# Literature survey table (27 papers)
 
 Generated from `litdb/papers/*.md`. `read_status`: extracted < read-in-full < reviewed. Scopus status is only as good as the list in `litdb/reference/`.
 
@@ -26,5 +26,8 @@ Generated from `litdb/papers/*.md`. `read_status`: extracted < read-in-full < re
 | zimingzhaozhenweiwangtie | 2024 | CHASE: A Causal Hypergraph based Framework for Root Cause Analysis in  | arXiv:2406.19711v2 [cs.LG] (22 Apr | not indexed (arXiv pre | n/a | reviewed | localization (instan | supervised (cr | yes (G/unveri | 2 | low |
 | causalrca | 2023 | CausalRCA: Causal inference based precise fine-grained root cause loca | The Journal of Systems & Software, | unverified: Scopus pre | unknown: no list supplied | reviewed | fine-grained root ca | label-free (tr | yes (d/https: | 2 | low-medium |
 | sheriffadepoju2023cascad | 2023 | Cascading Failure Modes in Model-as-a-Service Architectures: When Your | International Journal of Scientifi | not found (ISSN 2456-6 | unknown: no list supplied; venue not found in Scopus preview | reviewed | conceptual essay on  | n/a | n/a/n/a | 1 | low |
+| li2022causal | 2022 | Causal Inference-Based Root Cause Analysis for Online Service Systems  | Proceedings of the 28th ACM SIGKDD | unverified: KDD procee | unknown: no list supplied | reviewed | root cause metric ra | label-free (un | no (re/stated | 3 | medium |
+| deweiliuchuanhexinpengfa | 2021 | MicroHECL: High-Efficient Root Cause Localization in Large-Scale Micro | arXiv preprint 2103.01782v1 (cs.SE | arXiv preprints are no | unknown: no list supplied | reviewed | root cause service a | label-light/su | no/no | 2 | low |
 | tianyiyangjiachengshenyu | 2021 | AID: Efficient Prediction of Aggregated Intensity of Dependency in Lar | arXiv preprint 2109.04893v1 (cs.SE | arXiv preprints are no | unknown: no list supplied | reviewed | estimate the strengt | label-free (un | stated/stated | 2 | medium |
 | realtimecont | 2019 | Real-Time Context-Aware Microservice Architecture for Predictive Analy | IEEE Access, vol. 7, pp. 183177-18 | indexed (manual check  | unknown: no list supplied (Scopus preview shows SJR 2025 = 0 | reviewed | not RCA: IoT streami | n/a (ARIMA tim | yes (d/no | 2 | low |
+| yuganmeghnapancholidailu | 2018 | Seer: Leveraging Big Data to Navigate The Increasing Complexity of Clo | arXiv preprint 1804.09136v1 (cs.DC | arXiv preprints are no | unknown: no list supplied | reviewed | anticipate QoS viola | supervised (de | no (pl/no | 1 | medium |

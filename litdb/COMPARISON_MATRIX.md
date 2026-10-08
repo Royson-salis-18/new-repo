@@ -24,5 +24,8 @@
 | zimingzhaozhenweiwangt | supervised (cr | no (offl | traces (topology), log | GNN (HGT) + hypergraph c | no | no (LLM  | GAIA: 1099 static traces (yes () | GAIA A@1 0.6135, A@3 0.8823, Avg@5 0.8276 vs best  | partial | low |
 | causalrca | label-free (tr | no live  | metrics (service laten | learned weighted DAG (DA | no | no | own injected faults: CPU (yes () | service task average Avg@5 0.5815 vs LiNGAM 0.5143 | partial  | low-medi |
 | sheriffadepoju2023casc | n/a | n/a | none (conceptual) | none (taxonomy of cascad | no (ca | no (mach | none (n/a) | none (taxonomy of five cascade types and resilienc | none (co | low |
+| li2022causal | label-free (un | no live  | metrics (1-minute samp | causal Bayesian network  | no | no | D_O: 99 cases, 197 metri (no (r) | D_O: CIRCA AC@1 0.404, AC@5 0.763, Avg@5 0.603 vs  | high for | medium |
+| deweiliuchuanhexinpeng | label-light/su | deployed | service-call metrics ( | dynamic service call gra | no | no | proprietary; not release (no) | HR@1 0.48, HR@3 0.67, HR@5 0.72, MRR 0.58 vs Monit | partial  | low |
 | tianyiyangjiachengshen | label-free (un | claimed  | traces (spans aggregat | edge weight = normalised | no (it | no | TT (simulated users) and (state) | Industry: AID CE 0.3270, MAE 0.1751, RMSE 0.3044 v | partial  | medium |
 | realtimecont | n/a (ARIMA tim | yes (str | IoT sensor measurement | none | no (fo | no | 118,370 air-quality reco (yes () | average processing time under 0.06 s per message a | none | low |
+| yuganmeghnapancholidai | supervised (de | yes (str | RPC-level traces with  | none explicit: one input | yes (Q | no | own traces; not released (no (p) | abstract: anticipates QoS violations 91% of the ti | partial  | medium |

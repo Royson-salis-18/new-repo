@@ -51,3 +51,7 @@ Notes: a Scopus-indexed venue is not a quality guarantee; the "not found" journa
 ## Additions (batch 8)
 - AID and STMformer: arXiv preprints (not Scopus-indexed); published versions not checked.
 - unyi2025explainable: IEEE TNSM, ISSN 1932-4537 / 2373-7379; Scopus preview check not yet done (unverified).
+
+## Additions (batch 9)
+- Seer and MicroHECL: arXiv preprints (not Scopus-indexed); published versions not checked.
+- CIRCA: KDD '22 proceedings; Scopus preview check not done (unverified).

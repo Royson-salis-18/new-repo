@@ -50,6 +50,9 @@ this lengthens debugging time for operators.
 | A38 | Binary dependency graphs are not discriminating enough for diagnosis; on Huawei Cloud 67 of 75 labelled dependencies are strong, 8 weak | AID, Table II p.7, pp.4-5 | measured labels on a subset engineers knew | weak |
 | A39 | Simulation-only GNN fault forecasting reaches R2 0.99 on 25-node synthetic meshes; real traces untested | unyi2025explainable, pp.11-12, 16 | simulated | very weak |
 | A40 | Host co-location and TCP-connection graphs improve metric forecasting error in the authors' ablation (one deployment; table has an impossible MAE/RMSE pair) | yifeixu...2024system, Table 3 p.8 | measured, single run | very weak |
+| A41 | A supervised network on queue-depth traces anticipates QoS violations 91% of the time and names the culprit 89% (GCE, authors' own apps, no external baseline) | Seer (yugan...2018seer), p.2 | measured, unreproducible, supervised | weak |
+| A42 | On 99 real Oracle failures at a bank, the strongest baseline for RCA is plain NSigma (AC@1 0.323); the best method reaches AC@1 0.404 | CIRCA (li2022causal), Table 3 p.7 | measured, proprietary, tuned on test | medium |
+| A43 | On 75 Alibaba availability issues, a call-graph RCA reaches HR@3 0.67 vs 0.49 for Microscope; in deployment HR@3 68%, localization from 30 to 5 minutes | MicroHECL (deweiliu...2021microhecl), Table IV p.7, p.9 | measured, proprietary, supervised detectors | weak-medium |
 
 ## B. Evidence our specific gap is already addressed (con)
 | # | What exists | Source (key, page) | How close to our contribution | Consequence for us |
@@ -60,6 +63,8 @@ this lengthens debugging time for operators.
 | 5 | DeepHunt (read in full): label-free at cold start via GAE trained on normal data; A@5 0.959 / 0.903 with zero labels; open code and dataset D1 | sun2025interpretable, pp.13, 17 | very high for "label-free multimodal RCA"; none for forecasting | do not claim label-free RCA as novel; propagation weights in DeepHunt are small (Table 7 p.22), no ablation isolates them: our open question |
 | 4 | Chain-of-Event (read in full): learns event-level propagation weights, but supervised (labels from tickets p.6), no forecasting | yao2024chain, pp.6-10 | medium for "learned propagation weights"; none for label-free or forecasting | cite as supervised reference; our label-free claim stands; event-level variant is not new |
 | 3 | Li 2026 (read in full): supervised GNN predicting propagation probability P(f_i->f_j|t), path ranking, risk score; noisy-OR cascade formula (Eq.21 p.10) identical in form to ours | li2026service, pp.3, 10-11 | high on task, low on credibility (proprietary, inconsistent numbers) | cannot claim cascade-risk prediction or noisy-OR as novel; can claim label-free + open + honest evaluation |
+| 7 | Seer (read in full, short arXiv version): supervised early warning of QoS violations plus culprit microservice from queue-depth traces; 91% / 89% on own apps | Seer (yugan...2018seer), p.2 | high for 'early warning with culprit exists' | cannot claim early warning with culprit as new; our difference must be label-free, explicit propagation, calibration |
+| 8 | CIRCA (read in full): label-free, architecture-aware causal metric RCA, in RCAEval | li2022causal, pp.3-7 | very high for 'label-free RCA' | must run as baseline; NSigma is its strongest simple baseline |
 
 ## C. Open questions about the problem
 - Do operators actually lack early warning, or do they lack *trust in* and *actionability of* alerts? (look for incident studies)
