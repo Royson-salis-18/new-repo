@@ -1,0 +1,2 @@
+- [Research paper context](research-paper-context.md) — cascading-failure + agent RCA paper, knowledge-base folder, RQs
+- [Auto-commit hook](auto-commit-hook.md) — user-level Stop/SessionEnd hook commits every repo; guards and opt-outs
