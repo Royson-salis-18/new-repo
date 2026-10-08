@@ -68,3 +68,6 @@ Notes: a Scopus-indexed venue is not a quality guarantee; the "not found" journa
 - Soldani and Brogi: ACM Computing Surveys ISSN 0360-0300 (indexed per earlier check); article record not checked.
 - Buldyrev et al.: Nature ISSN 0028-0836 not checked (unverified).
 - AIOps benchmark datasets paper: arXiv preprint (not Scopus-indexed).
+
+## Additions (batch 13)
+- Motter and Lai: Phys. Rev. E ISSN 1063-651X not checked (unverified).

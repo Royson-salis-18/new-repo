@@ -65,6 +65,7 @@ this lengthens debugging time for operators.
 | A53 | A survey states that topology graphs modelling only service interactions can miss anomalies caused by co-hosted services; false positives/negatives are inherent to RCA; comparison across papers is unreliable | Soldani and Brogi (jacoposoldani...2021anomaly), pp.27-28, 30 | analytical survey remark | medium (supports co-location limitation) |
 | A54 | Public AIOps challenge dataset: 169 injected failures, 7 types, one distributed system with call and deployment dependencies | Li et al. 2022 (zeyanlin...2022constructing), Table 6 p.5 | dataset description | weak-medium (limited fault diversity) |
 | A55 | In two interdependent random networks a small initial failure can fragment both; critical mean degree 2.445 for ER | Buldyrev et al. (sergeyvbuldyrev...2009catastrophic), abstract p.1 | analytic theory, not calibrated to microservices | very weak for our problem |
+| A56 | In heterogeneous networks, removing one high-load node can trigger an overload cascade that disconnects more than half of the nodes (simulation) | Motter and Lai (motter2002), p.2-3 | simulation, shortest-path load model | very weak for microservices (background) |
 
 ## B. Evidence our specific gap is already addressed (con)
 | # | What exists | Source (key, page) | How close to our contribution | Consequence for us |

@@ -1,4 +1,4 @@
-# Literature survey table (36 papers)
+# Literature survey table (37 papers)
 
 Generated from `litdb/papers/*.md`. `read_status`: extracted < read-in-full < reviewed. Scopus status is only as good as the list in `litdb/reference/`.
 
@@ -40,3 +40,4 @@ Generated from `litdb/papers/*.md`. `read_status`: extracted < read-in-full < re
 | realtimecont | 2019 | Real-Time Context-Aware Microservice Architecture for Predictive Analy | IEEE Access, vol. 7, pp. 183177-18 | indexed (manual check  | unknown: no list supplied (Scopus preview shows SJR 2025 = 0 | reviewed | not RCA: IoT streami | n/a (ARIMA tim | yes (d/no | 2 | low |
 | yuganmeghnapancholidailu | 2018 | Seer: Leveraging Big Data to Navigate The Increasing Complexity of Clo | arXiv preprint 1804.09136v1 (cs.DC | arXiv preprints are no | unknown: no list supplied | reviewed | anticipate QoS viola | supervised (de | no (pl/no | 1 | medium |
 | sergeyvbuldyrevroniparsh | 2010 | Catastrophic cascade of failures in interdependent networks | Nature 464, April 2010 (Crossref:  | unverified: ISSN 0028- | unknown: no list supplied | reviewed | theory of cascading  | n/a | n/a/n/a | analytic (theory) | low |
+| motter2002 | 2002 | Cascade-based attacks on complex networks | Physical Review E 66, 065102(R) (2 | unverified: ISSN 1063- | unknown: no list supplied | reviewed | load-redistribution  | n/a | n/a/n/a | simulation (theory) | low |

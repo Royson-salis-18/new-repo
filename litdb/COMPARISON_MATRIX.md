@@ -38,3 +38,4 @@
 | realtimecont | n/a (ARIMA tim | yes (str | IoT sensor measurement | none | no (fo | no | 118,370 air-quality reco (yes () | average processing time under 0.06 s per message a | none | low |
 | yuganmeghnapancholidai | supervised (de | yes (str | RPC-level traces with  | none explicit: one input | yes (Q | no | own traces; not released (no (p) | abstract: anticipates QoS violations 91% of the ti | partial  | medium |
 | sergeyvbuldyrevronipar | n/a | n/a | none | analytic percolation cas | no (cr | no | none (n/a) | two interdependent ER networks collapse below mean | analogy  | low |
+| motter2002 | n/a | n/a | none | overload cascade: load = | no | no | published network graphs (n/a) | load-based attack on one node at alpha 0.2 in scal | analogy  | low |
