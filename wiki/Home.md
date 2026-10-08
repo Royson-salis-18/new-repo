@@ -6,6 +6,7 @@
 
 | # | Document | What it tells you |
 |---|---|---|
+| 0 | [What we are, where we help, and why it matters](../docs/SCOPE_AND_VALUE.md) | scope: which real-world problems, which fault scenarios, how bad they are (sourced), what to know as a DevOps engineer |
 | 1 | [What is wrong, why, and what we can still do](../docs/WHAT_IS_WRONG.md) | the honest status: every problem, its evidence, cause, fix and cost; what we may and may not claim |
 | 2 | [RCA and cascade logic in simple words](../docs/RCA_AND_CASCADE_SIMPLE.md) | how the method works and why it is not on par with the papers |
 | 3 | [Cross-paper research gaps](../literature-review/GAPS.md) | six gaps across 37 papers read in full; the recommended paper framing |

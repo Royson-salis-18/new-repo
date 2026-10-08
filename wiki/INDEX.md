@@ -1,6 +1,6 @@
 # Wiki index by topic
 
-266 pages from 2 repositories, generated 2026-10-08 09:49. Use `TIMELINE.md` for time order and `TAGS.md` for what the pages talk about.
+267 pages from 2 repositories, generated 2026-10-08 14:28. Use `TIMELINE.md` for time order and `TAGS.md` for what the pages talk about.
 
 **Start here:** [`pages/lab/docs/REVIEW_REPORT.md`](pages/lab/docs/REVIEW_REPORT.md) (honest review) · [`pages/lab/docs/FIXES_AND_TESTS.md`](pages/lab/docs/FIXES_AND_TESTS.md) (latest tests) · [`pages/lab/RESEARCH.md`](pages/lab/RESEARCH.md) (protocol) · [`pages/mapper/WIKI.md`](pages/mapper/WIKI.md) (the product's own wiki)
 
@@ -51,7 +51,7 @@
 
 | Page | What it says | Created | Updated | Words | Tags |
 |---|---|---|---|---|---|
-| [rca-lab](pages/lab/README.md) | Lean research harness for: unlabeled, live-telemetry root cause analysis with probabilistic cascade-risk prediction. | 2026-09-12 | 2026-10-07 | 743 | SSH / EC2 / Docker, configuration / API, metrics / Prometheus |
+| [rca-lab](pages/lab/README.md) | Lean research harness for: unlabeled, live-telemetry root cause analysis with probabilistic cascade-risk prediction. | 2026-09-12 | 2026-10-08 | 750 | SSH / EC2 / Docker, configuration / API, metrics / Prometheus |
 | [Research protocol](pages/lab/RESEARCH.md) | Working title: Probabilistic Cascading Failure and Agent Assisted Root Cause Analysis for Microservice Systems | 2026-10-06 | 2026-10-06 | 733 | evaluation / statistics, cascading failure / propagation, traces / Jaeger / OpenTelemetry |
 
 ## Reports and findings
@@ -61,6 +61,7 @@
 | [Fixes attempted and tests on larger apps (2026-10-07)](pages/lab/docs/FIXES_AND_TESTS.md) | Scope: the problems found in REVIEWREPORT.md, what we fixed, what we tested on larger applications, and what is still not solved. | 2026-10-07 | 2026-10-07 | 1917 | cascading failure / propagation, traces / Jaeger / OpenTelemetry, evaluation / statistics |
 | [RCA and cascade logic: what it does, why it is not on par, what to cha](pages/lab/docs/RCA_AND_CASCADE_SIMPLE.md) | Plain-language summary. Numbers come from our tests (FIXESANDTESTS.md) and from papers we read in full (litdb/). Paper numbers are | 2026-10-08 | 2026-10-08 | 1475 | benchmark / dataset, logs, SSH / EC2 / Docker |
 | [Honest review of the project: RCA + cascading-failure risk for microse](pages/lab/docs/REVIEW_REPORT.md) | Prepared 2026-10-07 for Royson Salis and team (Bharath, Dhanush, Anish). | 2026-10-07 | 2026-10-07 | 5975 | cascading failure / propagation, benchmark / dataset, literature / papers |
+| [What we are, where we help, and why it matters (scope and value)](pages/lab/docs/SCOPE_AND_VALUE.md) | Written 2026-10-08. Real-world numbers come from the sources listed in section 9, each with its caveat. Our own numbers come from  | 2026-10-08 | 2026-10-08 | 2587 | cascading failure / propagation, troubleshooting, literature / papers |
 | [What is wrong with our approach, why, and what we can still do](pages/lab/docs/WHAT_IS_WRONG.md) | Written 2026-10-08. Every number below comes from a test we ran (files named in each section) or from a paper we read in full (pag | 2026-10-08 | 2026-10-08 | 3354 | evaluation / statistics, traces / Jaeger / OpenTelemetry, cascading failure / propagation |
 
 ## Experiments

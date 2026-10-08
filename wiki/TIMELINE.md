@@ -1,6 +1,6 @@
 # Wiki timeline
 
-Generated 2026-10-08 09:49. Dates come from git history (created = first commit of the file, updated = latest commit).
+Generated 2026-10-08 14:28. Dates come from git history (created = first commit of the file, updated = latest commit).
 
 
 ## 1. When each page was created (oldest first)
@@ -297,11 +297,15 @@ Generated 2026-10-08 09:49. Dates come from git history (created = first commit 
 - 07:53 [18 — Telemetry tiers: the plan](pages/lab/microservice-mapper/wiki/18-telemetry-tiers-plan.md) (lab) · rca-lab
 - 07:53 [19 — How it all works](pages/lab/microservice-mapper/wiki/19-how-it-all-works.md) (lab) · rca-lab
 - 07:53 [Microservice Mapper — Wiki](pages/lab/microservice-mapper/wiki/README.md) (lab) · rca-lab
-- 09:49 [What is wrong with our approach, why, and what we can still do](pages/lab/docs/WHAT_IS_WRONG.md) (lab) · Reports and findings
+- 09:53 [What is wrong with our approach, why, and what we can still do](pages/lab/docs/WHAT_IS_WRONG.md) (lab) · Reports and findings
+- 09:58 [What we are, where we help, and why it matters (scope and value)](pages/lab/docs/SCOPE_AND_VALUE.md) (lab) · Reports and findings
 
 ## 2. Most recently updated (newest first, top 25)
 
-- 2026-10-08 09:49 [What is wrong with our approach, why, and what we can still do](pages/lab/docs/WHAT_IS_WRONG.md) (lab)
+- 2026-10-08 09:58 [What we are, where we help, and why it matters (scope and value)](pages/lab/docs/SCOPE_AND_VALUE.md) (lab)
+- 2026-10-08 09:53 [rca-lab](pages/lab/README.md) (lab)
+- 2026-10-08 09:53 [What is wrong with our approach, why, and what we can still do](pages/lab/docs/WHAT_IS_WRONG.md) (lab)
+- 2026-10-08 09:53 [HANDOFF: read this first on a new laptop / new Claude session](pages/lab/HANDOFF.md) (lab)
 - 2026-10-08 07:53 [Microservice Mapper — Wiki](pages/lab/microservice-mapper/wiki/README.md) (lab)
 - 2026-10-08 07:53 [17 — Findings vs Incidents: two detectors, deliberately separate](pages/lab/microservice-mapper/wiki/17-findings-vs-incidents.md) (lab)
 - 2026-10-08 07:53 [18 — Telemetry tiers: the plan](pages/lab/microservice-mapper/wiki/18-telemetry-tiers-plan.md) (lab)
@@ -323,9 +327,6 @@ Generated 2026-10-08 09:49. Dates come from git history (created = first commit 
 - 2026-10-08 07:53 [ID System — Canonical Node & Edge IDs](pages/lab/microservice-mapper/wiki/04-id-system.md) (lab)
 - 2026-10-08 07:53 [Overview — What Microservice Mapper Is](pages/lab/microservice-mapper/wiki/01-overview.md) (lab)
 - 2026-10-08 07:53 [Traffic Generator](pages/lab/microservice-mapper/traffic-gen/README.md) (lab)
-- 2026-10-08 07:53 [traces-section-prompt](pages/lab/microservice-mapper/traces-section-prompt.md) (lab)
-- 2026-10-08 07:53 [Telemetry Platform — Phase 1 + Phase 2](pages/lab/microservice-mapper/telemetry-platform%20%282%29/telemetry-platform/README.md) (lab)
-- 2026-10-08 07:53 [Anomaly detection pipeline](pages/lab/microservice-mapper/ml/README.md) (lab)
 
 ## 3. Work history (commits of both repositories, newest first)
 
@@ -384,6 +385,7 @@ Generated 2026-10-08 09:49. Dates come from git history (created = first commit 
 
 ### lab
 
+- 2026-10-08 09:53 `892a717` Research notebook (every step visible, flowchart, bench, ablations, live), WHAT_IS_WRONG doc, wiki Home, faste
 - 2026-10-08 07:53 `43a8844` Add 'microservice-mapper/' from commit 'ce7d8565476b86146144278dc0575509d725115e'
 - 2026-10-08 07:53 `ce7d856` data snapshot before handoff
 - 2026-10-08 07:52 `65d0666` Keep paper PDFs and extracted texts out of the public repo
@@ -463,4 +465,3 @@ Generated 2026-10-08 09:49. Dates come from git history (created = first commit 
 - 2026-09-18 00:53 `8d70f7e` new updated and also added documentation
 - 2026-09-18 00:11 `5ab1423` docs: fix contact links and refine technical accuracy
 - 2026-09-18 00:08 `a72f5bf` docs: remove MIT license to protect research paper
-- 2026-09-18 00:06 `314afdf` docs: remove acknowledgments and fluff from README
