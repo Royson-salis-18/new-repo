@@ -1,6 +1,6 @@
 # Wiki index by topic
 
-267 pages from 2 repositories, generated 2026-10-08 16:03. Use `TIMELINE.md` for time order and `TAGS.md` for what the pages talk about.
+267 pages from 2 repositories, generated 2026-10-08 16:21. Use `TIMELINE.md` for time order and `TAGS.md` for what the pages talk about.
 
 **Start here:** [`pages/lab/docs/REVIEW_REPORT.md`](pages/lab/docs/REVIEW_REPORT.md) (honest review) · [`pages/lab/docs/FIXES_AND_TESTS.md`](pages/lab/docs/FIXES_AND_TESTS.md) (latest tests) · [`pages/lab/RESEARCH.md`](pages/lab/RESEARCH.md) (protocol) · [`pages/mapper/WIKI.md`](pages/mapper/WIKI.md) (the product's own wiki)
 

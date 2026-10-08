@@ -1,6 +1,6 @@
 # Wiki timeline
 
-Generated 2026-10-08 16:03. Dates come from git history (created = first commit of the file, updated = latest commit).
+Generated 2026-10-08 16:21. Dates come from git history (created = first commit of the file, updated = latest commit).
 
 
 ## 1. When each page was created (oldest first)
@@ -302,9 +302,9 @@ Generated 2026-10-08 16:03. Dates come from git history (created = first commit 
 
 ## 2. Most recently updated (newest first, top 25)
 
-- 2026-10-08 15:20 [What we are, where we help, and why it matters (scope and value)](pages/lab/docs/SCOPE_AND_VALUE.md) (lab)
-- 2026-10-08 15:20 [What is wrong with our approach, why, and what we can still do](pages/lab/docs/WHAT_IS_WRONG.md) (lab)
-- 2026-10-08 15:20 [HANDOFF: read this first on a new laptop / new Claude session](pages/lab/HANDOFF.md) (lab)
+- 2026-10-08 16:03 [What we are, where we help, and why it matters (scope and value)](pages/lab/docs/SCOPE_AND_VALUE.md) (lab)
+- 2026-10-08 16:03 [What is wrong with our approach, why, and what we can still do](pages/lab/docs/WHAT_IS_WRONG.md) (lab)
+- 2026-10-08 16:03 [HANDOFF: read this first on a new laptop / new Claude session](pages/lab/HANDOFF.md) (lab)
 - 2026-10-08 14:28 [rca-lab](pages/lab/README.md) (lab)
 - 2026-10-08 07:53 [Microservice Mapper — Wiki](pages/lab/microservice-mapper/wiki/README.md) (lab)
 - 2026-10-08 07:53 [17 — Findings vs Incidents: two detectors, deliberately separate](pages/lab/microservice-mapper/wiki/17-findings-vs-incidents.md) (lab)
@@ -333,6 +333,8 @@ Generated 2026-10-08 16:03. Dates come from git history (created = first commit 
 
 ### mapper
 
+- 2026-10-08 16:20 `0c1aac0` Data snapshot before laptop change (graph_db.json)
+- 2026-10-08 16:19 `ade39ce` data snapshot
 - 2026-10-08 15:52 `e66d261` Fix RCA and status correctness bugs; add tests
 - 2026-10-08 07:53 `ce7d856` data snapshot before handoff
 - 2026-10-08 07:48 `7e61cff` data snapshot before handoff
@@ -386,6 +388,8 @@ Generated 2026-10-08 16:03. Dates come from git history (created = first commit 
 
 ### lab
 
+- 2026-10-08 16:19 `9e9476c` Refresh chat history
+- 2026-10-08 16:03 `5d8734d` Live docker-pause test on DeathStar + fixes (SSH silence, feature units, pids as symptom); honest results; che
 - 2026-10-08 15:20 `eefa511` Logic fixes: silence + activity signals, quiet-inheritance attribution, DeathStar call graph, trace-edge reade
 - 2026-10-08 14:28 `bf29388` Scope and value doc: what we solve, scenarios, real-world evidence, DevOps vocabulary
 - 2026-10-08 09:53 `892a717` Research notebook (every step visible, flowchart, bench, ablations, live), WHAT_IS_WRONG doc, wiki Home, faste
@@ -464,5 +468,3 @@ Generated 2026-10-08 16:03. Dates come from git history (created = first commit 
 - 2026-09-18 11:22 `0abc80b` Fix: distroless containers were silently unscannable, hiding real edges
 - 2026-09-18 10:57 `f32098a` Fix 3D inspection sidebar: canvas wrapper wasn't shrinking to make room
 - 2026-09-18 07:40 `e51fa66` Smart entry-point discovery, selectable users, and full-surface stress sweeps
-- 2026-09-18 01:03 `933bef3` nothing here just changing the traffic generator issues
-- 2026-09-18 00:53 `8d70f7e` new updated and also added documentation
