@@ -1,5 +1,7 @@
 # rca-lab
 
+> **Start here: [wiki/Home.md](wiki/Home.md)** (all documents) | **honest status: [docs/WHAT_IS_WRONG.md](docs/WHAT_IS_WRONG.md)** | **notebook: [ipynb/rca_research.ipynb](ipynb/rca_research.ipynb)**
+
 Lean research harness for: *unlabeled, live-telemetry root cause analysis with probabilistic cascade-risk prediction.*
 Python only. **Read-only and architecture-agnostic.** You choose how telemetry is obtained (`source.mode`: `tools`, `ssh` or `both`). Telemetry comes from tool APIs: Prometheus (metrics), Jaeger (traces + call graph), Loki (logs, optional).
 
