@@ -1,0 +1,72 @@
+{
+  "sock-shop": {
+    "targetId": "sock-shop",
+    "baseUrl": "http://13.233.120.223:80",
+    "endpoints": [
+      {
+        "path": "/",
+        "statusCode": 200,
+        "location": null,
+        "contentType": "text/html; charset=UTF-8",
+        "enabled": true
+      }
+    ],
+    "architecture": null,
+    "settings": {
+      "profile": "STRESS",
+      "endpointPaths": [
+        "/"
+      ],
+      "users": 20
+    }
+  },
+  "vertikal-prod": {
+    "targetId": "vertikal",
+    "baseUrl": "http://localhost:3000",
+    "settings": {
+      "profile": "MODERATE",
+      "users": 8,
+      "durationSec": 30,
+      "endpointPaths": []
+    }
+  },
+  "death-star": {
+    "targetId": "death-star",
+    "baseUrl": "http://13.201.168.222:8080",
+    "settings": {
+      "profile": "MODERATE",
+      "endpointPaths": [],
+      "users": 10,
+      "durationSec": 90
+    }
+  },
+  "open-telemetry": {
+    "targetId": "open-telemetry",
+    "baseUrl": "http://43.204.211.231:8080",
+    "settings": {
+      "profile": "STRESS",
+      "endpointPaths": [
+        "http://43.204.211.231:8080",
+        "http://43.204.211.231:8080/",
+        "http://43.204.211.231:8080/api/cart",
+        "http://43.204.211.231:8080/api/checkout",
+        "http://43.204.211.231:8080/api/currency",
+        "http://43.204.211.231:8080/api/data",
+        "http://43.204.211.231:8080/api/products",
+        "http://43.204.211.231:8080/api/recommendations",
+        "http://43.204.211.231:8080/api/shipping",
+        "http://43.204.211.231:8080/cart"
+      ],
+      "users": 10
+    }
+  },
+  "vertikal": {
+    "targetId": "vertikal",
+    "baseUrl": "http://localhost:3000",
+    "settings": {
+      "profile": "BASELINE",
+      "users": 1,
+      "endpointPaths": []
+    }
+  }
+}
